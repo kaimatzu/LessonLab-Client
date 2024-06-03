@@ -75,7 +75,7 @@ export default function ChatPage() {
                 </svg>
             ) : (currentWorkspace && currentChat &&
                 <>
-                    <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 border border-separate backdrop-blur-sm'>
+                    <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border border-separate backdrop-blur-sm'>
                         <div className='flex flex-row gap-5 align-middle items-center'>
                             <ChatTitle workspace={currentWorkspace} />
                             {!currentWorkspace.locked &&
@@ -84,7 +84,7 @@ export default function ChatPage() {
                                 >
                                     <Tooltip text='Delete Workspace' position='bottom'>
                                         <FaTrash
-                                            className={`cursor-pointer hover:opacity-50 text-gray-500 scale-95 
+                                            className={`cursor-pointer hover:opacity-50 text-gray-500 dark:text-zinc-200 scale-95 
                                             ${isDeleting ? 'animate-pulse' : ''}`}
                                         />
                                     </Tooltip>

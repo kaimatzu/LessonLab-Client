@@ -29,11 +29,11 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             : 'bg-primary text-primary-foreground'
         )}
       >
-        {message.role === 'user' ? <IconUser className='size-6 text-black' /> : <IconPinecone />}
+        {message.role === 'user' ? <IconUser className='size-6 text-black dark:text-zinc-100' /> : <IconPinecone />}
       </div>
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-visible">
         <MemoizedReactMarkdown
-          className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black"
+          className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100"
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {
@@ -51,7 +51,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             a({ node, className, children, ...props }) {
               return (
                 <a
-                  className="text-blue-600 hover:underline font-bold"
+                  className="text-blue-600 dark:text-zinc-600 hover:underline font-bold"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}

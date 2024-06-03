@@ -67,7 +67,7 @@ export default function NewPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full rounded-2xl bg-gradient-to-br from-slate-50 to-white">
+    <div className="flex flex-col items-center justify-center h-full rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dakr:to-zinc-950">
       <div className="w-full max-w-xl rounded-md p-6">
         <form onSubmit={handleSubmit}>
           <input

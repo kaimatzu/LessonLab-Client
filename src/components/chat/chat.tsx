@@ -114,7 +114,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
           </div>
         ))}
         {isLoading && (
-          <div className="animate-pulse bg-gray-500 h-4 w-4 rotate-45 rounded-sm"></div>
+          <div className="animate-pulse bg-gray-500 dark:bg-zinc-500 h-4 w-4 rotate-45 rounded-sm"></div>
         )}
         <div className={documentTrayIsOpen ? 'h-[70%]' : 'h-1/3'}></div>
       </div>
@@ -131,7 +131,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
               handleSubmit={handlePromptSubmit}
             />) : (
 
-            <div className="text-gray-500 text-sm">{workspace.name === 'Empty Workspace' ? 'This is an example workspace with no uploaded documents for context. Try ask a question about \"Richard Feynman\" or any other workspace.' 
+            <div className="text-gray-500 dark:text-zinc-500 text-sm">{workspace.name === 'Empty Workspace' ? 'This is an example workspace with no uploaded documents for context. Try ask a question about \"Richard Feynman\" or any other workspace.' 
             : 'No documents in this workspace... upload below!'}</div>
           ))
           }
@@ -140,9 +140,10 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
 
       <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)} className="fixed bottom-0 w-full max-w-[300px] sm:max-w-[400px] md:max-w-2xl z-50 pb-10">
 
+        {/* Prompt area */}
         <div className="flex flex-row items-center h-fit mb-4">
           <textarea
-            className={"p-4 px-5 border border-gray-300 bg-white/80 text-black rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " + (isLoading ? 'cursor-not-allowed' : 'cursor-text')}
+            className={"p-4 px-5 border-gray-300 bg-white/80 text-black dark:border-zinc-100 dark:bg-zinc-950 dark:text-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " + (isLoading ? 'cursor-not-allowed' : 'cursor-text')}
             value={input}
             placeholder={isLoading ? "Responding..." : "Chat with this workspace..."}
             disabled={isLoading}
@@ -179,24 +180,24 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
         </div>
 
         {/* Document Tray */}
-        <div className='flex flex-col items-center bg-white/80 backdrop-blur-lg border border-gray-300 rounded shadow-md'>
+        <div className='flex flex-col items-center bg-white/80 dark:bg-zinc-950 backdrop-blur-lg border border-gray-300 dark:border-zinc-100 rounded shadow-md'>
           <button
             onClick={toggleOpen}
-            className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 border-b`}
+            className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-zinc-900 border-b`}
           >
-            <span className='text-gray-500 text-sm'>
+            <span className='text-gray-500 dark:text-zinc-500 text-sm'>
               {workspace.locked ? "View Documents" : "Manage Documents"}{' '}
               {fetchingFiles ? (
                 <>
                   (
-                  <div className="inline-block w-2 h-4 mx-0 translate-y-1 bg-gray-200 animate-pulse" />
+                  <div className="inline-block w-2 h-4 mx-0 translate-y-1 bg-gray-200 dark:bg-zinc-200 animate-pulse" />
                   )
                 </>
               ) : (
                 `(${files.length})`
               )}
             </span>
-            <div className={"-rotate-90 text-gray-500 scale-105"}>
+            <div className={"-rotate-90 text-gray-500 dark:text-gray-500 scale-105"}>
               {documentTrayIsOpen ? <FiChevronRight /> : <FiChevronLeft />}
             </div>
           </button>

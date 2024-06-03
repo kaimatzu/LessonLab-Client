@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useWorkspaceChatContext, Workspace } from '@/lib/hooks/workspace-chat-context';
 import { SkeletonLoader } from './skeleton-loader';
 import { Tooltip } from './tooltip';
+import ThemeSwitcher from './theme-switcher';
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,26 +25,31 @@ const Sidenav: React.FC = () => {
   const sortedChats = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
   return (
-    <div className="flex flex-row w-fit !overflow-x-visible z-[100]">
+    <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900">
       <div
-        className={`bg-white p-4 transition-all duration-500 ease-in-out border-r-1 shadow-lg !overflow-x-visible 
+        className={`bg-white dark:bg-zinc-900 p-4 transition-all duration-500 ease-in-out border-r-1 shadow-lg !overflow-x-visible 
         ${isCollapsed ? 'w-16 max-w-[470px]' : 'max-w-[470px] w-[300px]'} 
         overflow-y-scroll no-scrollbar`}
       >
-        <div className={`flex mb-10 items-baseline ${isCollapsed ? 'flex-col gap-2' : 'flex-row'}`}>
+        <div className={`flex items-baseline ${isCollapsed ? 'flex-col gap-2' : 'flex-row'}`}>
           <div
-            className={`flex items-center min-w-fit text-black no-underline rounded mb-2
+            className={`flex items-center min-w-fit text-black dark:text-zinc-100 no-underline rounded mb-2
             ${isCollapsed ? 'justify-center' : 'justify-start'}`}
           >
             <Link
               href={"/"}
-              className={`hover:bg-gray-100 hover:text-gray-900 
+              className={`hover:bg-gray-100 dark:hover:bg-zinc-900 hover:text-gray-900 dark:hover:text-zinc-100
               transition-all duration-300 justify-center py-2 px-2 rounded`}
             >
               <FaRocket className={`${isCollapsed ? '' : 'mr-2'}`} />
             </Link>
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Namespace Notes</span>
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>LessonLab</span>
           </div>
+        </div>
+        <div
+          className={`text-black mb-10 mt-2 dark:text-zinc-100 pb-4 pl-2`}
+        >
+          <ThemeSwitcher className={`${isCollapsed ? '' : 'mr-2'}`} />
         </div>
 
         <ul className="!overflow-visible">
@@ -71,18 +77,18 @@ const Sidenav: React.FC = () => {
             href="/workspace/new"
             isActive={isActive('/workspace/new')}
             isCollapsed={isCollapsed}
-            icon={<FaPlus className={`${isCollapsed ? '' : 'scale-75'} ${isActive('/workspace/new') ? 'text-white' : 'text-[#1C17FF]'}`} />}
+            icon={<FaPlus className={`${isCollapsed ? '' : 'scale-75'} ${isActive('/workspace/new') ? 'text-white dark:text-zinc-900' : 'text-[#1C17FF] dark:text-zinc-100'}`} />}
             animatedBorder
           />
         </ul>
       </div>
       <button
         onClick={toggleSidebar}
-        className="relative mb-4 w-fit my-4 ml-2 rounded-lg px-2 hover:bg-slate-50 flex z-0
+        className="relative mb-4 w-fit my-4 ml-2 rounded-lg px-2 dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 flex z-0
         justify-end items-center bg-transparent border-none text-xl cursor-pointer"
         aria-expanded={!isCollapsed}
       >
-        <div className="scale-125 text-black">{isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}</div>
+        <div className="scale-125 text-black dark:text-zinc-200">{isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}</div>
       </button>
     </div>
   );
@@ -105,10 +111,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Tooltip text={<span>{title}{locked && <span className="ml-2">(Read-Only)</span>}</span>}>
           <Link
             href={href}
-            className={`flex items-center text-gray-800 no-underline rounded mb-1 
-            ${isActive ? 'bg-[#1C17FF] text-white transition-colors duration-0'
-              : 'hover:bg-gray-100 hover:text-gray-900'
-            } transition-all duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
+            className={`flex items-center text-gray-800 dark:text-zinc-100 no-underline rounded mb-1 
+            ${isActive ? 'bg-[#1C17FF] text-white dark:bg-zinc-100 dark:text-zinc-900 transition-colors duration-0'
+                : 'hover:bg-gray-100 hover:text-gray-900 hover:bg-zinc-800 hover:text-zinc-200'
+              } transition-all duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -119,10 +125,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
       ) : (
         <Link
           href={href}
-          className={`flex items-center text-gray-800 no-underline rounded mb-1 
-          ${isActive ? 'bg-[#1C17FF] text-white transition-colors duration-0'
-            : 'hover:bg-gray-100 hover:text-gray-900'
-          } transition-all duration-100 justify-start px-4 py-4 ${animatedBorder ? 'border-glow' : ''}`}
+          className={`flex items-center text-gray-800 dark:text-zinc-100 no-underline rounded mb-1 
+          ${isActive ? 'bg-[#1C17FF] text-white dark:bg-zinc-100 dark:text-zinc-900 transition-colors duration-0'
+              : 'hover:bg-gray-100 hover:text-gray-900 hover:bg-zinc-800 hover:text-zinc-200'
+            } transition-all duration-100 justify-start px-4 py-4 ${animatedBorder ? 'border-glow' : ''}`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>
