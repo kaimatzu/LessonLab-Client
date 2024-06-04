@@ -10,7 +10,7 @@ export default function ThemeSwitcher({ className }: Props) {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme');
+    const storedTheme = localStorage.getItem('lessonlab-theme');
     if (storedTheme) {
       setTheme(storedTheme);
       document.documentElement.classList.add(storedTheme);
@@ -19,18 +19,12 @@ export default function ThemeSwitcher({ className }: Props) {
     }
   }, []);
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-      document.documentElement.classList.remove('light');
-    } else {
-      document.documentElement.classList.add('light');
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
-
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    setTheme(newTheme)
+    localStorage.setItem('lessonlab-theme', newTheme)
+    document.documentElement.classList.remove('light', 'dark')
+    document.documentElement.classList.add(newTheme)
   };
 
   return (
