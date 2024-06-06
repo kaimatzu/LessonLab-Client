@@ -131,8 +131,8 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
               handleSubmit={handlePromptSubmit}
             />) : (
 
-            <div className="text-gray-500 dark:text-zinc-500 text-sm">{workspace.name === 'Empty Workspace' ? 'This is an example workspace with no uploaded documents for context. Try ask a question about \"Richard Feynman\" or any other workspace.' 
-            : 'No documents in this workspace... upload below!'}</div>
+            <div className="text-gray-500 dark:text-zinc-500 text-sm">{workspace.name === 'Empty Workspace' ? 'This is an example workspace with no uploaded documents for context. Try ask a question about \"Richard Feynman\" or any other workspace.'
+              : 'No documents in this workspace... upload below!'}</div>
           ))
           }
         </div>
@@ -143,15 +143,15 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
         {/* Prompt area */}
         <div className="flex flex-row items-center h-fit mb-4">
           <textarea
-            className={"p-4 px-5 border-gray-300 bg-white/80 text-black dark:border-zinc-100 dark:bg-zinc-950 dark:text-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " + (isLoading ? 'cursor-not-allowed' : 'cursor-text')}
+            className={"p-4 px-5 border-gray-300 bg-white/80 text-black dark:border-zinc-100 dark:bg-zinc-950/80 dark:text-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " + (isLoading ? 'cursor-not-allowed' : 'cursor-text')}
             value={input}
             placeholder={isLoading ? "Responding..." : "Chat with this workspace..."}
             disabled={isLoading}
             onChange={handleInputChange}
             onKeyDown={(e: any) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
+              if (e.key === 'Enter' && !e.shiftKey) { // If user doesn't press shift key while pressing enter
+                e.preventDefault(); // prevents from going to new line
+                handleSubmit(e); // instead submit the prompt
               }
             }}
             rows={1}

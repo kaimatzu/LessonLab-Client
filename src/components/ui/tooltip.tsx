@@ -3,46 +3,46 @@
 import { useState, useRef } from 'react';
 
 export const Tooltip = ({
-    children,
-    text,
-    isCollapsed = true,
-    position = "right" }:
-    {
-        children: React.ReactNode;
-        text: string | React.ReactNode;
-        isCollapsed?: boolean,
-        position?: "top" | "right" | "bottom";
-    }) => {
+  children,
+  text,
+  isCollapsed = true,
+  position = "right" }:
+  {
+    children: React.ReactNode;
+    text: string | React.ReactNode;
+    isCollapsed?: boolean,
+    position?: "top" | "right" | "bottom";
+  }) => {
 
-    const [showTooltip, setShowTooltip] = useState(false);
-    const tooltipRef = useRef<HTMLDivElement>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
-    const handleMouseEnter = () => {
-        setShowTooltip(true);
-    };
+  const handleMouseEnter = () => {
+    setShowTooltip(true);
+  };
 
-    const handleMouseLeave = () => {
-        setShowTooltip(false);
-    };
+  const handleMouseLeave = () => {
+    setShowTooltip(false);
+  };
 
-    return (
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {showTooltip && (
         <div
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-        >
-            {showTooltip && (
-                <div
-                    ref={tooltipRef}
-                    className={`bg-gray-800 text-white px-2 py-1 rounded absolute !z-[100] whitespace-nowrap  
+          ref={tooltipRef}
+          className={`bg-gray-800 text-white dark:bg-zinc-800 dark:text-zinc-100 px-2 py-1 rounded absolute !z-[100] whitespace-nowrap  
                    ${position === "right" ? isCollapsed ? 'left-16 ml-2 mb-10' : 'left-full ml-2'
-                            : position === "top" ? '-top-full right-0 -translate-y-2' : position === "bottom" ? 'top-full right-0 translate-y-2' : 'right-full -translate-x-2 top-1'
-                        }`}
-                >
-                    {text}
-                </div>
-            )}
-            {children}
-
+              : position === "top" ? '-top-full right-0 -translate-y-2' : position === "bottom" ? 'top-full right-0 translate-y-2' : 'right-full -translate-x-2 top-1'
+            }`}
+        >
+          {text}
         </div>
-    );
+      )}
+      {children}
+
+    </div>
+  );
 };

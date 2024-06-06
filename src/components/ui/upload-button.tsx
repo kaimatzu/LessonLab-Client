@@ -85,9 +85,8 @@ export default function UploadButton({
         disabled={locked}
       />
       <div
-        className={`flex items-center justify-center h-10 w-10 p-3 text-white ${
-          isUploading || locked ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1C17FF] cursor-pointer hover:bg-blue-600'
-        } rounded-full focus:outline-none`}
+        className={`flex items-center justify-center h-10 w-10 p-3 text-white ${isUploading || locked ? 'bg-gray-400 bg-zinc-400 cursor-not-allowed' : 'bg-[#1C17FF] bg-zinc-950 cursor-pointer hover:bg-blue-600 dark:hover:bg-zinc-600'
+          } rounded-full focus:outline-none`}
         onClick={handleButtonClick}
       >
         {isUploading ? <FaSpinner className="animate-spin" /> : <FaUpload />}

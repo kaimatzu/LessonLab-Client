@@ -38,18 +38,18 @@ const Sidenav: React.FC = () => {
           >
             <Link
               href={"/"}
-              className={`hover:bg-gray-100 dark:hover:bg-zinc-900 hover:text-gray-900 dark:hover:text-zinc-100
+              className={`hover:bg-gray-100 dark:hover:bg-zinc-500 hover:text-gray-900 dark:hover:text-zinc-100
               transition-all duration-300 justify-center py-2 px-2 rounded`}
             >
-              <FaRocket className={`${isCollapsed ? '' : 'mr-2'}`} />
+              <FaRocket /> {/* Can change this to logo */}
             </Link>
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>LessonLab</span>
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium ml-2'}`}>LessonLab</span>
           </div>
         </div>
-        <div
-          className={`text-black mb-10 mt-2 dark:text-zinc-100 pb-4 pl-2`}
-        >
-          <ThemeSwitcher className={`${isCollapsed ? '' : 'mr-2'}`} />
+        <div className={`text-black mb-10 mt-2 dark:text-zinc-100 pb-4`}>
+          <div className={`hover:bg-gray-100 dark:hover:bg-zinc-500 justify-center py-2 px-2 rounded inline-block`}>
+            <ThemeSwitcher />
+          </div>
         </div>
 
         <ul className="!overflow-visible">
