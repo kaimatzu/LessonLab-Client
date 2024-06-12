@@ -1,0 +1,10 @@
+.material-content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.ql-editor {
+    color: #000000; /* Ensure text is black */
+    height: 100%; /* Ensure the editor occupies full height */
+}
