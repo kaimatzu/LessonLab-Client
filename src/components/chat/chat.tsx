@@ -107,7 +107,8 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
   const [viewMode, setViewMode] = useState('chat'); // 'chat' or 'markdown'
 
   return (
-    <div className="relative flex flex-col w-full max-w-md md:max-w-2xl h-full py-24 items-center justify-start">
+    // <div className="relative flex flex-col max-w-md md:max-w-2xl h-full py-24 items-center justify-start w-full">
+    <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
       <button
         onClick={() => setViewMode(viewMode === 'chat' ? 'markdown' : 'chat')}
         className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
@@ -224,10 +225,11 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
               </div>}
             </div>
           </form>
-        </>        
+        </>
       ) : (
         // Wrapper for styling
-        <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap max-w-fit w-full"> 
+        // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap max-w-fit w-full"> 
+        <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap w-full">
           <MaterialContent initialContent="<p>Hello, this is the Quill editor!</p>" />
         </div>
       )}
