@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 // zinc-900 | -> background-color: rgb(24, 24, 27);   
 // zinc-950 | -> background-color: rgb(9, 9, 11);    
 
+// TODO: Change logo
 export default function RootLayout({
   children,
 }: Readonly<{
