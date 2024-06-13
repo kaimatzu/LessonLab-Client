@@ -104,7 +104,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
     }
   }, [documentTrayIsOpen, fetchFiles]);
 
-  const [viewMode, setViewMode] = useState('chat'); // 'chat' or 'markdown'
+  const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
 
   return (
     // <div className="relative flex flex-col max-w-md md:max-w-2xl h-full py-24 items-center justify-start w-full">
