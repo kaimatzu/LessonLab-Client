@@ -8,7 +8,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { FaTrash } from 'react-icons/fa';
 import { Tooltip } from '@/components/ui/tooltip';
 
-export default function ChatPage() {
+export default function MaterialPage() {
   const { workspaces, removeWorkspace } = useWorkspaceChatContext();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
