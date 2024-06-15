@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.milkdown {
+  @apply bg-slate-50 px-2 py-4 m-5 border rounded;
+  flex-grow: 1;
+  width: 100%; /* Ensure the Milkdown editor takes up the full width */
+}
+
+.editor {
+  @apply mx-auto;
+  width: 100%;
+  height: 100%;
+  max-width: 100%; /* Ensure the container does not exceed the parent width */
+}
+
+
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 100%; /* Ensure the container does not exceed the parent width */
+}
+
+/* Disable outline for the editor container and input areas when focused */
+.editor-container *:focus {
+  outline: none;
+}
+
+/* Optionally, you can target specific elements inside the editor */
+.milkdown .ProseMirror:focus {
+  outline: none;
+}
+
+/* Highlight border when focused */
+pre[data-language]:focus {
+  border-color: #00b4d8; 
+  border-width: medium;
+}

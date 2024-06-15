@@ -37,6 +37,7 @@ class MarkdownActivity {
     if (isRemoveCommand && removeLine.domNode.textContent.length <= 1) {
       const rangeElements = ['PRE', 'BLOCKQUOTE']
       if (rangeElements.includes(removeLine.domNode.tagName)) {
+        console.log("removes a block")
         this.onRemoveElement({ delete: 1 })
       }
     }
@@ -93,11 +94,13 @@ class MarkdownActivity {
     })
 
     delta.ops.filter(e => e.hasOwnProperty('delete')).forEach((e) => {
+      console.log("delta remove")
       this.onRemoveElement(e)
     })
   }
 
   onInlineExecute () {
+    console.log("action")
     const selection = this.quillJS.getSelection()
     if (!selection) return
     const [line, offset] = this.quillJS.getLine(selection.index)
@@ -106,6 +109,7 @@ class MarkdownActivity {
     const format = this.quillJS.getFormat(lineStart)
     if (format['code-block'] || format['code']) {
       // if exists text in code-block, to skip.
+      console.log("a")
       return
     }
     for (let match of this.matches) {
@@ -130,7 +134,7 @@ class MarkdownActivity {
     const format = this.quillJS.getFormat(formatLineStart)
     if (format['code-block'] || format['code']) {
       // if exists text in code-block, to skip.
-
+      console.log("a")
       if (format['code']) {
         // ignore all styles when copied text in code block.
         const copiedTexts = delta.ops.filter(d => d.insert).map(d => d.insert).join('')
@@ -164,6 +168,7 @@ class MarkdownActivity {
   }
 
   onRemoveElement (range) {
+    console.log("default release")
     const selection = this.quillJS.getSelection()
     // if removed one item before, editor need to clear item.
     if (range && range.delete === 1) {

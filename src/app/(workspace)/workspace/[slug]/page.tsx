@@ -1,8 +1,8 @@
-import ChatPage from './(chat)/Chat';
+import MaterialPage from './(material)/Material';
 
 const Page = () => {
     return (
-       <ChatPage/>
+       <MaterialPage/>
     );
 };
 

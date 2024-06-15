@@ -1,4 +1,4 @@
-// chat.tsx where the upload call is made
+// material.tsx where the upload call is made
 
 'use client';
 import { useChat } from 'ai/react';
@@ -11,7 +11,7 @@ import { Tooltip } from '../ui/tooltip';
 import FileCard from '../ui/file-card';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FetchedFile } from '@/app/api/files/route';
-import { MaterialContent } from '../ui/quill-md-renderer';
+import { MilkdownEditorWrapper } from '../ui/milkdown';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -105,6 +105,14 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
   }, [documentTrayIsOpen, fetchFiles]);
 
   const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
+
+  const initialContent = 
+`# Milkdown Vanilla Commonmark
+
+> You're scared of a world where you're needed.
+
+This is a demo for using Milkdown with **Vanilla Typescript**.`;
+
 
   return (
     // <div className="relative flex flex-col max-w-md md:max-w-2xl h-full py-24 items-center justify-start w-full">
@@ -228,10 +236,11 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
         </>
       ) : (
         // Wrapper for styling
+        
         // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap max-w-fit w-full"> 
-        <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap w-full">
-          <MaterialContent initialContent="<p>Hello, this is the Quill editor!</p>" />
-        </div>
+        // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap w-full">
+          <MilkdownEditorWrapper initialContent={initialContent} />
+        // </div>
       )}
     </div>
   );
