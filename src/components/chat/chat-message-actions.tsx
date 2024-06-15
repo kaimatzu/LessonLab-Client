@@ -2,8 +2,8 @@
 
 import { type Message } from 'ai'
 
-import { Button } from '@/components/ui/ui-simple/button'
-import { IconCheck, IconCopy } from '@/components/ui/ui-simple/icons'
+import { Button } from '@/components/ui/ui-base/button'
+import { IconCheck, IconCopy } from '@/components/ui/ui-base/icons'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 

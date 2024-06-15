@@ -8,7 +8,7 @@ import { Workspace } from '@/lib/hooks/workspace-chat-context';
 import { PromptGrid } from '../ui/ui-composite/prompt-grid';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../ui/ui-composite/tooltip';
-import FileCard from '../ui/ui-simple/file-card';
+import FileCard from '../ui/ui-base/file-card';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FetchedFile } from '@/app/api/files/route';
 import { MilkdownEditorWrapper } from '../ui/ui-composite/milkdown';
