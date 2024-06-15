@@ -5,7 +5,6 @@
 .milkdown {
   @apply bg-slate-50 px-2 py-4 m-5 border rounded;
   flex-grow: 1;
-  width: 100%; /* Ensure the Milkdown editor takes up the full width */
 }
 
 .editor {

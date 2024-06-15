@@ -7,7 +7,7 @@ import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import { prism } from '@milkdown/plugin-prism';
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
-import './css/milkdown.css'
+import '../css/milkdown.css'
 
 
 interface MilkdownEditorProps {

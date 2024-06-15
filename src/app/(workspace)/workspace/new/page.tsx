@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspaceChatContext, Workspace } from "@/lib/hooks/workspace-chat-context";
-import Spinner from "@/components/ui/spinner";
+import Spinner from "@/components/ui/ui-simple/spinner";
 import { uploadFiles } from "@/app/api/files/file-upload-util";
 
 const validFileTypes = ["application/pdf"];

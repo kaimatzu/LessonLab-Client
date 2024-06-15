@@ -1,6 +1,6 @@
 "use client";
 
-import Sidenav from '@/components/ui/sidenav';
+import Sidenav from '@/components/ui/ui-composite/sidenav';
 import { WorkspaceChatProvider } from '../../lib/hooks/workspace-chat-context';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

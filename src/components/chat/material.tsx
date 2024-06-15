@@ -3,15 +3,15 @@
 'use client';
 import { useChat } from 'ai/react';
 import { ChatMessage } from './chat-message';
-import UploadButton from '../ui/upload-button';
+import UploadButton from '../ui/ui-composite/upload-button';
 import { Workspace } from '@/lib/hooks/workspace-chat-context';
-import { PromptGrid } from '../ui/prompt-grid';
+import { PromptGrid } from '../ui/ui-composite/prompt-grid';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { Tooltip } from '../ui/tooltip';
-import FileCard from '../ui/file-card';
+import { Tooltip } from '../ui/ui-composite/tooltip';
+import FileCard from '../ui/ui-simple/file-card';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FetchedFile } from '@/app/api/files/route';
-import { MilkdownEditorWrapper } from '../ui/milkdown';
+import { MilkdownEditorWrapper } from '../ui/ui-composite/milkdown';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {

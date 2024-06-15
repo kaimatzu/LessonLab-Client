@@ -5,9 +5,9 @@ import { TbNotes } from 'react-icons/tb';
 import { FaRocket, FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useWorkspaceChatContext, Workspace } from '@/lib/hooks/workspace-chat-context';
-import { SkeletonLoader } from './skeleton-loader';
+import { SkeletonLoader } from '../ui-simple/skeleton-loader';
 import { Tooltip } from './tooltip';
-import ThemeSwitcher from './theme-switcher';
+import ThemeSwitcher from '../ui-simple/theme-switcher';
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
