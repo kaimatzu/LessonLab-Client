@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/ui-composite/codeblock'
 import { MemoizedReactMarkdown } from '@/components/ui/ui-base/markdown'
 import { IconPinecone, IconUser } from '@/components/ui/ui-base/icons'
-import { ChatMessageActions } from '@/components/chat/chat-message-actions'
+import { ChatMessageActions } from '@/components/material/chat-message-actions'
 
 export interface ChatMessageProps {
   message: Message

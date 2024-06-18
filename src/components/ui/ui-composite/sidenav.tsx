@@ -31,22 +31,24 @@ const Sidenav: React.FC = () => {
         ${isCollapsed ? 'w-16 max-w-[470px]' : 'max-w-[470px] w-[300px]'} 
         overflow-y-scroll no-scrollbar`}
       >
-        <div className={`flex items-baseline ${isCollapsed ? 'flex-col gap-2' : 'flex-row'}`}>
-          <div
-            className={`flex items-center min-w-fit text-black dark:text-zinc-100 no-underline rounded mb-2
-            ${isCollapsed ? 'justify-center' : 'justify-start'}`}
-          >
-            <Link
-              href={"/"}
-              className={`hover:bg-gray-100 dark:hover:bg-zinc-500 hover:text-gray-900 dark:hover:text-zinc-100
-              transition-all duration-300 justify-center py-2 px-2 rounded`}
+        {/* 
+          <div className={`flex items-baseline ${isCollapsed ? 'flex-col gap-2' : 'flex-row'}`}>
+            <div
+              className={`flex items-center min-w-fit text-black dark:text-zinc-100 no-underline rounded mb-2
+              ${isCollapsed ? 'justify-center' : 'justify-start'}`}
             >
-              <FaRocket /> {/* Can change this to logo */}
-            </Link>
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium ml-2'}`}>LessonLab</span>
+              <Link
+                href={"/"}
+                className={`hover:bg-gray-100 dark:hover:bg-zinc-500 hover:text-gray-900 dark:hover:text-zinc-100
+                transition-all duration-300 justify-center py-2 px-2 rounded`}
+              >
+                <FaRocket /> 
+              </Link>
+              <span className={`${isCollapsed ? 'hidden' : 'inline font-medium ml-2'}`}>LessonLab</span>
+            </div>
           </div>
-        </div>
-        <div className={`text-black mb-10 mt-2 dark:text-zinc-100 pb-4`}>
+        */}
+        <div className={`text-black mb-2 mt-2 dark:text-zinc-100`}>
           <div className={`hover:bg-gray-100 dark:hover:bg-zinc-500 justify-center py-2 px-2 rounded inline-block`}>
             <ThemeSwitcher />
           </div>

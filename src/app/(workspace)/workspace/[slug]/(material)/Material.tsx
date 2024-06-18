@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Chat from '@/components/chat/material';
+import Chat from '@/components/material/material';
 import { useWorkspaceChatContext, Workspace } from '@/lib/hooks/workspace-chat-context';
 import { ChatTitle } from '@/components/ui/ui-base/chat-title';
 import { usePathname, useRouter } from 'next/navigation';

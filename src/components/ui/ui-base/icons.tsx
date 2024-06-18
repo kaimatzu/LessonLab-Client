@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import { cn } from '@/components/chat/utils/utils'
+import { cn } from '@/lib/utils'
 
 function IconNextChat({
   className,
