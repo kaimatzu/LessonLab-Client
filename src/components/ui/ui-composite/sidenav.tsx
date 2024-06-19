@@ -4,7 +4,7 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes } from 'react-icons/tb';
 import { FaRocket, FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
-import { useWorkspaceChatContext, Workspace } from '@/lib/hooks/workspace-chat-context';
+import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './tooltip';
 import ThemeSwitcher from '../ui-base/theme-switcher';
@@ -12,7 +12,7 @@ import ThemeSwitcher from '../ui-base/theme-switcher';
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { workspaces } = useWorkspaceChatContext();
+  const { workspaces } = useWorkspaceMaterialContext();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);

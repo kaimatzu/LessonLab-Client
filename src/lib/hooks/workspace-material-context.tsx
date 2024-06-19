@@ -9,27 +9,27 @@ export interface Workspace {
   locked?: boolean;
 }
 
-export interface WorkspaceChatContextValue {
+export interface WorkspaceMaterialContextValue {
   workspaces: Workspace[];
   addWorkspace: (workspace: Workspace) => void;
   removeWorkspace: (workspaceId: string) => void;
 }
 
-const defaultValue: WorkspaceChatContextValue = {
+const defaultValue: WorkspaceMaterialContextValue = {
   workspaces: [],
   addWorkspace: () => {},
   removeWorkspace: () => {},
 };
 
-export const WorkspaceChatContext = createContext<WorkspaceChatContextValue>(defaultValue);
-export const useWorkspaceChatContext = () => useContext(WorkspaceChatContext);
+export const WorkspaceMaterialContext = createContext<WorkspaceMaterialContextValue>(defaultValue);
+export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext);
 
 const defaultWorkspaces: Workspace[] = [
   { id: 'default', name: 'Richard Feynman Lectures', locked: true, createdAt: 1, fileUrls: [] },
   { id: 'empty', name: 'Empty Workspace', locked: true, createdAt: 2, fileUrls: [] },
 ];
 
-export const WorkspaceChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   useEffect(() => {
@@ -63,8 +63,8 @@ export const WorkspaceChatProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <WorkspaceChatContext.Provider value={{ workspaces, addWorkspace, removeWorkspace }}>
+    <WorkspaceMaterialContext.Provider value={{ workspaces, addWorkspace, removeWorkspace }}>
       {children}
-    </WorkspaceChatContext.Provider>
+    </WorkspaceMaterialContext.Provider>
   );
 };

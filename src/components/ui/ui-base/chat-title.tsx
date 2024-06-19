@@ -1,5 +1,5 @@
 "use client";
-import { Workspace } from '@/lib/hooks/workspace-chat-context';
+import { Workspace } from '@/lib/hooks/workspace-material-context';
 
 export const ChatTitle: React.FC<{ workspace: Workspace; }> = ({ workspace }) => {
     return (
