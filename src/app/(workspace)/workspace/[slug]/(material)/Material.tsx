@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Chat from '@/components/material/material';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/workspace-material-context';
-import { ChatTitle } from '@/components/ui/ui-base/chat-title';
+import { ChatTitle } from '@/components/ui/ui-base/material-title';
 import { usePathname, useRouter } from 'next/navigation';
 import { FaTrash } from 'react-icons/fa';
 import { Tooltip } from '@/components/ui/ui-composite/tooltip';
