@@ -9,11 +9,11 @@ interface OverlayProps {
   overlayName: string;
 }
 
-const overlayBackgroundStyles = cva('fixed top-0 left-0 cursor-pointer transition-opacity z-[250]', {
+const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 cursor-pointer transition-opacity z-[250]', {
   variants: {
     hidden: {
       true: 'opacity-0',
-      false: 'opacity-100',
+      false: 'opacity-50',
     },
   },
   defaultVariants: {
