@@ -104,7 +104,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
     }
   }, [documentTrayIsOpen, fetchFiles]);
 
-  const [viewMode, setViewMode] = useState('chat'); // 'chat' or 'markdown'
+  const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
 
   const initialContent = 
 `# Milkdown Vanilla Commonmark

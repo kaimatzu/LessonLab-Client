@@ -67,7 +67,7 @@ const Header: React.FC = () => {
         </Overlay>
 
         <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"}>
-          <div className="p-4">
+          <div className="flex p-4">
             {items.map((item, index) => (
               <Item key={index} item={item} />
             ))}

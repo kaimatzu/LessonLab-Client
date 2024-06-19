@@ -29,12 +29,12 @@ export const Item: React.FC<ItemProps> = ({ item }) => {
   };
 
   return (
-    <div className={cn("flex flex-col items-center p-4 border border-gray-300 rounded-md shadow-lg bg-white")}>
+    <div className={cn("flex flex-col m-1 items-center p-4 rounded-md shadow-lg bg-[#5a5a5a]", "item")}>
       <Image src={icon} alt="Item Image" width={50} height={50} className="mb-4" />
       <div className="flex flex-col items-center">
         <h2 className="text-lg font-semibold mb-2">{item.name}</h2>
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-yellow-400 text-white rounded hover:bg-yellow-500"
           onClick={handleBuyTokens}
         >
           BUY {formattedAmount} {item.currency}
