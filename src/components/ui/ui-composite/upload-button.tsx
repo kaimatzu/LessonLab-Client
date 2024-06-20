@@ -1,6 +1,6 @@
 'use client';
 
-import { uploadFiles } from '@/app/api/files/file-upload-util';
+import { POST as uploadPost } from "@/app/api/files/route";
 import React, { useState, useRef } from 'react';
 import { FaUpload, FaSpinner } from 'react-icons/fa';
 
@@ -51,9 +51,17 @@ export default function UploadButton({
       formData.append('files', selectedFiles[i]);
     }
 
+    // Manually create a request object with formData
+    const request = new Request('http://localhost/api/documents/add', {
+      method: 'POST',
+      body: formData,
+    });
+
     try {
-      const data = await uploadFiles(formData);
-      console.log('Files uploaded successfully:', data);
+      const response = await uploadPost(request);
+      
+      const data = await response.json();
+      console.log("Files uploaded successfully:", data);
       // Reset the input field after successful upload
       if (fileInputRef.current) {
         fileInputRef.current.value = '';

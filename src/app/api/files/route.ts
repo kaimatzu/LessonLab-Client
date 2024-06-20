@@ -65,7 +65,7 @@ export async function POST(req: Request) {
 
   try {
     const response = await fetch(
-      `${process.env.SERVER_URL}/api/documents/add`,
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/documents/add`,
       {
         method: "POST",
         body: formData,

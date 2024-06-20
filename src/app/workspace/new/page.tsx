@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
-import { uploadFiles } from "@/app/api/files/file-upload-util";
+import { POST as uploadPost } from "@/app/api/files/route";
 
 const validFileTypes = ["application/pdf"];
 
@@ -45,8 +45,16 @@ export default function NewPage() {
     formData.append("newWorkspace", "true");
     Array.from(selectedFiles).forEach((file) => formData.append("files", file));
 
+    // Manually create a request object with formData
+    const request = new Request('http://localhost/api/documents/add', {
+      method: 'POST',
+      body: formData,
+    });
+
     try {
-      const data = await uploadFiles(formData);
+      const response = await uploadPost(request);
+      
+      const data = await response.json();
       console.log("Files uploaded successfully:", data);
 
       const newWorkspace: Workspace = {
