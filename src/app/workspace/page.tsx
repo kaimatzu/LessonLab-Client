@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-const Page = () => {
+export default function Page() {
   return (
     <div className='flex flex-col items-center justify-center h-full rounded-2xl bg-cover text-black dark:bg-zinc-900 dark:text-zinc-100'>
       <div className="backdrop-blur-sm bg-white/30 dark:bg-zinc-800 border-dotted rounded-lg border-2 border-gray-300 dark:border-zinc-600 p-1 sm:p-5 md:p-12 md:max-w-[90%]">
@@ -26,5 +26,3 @@ const Page = () => {
     </div>
   );
 };
-
-export default Page;

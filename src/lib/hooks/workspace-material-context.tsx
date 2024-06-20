@@ -1,4 +1,4 @@
-// client/src/app/workspace-chat-context.tsx
+// client/src/lib/hooks/workspace-material-context.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 export interface Workspace {

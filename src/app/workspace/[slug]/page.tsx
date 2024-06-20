@@ -1,9 +1,7 @@
 import MaterialPage from './(material)/Material';
 
-const Page = () => {
+export default function Page() {
     return (
        <MaterialPage/>
     );
 };
-
-export default Page;

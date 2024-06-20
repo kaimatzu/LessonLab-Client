@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
-import { Overlay } from '../ui-base/overlay'; 
+import Overlay from '../ui-base/overlay'; 
 import { Item } from './transaction/item'; // Adjust the import path as necessary
 import LoginForm from './login-form'; 
 import SignUpForm from './signup-form';
@@ -39,7 +39,7 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <div className="container z-[200] mx-auto p-4 shadow-lg" style={{ userSelect: 'none' }}>
+    <div className="z-[200] mx-0 w-full p-4 shadow-lg" style={{ userSelect: 'none' }}>
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
@@ -50,23 +50,23 @@ const Header: React.FC = () => {
 
         <div className="ml-auto flex space-x-4">
           {isLoggedIn ? (
-            <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-green-600" onClick={closeForm}>
+            <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={closeForm}>
               Login
             </button>
           ) : null}
-          <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-blue-600" onClick={closeShop}>
+          <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={closeShop}>
             Shop
           </button>
           <Image src={profileIcon} alt="Profile" width={40} height={32} className="cursor-pointer" />
         </div>
 
-        <Overlay isOpen={isFormOpen || isLoggedIn === false} onClose={closeForm} overlayName={"LessonLab"}>
+        <Overlay isOpen={isFormOpen || isLoggedIn === false} onClose={closeForm} overlayName={"LessonLab"} closable={true}>
           <div className="p-4">
             {isLoginForm ? <LoginForm onSwitchToSignUp={switchForm} /> : <SignUpForm onSwitchToLogin={switchForm} />}
           </div>
         </Overlay>
 
-        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"}>
+        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} closable={true}>
           <div className="flex p-4">
             {items.map((item, index) => (
               <Item key={index} item={item} />

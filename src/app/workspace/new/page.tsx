@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useWorkspaceChatContext, Workspace } from "@/lib/hooks/workspace-material-context";
+import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
 import { uploadFiles } from "@/app/api/files/file-upload-util";
 
 const validFileTypes = ["application/pdf"];
 
 export default function NewPage() {
-  const { addWorkspace } = useWorkspaceChatContext();
+  const { addWorkspace } = useWorkspaceMaterialContext();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
