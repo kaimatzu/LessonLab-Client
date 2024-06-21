@@ -1,31 +1,26 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useUserContext } from '@/lib/hooks/user-context';
+import { POST as logout } from '@/app/api/auth/logout/route';
+import Overlay from '../ui-base/overlay';
+import { Item } from './transaction/item';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
-import Overlay from '../ui-base/overlay'; 
-import { Item } from './transaction/item'; // Adjust the import path as necessary
-import LoginForm from './login-form'; 
-import SignUpForm from './signup-form';
-import { cn } from '@/lib/utils'; 
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // TODO: Handle authentication
-  const [isLoginForm, setIsLoginForm] = useState(true);
-
-  const closeForm = () => {
-    setIsFormOpen(!isFormOpen);
-    setIsLoginForm(true);
-  };
+  const { user, clearUser } = useUserContext();
 
   const closeShop = () => {
     setIsShopOpen(!isShopOpen);
   };
 
-  const switchForm = () => {
-    setIsLoginForm(!isLoginForm);
+  const handleLogout = async () => {
+    const success = await logout();
+    if (success) {
+      clearUser();
+    }
   };
 
   // TENTATIVE ITEMS, SHOULD BE REAL ITEMS DATA
@@ -49,22 +44,15 @@ const Header: React.FC = () => {
         </div>
 
         <div className="ml-auto flex space-x-4">
-          {isLoggedIn ? (
-            <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={closeForm}>
-              Login
-            </button>
-          ) : null}
+          {user ? <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={handleLogout}>
+            Logout
+          </button>
+          : null}
           <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={closeShop}>
             Shop
           </button>
           <Image src={profileIcon} alt="Profile" width={40} height={32} className="cursor-pointer" />
         </div>
-
-        <Overlay isOpen={isFormOpen || isLoggedIn === false} onClose={closeForm} overlayName={"LessonLab"} closable={true}>
-          <div className="p-4">
-            {isLoginForm ? <LoginForm onSwitchToSignUp={switchForm} /> : <SignUpForm onSwitchToLogin={switchForm} />}
-          </div>
-        </Overlay>
 
         <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} closable={true}>
           <div className="flex p-4">

@@ -1,13 +1,19 @@
-import type { Metadata } from "next";
+"use client"
+
+// import { metadata } from './metadata';
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { CombinedProvider } from '@/lib/hooks/user-context';
+import { useRouteContext } from '@/lib/hooks/route-context';
+import { useUserContext } from '@/lib/hooks/user-context';
+import { useEffect } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "LessonLab",
-  description: "This is a simple multi-tenant RAG application built using Pinecone Serverless, the Vercel AI SDK and OpenAI. It uses namespaces to separate context between workspaces.",
-};
+// export const metadata: Metadata = {
+//   title: "LessonLab",
+//   description: "This is a simple multi-tenant RAG application built using Pinecone Serverless, the Vercel AI SDK and OpenAI. It uses namespaces to separate context between workspaces.",
+// };
 
 // Use the `dark` modifier for dark mode example: `dark:bg-zinc-900`
 // Dark mode color palette (colors from tailwind )
@@ -31,9 +37,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        {children}
+      <head>
+        <title>LessonLab</title>
+        <meta name="description" content="This is a simple multi-tenant RAG application built using Pinecone Serverless, the Vercel AI SDK and OpenAI. It uses namespaces to separate context between workspaces." />
+      </head>
+      <body className={inter.className}>
+        <CombinedProvider>
+          <AuthenticatedContent>{children}</AuthenticatedContent>
+        </CombinedProvider>
       </body>
     </html>
   );
+}
+
+function AuthenticatedContent({ children }: { children: React.ReactNode }) {
+  const { user } = useUserContext();
+  const { push } = useRouteContext();
+
+  useEffect(() => {
+    if (!user) {
+      push('/auth');
+    }
+  }, [user, push]);
+
+  return <>{children}</>;
 }

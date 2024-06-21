@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
-import { POST as uploadPost } from "@/app/api/files/route";
+import { POST as uploadFilePost } from "@/app/api/files/route";
 
 const validFileTypes = ["application/pdf"];
 
@@ -34,38 +34,45 @@ export default function NewPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!selectedFiles) {
-      alert("Please select at least one file.");
-      return;
-    }
+    // if (!selectedFiles) {
+    //   alert("Please select at least one file.");
+    //   return;
+    // }
 
     setIsLoading(true);
 
     const formData = new FormData();
     formData.append("newWorkspace", "true");
-    Array.from(selectedFiles).forEach((file) => formData.append("files", file));
+    if(selectedFiles) {
+      Array.from(selectedFiles).forEach((file) => formData.append("files", file));
+    }
 
     // Manually create a request object with formData
-    const request = new Request('http://localhost/api/documents/add', {
+    const request = new Request('', {
       method: 'POST',
       body: formData,
     });
 
     try {
-      const response = await uploadPost(request);
+      const response = await uploadFilePost(request).catch(error => {
+          console.error("Error uploading files:", error);
+          return null;
+      });
       
-      const data = await response.json();
-      console.log("Files uploaded successfully:", data);
-
-      const newWorkspace: Workspace = {
-        id: data.namespaceId,
-        name: title,
-        createdAt: Date.now(),
-        fileUrls: [],
-      };
-      addWorkspace(newWorkspace);
-
-      router.push(`/workspace/${data.namespaceId}`);
+      if (response) {
+        const data = await response.json();
+        console.log("Files uploaded successfully:", data);
+  
+        const newWorkspace: Workspace = {
+          id: data.namespaceId,
+          name: title,
+          createdAt: Date.now(),
+          fileUrls: [],
+        };
+        addWorkspace(newWorkspace);
+  
+        router.push(`/workspace/${data.namespaceId}`);
+      }
     } catch (error) {
       console.error("Error uploading files:", error);
       alert(`Failed to upload files. Please try again. ${error}`);

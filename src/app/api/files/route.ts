@@ -47,12 +47,12 @@ export async function GET(request: Request) {
 /**
  * Sends a POST request to upload files to the server.
  *
- * @param req - The request object containing the form data.
+ * @param request - The request object containing the form data.
  * @returns A Promise that resolves to a Response object.
  */
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   const formData = new FormData();
-  const data = await req.formData();
+  const data = await request.formData();
   const entries = Array.from(data.entries());
 
   for (const [key, value] of entries) {
@@ -62,6 +62,8 @@ export async function POST(req: Request) {
       formData.append(key, value);
     }
   }
+
+  console.log(formData);
 
   try {
     const response = await fetch(

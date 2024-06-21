@@ -3,13 +3,15 @@ import Image from 'next/image';
 import icon from '@/assets/icon.png';
 import { cn } from '@/lib/utils';
 
-interface SignUpFormProps {
+interface RegisterFormProps {
   onSwitchToLogin: () => void;
+  handleSubmit: (e: React.SyntheticEvent) => any;
 }
 
-const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubmit }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [userType, setUserType] = useState('teacher');
@@ -22,6 +24,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
     setEmail(e.target.value);
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
@@ -32,14 +38,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
 
   const handleUserTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUserType(e.target.value);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('Username:', username);
-    console.log('Password:', password);
-    console.log('Confirm Password:', confirmPassword);
-    console.log('User Type:', userType);
   };
 
   return (
@@ -65,6 +63,17 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
             id="email"
             value={email}
             onChange={handleEmailChange}
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="name" className="mb-1 text-xs">Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={handleNameChange}
             className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
             required
           />
@@ -112,4 +121,4 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ onSwitchToLogin }) => {
   );
 };
 
-export default SignUpForm;
+export default RegisterForm;

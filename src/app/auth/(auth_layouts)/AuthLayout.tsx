@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import LoginPage from './(login)/Login';
-import SignupPage from './(register)/Register';
+import RegisterPage from './(register)/Register';
 
 export default function AuthLayout() {
     const [isLoginForm, setIsLoginForm] = useState(true);
@@ -13,7 +13,7 @@ export default function AuthLayout() {
 
     return (
         <div>
-            {isLoginForm ? <LoginPage switchForm={switchForm} /> : <SignupPage switchForm={switchForm} />}
+            {isLoginForm ? <LoginPage switchForm={switchForm} /> : <RegisterPage switchForm={switchForm} />}
         </div>
     );
 }
