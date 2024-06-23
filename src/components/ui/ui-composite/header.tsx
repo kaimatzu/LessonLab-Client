@@ -39,7 +39,7 @@ const Header: React.FC = () => {
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
             <Image src={icon} alt="icon" width={32} height={32} />
-            <span className="ml-2 text-xl text-black">LessonLab</span>
+            <span className="ml-2 text-xl text-black dark:text-white">LessonLab</span>
           </Link>
         </div>
 
@@ -47,7 +47,7 @@ const Header: React.FC = () => {
           {user ? <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={handleLogout}>
             Logout
           </button>
-          : null}
+            : null}
           <button className="relative px-4 py-2 bg-[#f1c41b] text-black rounded hover:bg-yellow-500" onClick={closeShop}>
             Shop
           </button>
