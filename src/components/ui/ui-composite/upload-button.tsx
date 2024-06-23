@@ -59,7 +59,7 @@ export default function UploadButton({
 
     try {
       const response = await uploadFilePost(request);
-      
+
       const data = await response.json();
       console.log("Files uploaded successfully:", data);
       // Reset the input field after successful upload
@@ -93,7 +93,7 @@ export default function UploadButton({
         disabled={locked}
       />
       <div
-        className={`flex items-center justify-center h-10 w-10 p-3 text-white ${isUploading || locked ? 'bg-gray-400 bg-zinc-400 cursor-not-allowed' : 'bg-[#1C17FF] bg-zinc-950 cursor-pointer hover:bg-blue-600 dark:hover:bg-zinc-600'
+        className={`flex items-center justify-center h-10 w-10 p-3 text-white ${isUploading || locked ? 'bg-zinc-400 cursor-not-allowed' : 'bg-primary cursor-pointer hover:bg-yellow-500'
           } rounded-full focus:outline-none`}
         onClick={handleButtonClick}
       >

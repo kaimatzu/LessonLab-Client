@@ -44,7 +44,7 @@ export default function NewPage() {
 
     const formData = new FormData();
     formData.append("newWorkspace", "true");
-    if(selectedFiles) {
+    if (selectedFiles) {
       Array.from(selectedFiles).forEach((file) => formData.append("files", file));
     }
 
@@ -80,7 +80,7 @@ export default function NewPage() {
       if (response) {
         const data = await response.json();
         console.log("Files uploaded successfully:", data);
-  
+
         const newWorkspace: Workspace = {
           id: data.MaterialID,
           name: data.MaterialName,
@@ -119,7 +119,7 @@ export default function NewPage() {
             </span>
             <label
               htmlFor="fileInput"
-              className="px-4 py-2 text-[#1C17FF] border-[#1C17FF] dark:text-zinc-100 dark:border-zinc-100 border rounded-md 
+              className="px-4 py-2 text-primary border-primary/10 border rounded-md 
               hover:bg-[#1b17ff1e] dark:hover:bg-zinc-800 focus:outline-none cursor-pointer"
             >
               Browse
@@ -134,7 +134,7 @@ export default function NewPage() {
               multiple
             />
           </div>
-          <div className="mt-4 text-sm font-medium text-[#1C17FF] dark:text-zinc-100 py-2 mb-5 rounded-lg">
+          <div className="mt-4 text-sm font-medium text-primary py-2 mb-5 rounded-lg">
             <p>
               This is a public demo, do not upload private information.
               <br />
@@ -142,8 +142,8 @@ export default function NewPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 text-lg font-medium text-white bg-[#1C17FF] dark:text-zinc-900 dark:bg-zinc-100 rounded-md 
-            hover:bg-blue-600 dark:hover:bg-zinc-600 dark:hover:text-zinc-100 focus:outline-none flex items-center justify-center"
+            className="w-full py-3 text-lg font-medium text-white bg-primary rounded-md 
+            hover:bg-yellow-600 focus:outline-none flex items-center justify-center"
             disabled={isLoading}
           >
             {isLoading ? (
