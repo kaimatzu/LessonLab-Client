@@ -41,7 +41,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
   };
 
   return (
-    <div className={cn("w-[450px] h-fit mx-auto p-5 border border-gray-600 rounded-lg bg-gray-800 text-white flex flex-col items-center")}>
+    <div className={cn("w-[450px] h-fit mx-auto p-5 border border-zinc-50/10 rounded-lg bg-zinc-900 text-zinc-50 flex flex-col items-center")}>
       <Image src={icon} alt="LessonLab Icon" className="w-16 h-16 mb-4" />
       <h2 className="text-2xl font-semibold transition-transform duration-300 ease-in-out text-center hover:translate-y-[-10px] hover:text-yellow-400">Join us now and get started!</h2>
       <form onSubmit={handleSubmit} className="flex flex-col w-full">
@@ -113,7 +113,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           </select>
         </div>
         <div className="flex justify-center space-x-4">
-          <button type="button" className="px-4 py-2 text-lg rounded bg-gray-900 border border-yellow-400 text-white hover:bg-yellow-500 hover:border-yellow-500" onClick={onSwitchToLogin}>Back</button>
+          <button type="button" className="px-4 py-2 text-lg rounded bg-zinc-950 border border-yellow-400/60 text-white hover:bg-yellow-500 hover:border-yellow-500" onClick={onSwitchToLogin}>Back</button>
           <button type="submit" className="px-4 py-2 text-lg rounded bg-yellow-400 text-white hover:bg-yellow-500">Confirm</button>
         </div>
       </form>

@@ -22,7 +22,7 @@ const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 c
   },
 });
 
-const overlayContainerStyles = cva('fixed h-fit w-fit top-0 right-0 bottom-0 left-0 m-auto p-8 bg-gray-800 rounded-lg z-[260] transition-opacity', {
+const overlayContainerStyles = cva('fixed h-fit w-fit top-0 right-0 bottom-0 left-0 m-auto p-8 bg-zinc-900 rounded-lg z-[260] transition-opacity', {
   variants: {
     hidden: {
       true: 'opacity-0',
@@ -34,7 +34,7 @@ const overlayContainerStyles = cva('fixed h-fit w-fit top-0 right-0 bottom-0 lef
   },
 });
 
-const embeddedOverlayContainerStyles = cva('relative h-fit w-fit mx-auto p-8 bg-gray-800 rounded-lg transition-opacity', {
+const embeddedOverlayContainerStyles = cva('relative h-fit w-fit mx-auto p-8 bg-zinc-900 rounded-lg transition-opacity', {
   variants: {
     hidden: {
       true: 'opacity-0',

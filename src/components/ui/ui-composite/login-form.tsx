@@ -23,9 +23,9 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
   };
 
   return (
-    <div className={cn("w-[450px] h-fit mx-auto p-5 border border-gray-600 rounded-lg bg-gray-800 text-white flex flex-col items-center", "login-form")}>
+    <div className={cn("w-[450px] h-fit mx-auto p-5 border border-zinc-50/10 rounded-lg bg-zinc-900 text-zinc-50 flex flex-col items-center", "login-form")}>
       <Image src={icon} alt="LessonLab Icon" className="w-16 h-16 mb-4" />
-      <h2 className="text-2xl font-semibold transition-transform duration-300 ease-in-out text-center hover:translate-y-[-10px] hover:text-yellow-400">Welcome back!<br/>Log in to continue.</h2>
+      <h2 className="text-2xl font-semibold transition-transform duration-300 ease-in-out text-center hover:translate-y-[-10px] hover:text-yellow-400">Welcome back!<br />Log in to continue.</h2>
       <form onSubmit={handleSubmit} className="flex flex-col w-full">
         <div className="mb-4">
           <label htmlFor="identifier" className="mb-1 text-xs">Username/Email:</label>
@@ -51,7 +51,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
         </div>
         <div className="flex justify-center space-x-4">
           <button type="submit" className="px-4 py-2 text-lg rounded bg-yellow-400 text-white hover:bg-yellow-500">Login</button>
-          <button type="button" className="px-4 py-2 text-lg rounded bg-gray-900 border border-yellow-400 text-white hover:bg-yellow-500 hover:border-yellow-500" onClick={onSwitchToRegister}>Sign-up</button>
+          <button type="button" className="px-4 py-2 text-lg rounded bg-zinc-950 border border-yellow-400/60 text-white hover:bg-yellow-500 hover:border-yellow-500" onClick={onSwitchToRegister}>Sign-up</button>
         </div>
       </form>
     </div>
