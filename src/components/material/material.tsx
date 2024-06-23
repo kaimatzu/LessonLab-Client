@@ -119,7 +119,7 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
     <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
       <button
         onClick={() => setViewMode(viewMode === 'chat' ? 'markdown' : 'chat')}
-        className="mb-4 px-4 py-2 bg-primary text-white rounded"
+        className="mb-4 px-4 py-2 bg-primary text-zinc-950 rounded-md"
       >
         {viewMode === 'chat' ? 'Switch to Markdown' : 'Switch to Chat'}
       </button>
@@ -197,10 +197,10 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
             </div>
 
             {/* Document Tray */}
-            <div className='flex flex-col items-center bg-white/80 dark:bg-zinc-950 backdrop-blur-lg border border-gray-300 dark:border-zinc-100 rounded shadow-md'>
+            <div className='flex flex-col items-center bg-white/80 dark:bg-zinc-950 backdrop-blur-lg border border-gray-300 dark:border-zinc-100/10 rounded shadow-md'>
               <button
                 onClick={toggleOpen}
-                className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-zinc-900 border-b`}
+                className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-zinc-900 ${documentTrayIsOpen ? 'border-b dark:border-zinc-100/10' : ''}`}
               >
                 <span className='text-gray-500 dark:text-zinc-500 text-sm'>
                   {workspace.locked ? "View Documents" : "Manage Documents"}{' '}
