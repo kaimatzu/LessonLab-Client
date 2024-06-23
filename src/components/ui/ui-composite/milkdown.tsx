@@ -15,6 +15,7 @@ interface MilkdownEditorProps {
 }
 
 const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
+
   useEditor((root) =>
     Editor.make()
       .config((ctx) => {
