@@ -13,11 +13,11 @@ export default function Page() {
             target='_blank'> namespaces</a> to <span className='font-medium'>separate context between workspaces (tenants)</span>.
         </p>
         <div className='flex flex-row gap-5 items-center'>
-          <Link href='/workspace/default' className="text-xs bg-[#1C17FF] dark:bg-zinc-100 p-2 px-4 rounded-md md:text-base text-white dark:text-zinc-950 hover:opacity-65 focus:outline-none flex items-center justify-center mt-10">
+          <Link href='/workspace/default' className="text-xs bg-primary p-2 px-4 rounded-md md:text-base text-black hover:opacity-65 focus:outline-none flex items-center justify-center mt-10">
             Chat with workspace
           </Link>
           <Link href='/workspace/new'>
-            <div className="text-xs md:text-base text-[#1C17FF] dark:text-zinc-100 hover:opacity-65 focus:outline-none flex items-center justify-center mt-10">
+            <div className="text-xs md:text-base text-[#f1c41b] hover:opacity-65 focus:outline-none flex items-center justify-center mt-10">
               Create your own
             </div>
           </Link>

@@ -106,8 +106,8 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
 
   const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
 
-  const initialContent = 
-`# Milkdown Vanilla Commonmark
+  const initialContent =
+    `# Milkdown Vanilla Commonmark
 
 > You're scared of a world where you're needed.
 
@@ -119,7 +119,7 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
     <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
       <button
         onClick={() => setViewMode(viewMode === 'chat' ? 'markdown' : 'chat')}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+        className="mb-4 px-4 py-2 bg-primary text-white rounded"
       >
         {viewMode === 'chat' ? 'Switch to Markdown' : 'Switch to Chat'}
       </button>
@@ -236,10 +236,10 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
         </>
       ) : (
         // Wrapper for styling
-        
+
         // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap max-w-fit w-full"> 
         // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap w-full">
-          <MilkdownEditorWrapper initialContent={initialContent} />
+        <MilkdownEditorWrapper initialContent={initialContent} />
         // </div>
       )}
     </div>
