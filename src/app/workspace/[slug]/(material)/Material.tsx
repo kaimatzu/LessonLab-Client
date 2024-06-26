@@ -13,6 +13,7 @@ export default function MaterialPage() {
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+
   let currentWorkspaceId: string;
   let currentWorkspace;
   let currentChat;

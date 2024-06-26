@@ -17,23 +17,28 @@ const fetchFileUrls = async (workspaceId: string) => {
   try {
     const response = await fetch(`/api/files/?namespaceId=${workspaceId}`);
     if (!response.ok) {
+      alert('Failed to fetch files response not ok')
       throw new Error('Failed to fetch file URLs');
     }
     const files: FetchedFile[] = await response.json();
     return files;
   } catch (error) {
+    alert('Failed to fetch files error')
     console.error('Error fetching file URLs:', error);
     return [];
   }
 };
 
 export default function Chat({ workspace }: { workspace: Workspace }) {
+  // The value of the api parameter of the `useChat` function defaults to 
+  // /api/chat this will send a request to SERVERURL/api/chat
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     body: { namespaceId: workspace.id },
   });
 
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
+  const [materialType, setMaterialType] = useState('lesson') // either 'quiz' or 'lesson' sets either quiz or lesson generation
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
   const [prompts, setPrompts] = useState<Prompt[]>([
@@ -49,12 +54,13 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-
+  // For submitting prompt by pressing on one of the prompts in the prompt grid
   const handlePromptSubmit = (prompt: Prompt) => {
     handleInputChange({ target: { value: prompt.content } } as ChangeEvent<HTMLInputElement>);
     setShouldSubmit(true);
   };
 
+  // Side effect for when `handlePromptSubmit` is called. This should do a submit event like activating the onSubmit callback
   useEffect(() => {
     if (shouldSubmit) {
       const form = document.querySelector('form');
@@ -79,7 +85,6 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
       console.error('Error deleting file:', error);
     }
   };
-
 
   const [documentTrayIsOpen, setDocumentTrayIsOpen] = useState(false);
 
@@ -106,6 +111,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
 
   const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
 
+  // TODO: Get from generated content from backend
   const initialContent =
     `# Milkdown Vanilla Commonmark
 
