@@ -35,7 +35,7 @@ export const PromptGrid: FC<Props> = ({
           }}
           onMouseEnter={() => onMouseOver(index)}
         >
-          <p className="text-md font-normal text-sm mb-2 text-gray-500 dark:text-white">{prompt.name}</p>
+          <p className="text-md font-normal text-sm text-gray-500 dark:text-white">{prompt.name}</p>
         </div>
       ))}
     </div>

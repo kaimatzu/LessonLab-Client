@@ -122,18 +122,34 @@ export default function NewPage() {
               <br />
             </p>
           </div>
-          <button
-            type="submit"
-            className="w-full py-3 text-lg font-medium text-white bg-primary rounded-md 
+          <div className="flex justify-between gap-4">
+            <button
+              name="lesson"
+              type="submit"
+              className="w-full py-3 text-lg font-medium text-zinc-900 bg-primary rounded-md 
             hover:bg-yellow-600 focus:outline-none flex items-center justify-center"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              "Create New Workspace"
-            )}
-          </button>
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                "Lesson"
+              )}
+            </button>
+            <button
+              name="quiz"
+              type="submit"
+              className="w-full py-3 text-lg font-medium text-zinc-900 bg-primary rounded-md 
+            hover:bg-yellow-600 focus:outline-none flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                "Quiz"
+              )}
+            </button>
+          </div>
           {isLoading && (
             <div className="mt-4 text-sm font-medium text-gray-500 dark:text-zinc-500">
               Upserting and indexing documents... this may take a few minutes....
