@@ -12,9 +12,11 @@ import FileCard from '../ui/ui-base/file-card';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { FetchedFile } from '@/app/api/files/route';
 import { MilkdownEditorWrapper } from '../ui/ui-composite/milkdown';
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
+    // TODO: Change how this is called to use request builder
     const response = await fetch(`/api/files/?namespaceId=${workspaceId}`);
     if (!response.ok) {
       alert('Failed to fetch files response not ok')
@@ -30,15 +32,13 @@ const fetchFileUrls = async (workspaceId: string) => {
 };
 
 export default function Chat({ workspace }: { workspace: Workspace }) {
-  // The value of the api parameter of the `useChat` function defaults to 
-  // /api/chat this will send a request to SERVERURL/api/chat
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     body: { namespaceId: workspace.id },
   });
 
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
-  const [materialType, setMaterialType] = useState('lesson') // either 'quiz' or 'lesson' sets either quiz or lesson generation
+  const [materialType, setMaterialType] = useState('LESSON') // either 'quiz' or 'lesson' sets either quiz or lesson generation
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
   const [prompts, setPrompts] = useState<Prompt[]>([
@@ -72,6 +72,7 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
     }
   }, [shouldSubmit]);
 
+  // TODO: Change how this is called to use request builder
   const handleDeleteFile = async (documentId: string) => {
     console.log(`/api/files/?documentId=${documentId}&namespaceId=${workspace.id}`);
     try {

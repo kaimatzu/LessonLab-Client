@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import Overlay from "@/components/ui/ui-base/overlay";
 import RegisterForm from "@/components/ui/ui-composite/register-form";
 import { useUserContext } from "@/lib/hooks/context-providers/user-context";
-import { POST as registerPost } from "@/app/api/auth/register/route";
+import { POST as register } from "@/app/api/auth/register/route";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 interface RegisterPageProps {
   switchForm: () => void;
@@ -38,13 +39,11 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     formData.append("email", email);
 
     console.log("Page: ", username, password, userType, name, email);
-    try {
-      const request = new Request('', {
-        method: "POST",
-        body: formData,
-      });
 
-      const response = await registerPost(request);
+    const requestBuilder = new RequestBuilder().setBody(formData);
+
+    try {
+      const response = await register(requestBuilder);
       if (response.ok) {
         const responseData = await response.json();
         console.log("User registered successfully:", responseData);

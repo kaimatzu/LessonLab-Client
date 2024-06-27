@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useLayoutEffect, useState, useContext, useRef  } from "react";
-import Cookies from "js-cookie";
 
 const TAB_COUNT_KEY = "tabCount";
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes

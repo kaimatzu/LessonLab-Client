@@ -1,6 +1,7 @@
 'use client';
 
-import { POST as uploadFilePost } from "@/app/api/files/route";
+import { POST as uploadFile } from "@/app/api/files/route";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import React, { useState, useRef } from 'react';
 import { FaUpload, FaSpinner } from 'react-icons/fa';
 
@@ -47,19 +48,16 @@ export default function UploadButton({
 
     const formData = new FormData();
     formData.append('namespaceId', workspaceId);
+    
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append('files', selectedFiles[i]);
       console.log(selectedFiles[i].name)
     }
 
-    // Manually create a request object with formData
-    const request = new Request('', {
-      method: 'POST',
-      body: formData,
-    });
+    const request = new RequestBuilder().setBody(formData);
 
     try {
-      const response = await uploadFilePost(request).catch(error => {
+      const response = await uploadFile(request).catch(error => {
           console.error("Error uploading files:", error);
           return null;
       });

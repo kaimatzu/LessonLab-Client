@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import icon from '@/assets/icon.png';
 import { cn } from '@/lib/utils';
-import { POST as loginPost } from '@/app/api/auth/login/route'
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;

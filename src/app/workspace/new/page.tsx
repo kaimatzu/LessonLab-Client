@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
-import { POST as uploadFilePost } from "@/app/api/files/route";
-import { POST as createMaterialPost } from "@/app/api/material/route";
+import { POST as createMaterial } from "@/app/api/material/route";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 const validFileTypes = ["application/pdf"];
 
@@ -48,38 +48,24 @@ export default function NewPage() {
       Array.from(selectedFiles).forEach((file) => formData.append("files", file));
     }
 
-    // Manually create a request object with formData
-    // const request = new Request('', {
-    //   method: 'POST',
-    //   body: formData,
-    // });
-
-    const request = new Request('', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({
-        materialName: title,
-        materialType: "LESSON"
-      }),
-      credentials: "include",
-    });
+    const requestBuilder = new RequestBuilder()
+    .setBody(
+      JSON.stringify({
+          materialName: title,
+          materialType: "LESSON"
+      })
+    );
 
     try {
-      // const response = await uploadFilePost(request).catch(error => {
-      //     console.error("Error uploading files:", error);
-      //     return null;
-      // });
-      const response = await createMaterialPost(request).catch(error => {
+      const response = await createMaterial(requestBuilder).catch(error => {
         console.error("Error creating material:", error);
         return null;
       });
 
       
-      if (response) {
+      if (response && response.ok) {
         const data = await response.json();
-        console.log("Files uploaded successfully:", data);
+        console.log("Created material successfully:", data);
 
         const newWorkspace: Workspace = {
           id: data.MaterialID,
@@ -88,8 +74,8 @@ export default function NewPage() {
           fileUrls: [],
         };
         addWorkspace(newWorkspace);
-  
-        router.push(`/workspace/${data.MaterialId}`);
+        
+        router.push(`/workspace/${data.MaterialID}`);
       }
     } catch (error) {
       console.error("Error creating material:", error);

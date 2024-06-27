@@ -1,3 +1,5 @@
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
+
 /**
  * Logs out the currently authenticated user.
  * 
@@ -25,11 +27,12 @@
  * @returns A boolean indicating the success of the logout operation.
  */
 export async function POST() {
+    const requestBuilder = new RequestBuilder()
+        .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`)
+        .setMethod("POST")
+        .setCredentials("include");
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/logout`, {
-            method: "POST",
-            credentials: "include", // Ensure cookies are sent with the request
-        });
+        const response = await fetch(requestBuilder.build());
 
         if (response.ok) {
             return true;

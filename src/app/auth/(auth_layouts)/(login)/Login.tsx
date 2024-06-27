@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/login-form';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import { POST as loginPost } from '@/app/api/auth/login/route'
+import { POST as login } from '@/app/api/auth/login/route'
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 interface LoginPageProps {
   switchForm: () => void;
@@ -28,15 +29,11 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     formData.append("identifier", identifier);
     formData.append("password", password);
 
-
     console.log("Page: ", identifier, password);
     try {
-      const request = new Request('', {
-        method: 'POST',
-        body: formData,
-      });
+      const requestBuilder = new RequestBuilder().setBody(formData);
 
-      const response = await loginPost(request);
+      const response = await login(requestBuilder);
       if (response.ok) {
         const responseData = await response.json();
         console.log("User logged in successfully:", responseData);

@@ -1,3 +1,5 @@
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
+
 export interface FilesResponse {
   files: FetchedFile[];
 }
@@ -47,33 +49,44 @@ export async function GET(request: Request) {
 /**
  * Sends a POST request to upload files to the server.
  *
- * @param request - The request object containing the form data.
+ * This function uses the `RequestBuilder` class to construct the request, 
+ * setting the appropriate URL, method, and credentials.
+ * It then sends the request using the `fetch` API and processes the response.
+ *
+ * If the file upload is successful, the function returns a `Response` object
+ * containing the namespace ID. If there is an error during the upload process,
+ * it logs the error and returns a `Response` object with an error message.
+ *
+ * Usage:
+ * 
+ * ```typescript
+ * import { POST as uploadFiles } from '@/app/api/documents/add/route';
+ * import RequestBuilder from "@/lib/hooks/builders/request-builder";
+ * 
+ * const handleFileUpload = async (formData: FormData) => {
+ *   const requestBuilder = new RequestBuilder()
+ *     .setBody(formData);
+ *     
+ *   const response = await uploadFiles(requestBuilder);
+ *   if (response.ok) {
+ *     const responseData = await response.json();
+ *     console.log("Files uploaded successfully:", responseData);
+ *   } else {
+ *     console.error("Failed to upload files");
+ *   }
+ * };
+ * ```
+ * 
+ * @param requestBuilder - The RequestBuilder instance used to construct the upload files request.
  * @returns A Promise that resolves to a Response object.
  */
-export async function POST(request: Request) {
-  const formData = new FormData();
-  const data = await request.formData();
-  const entries = Array.from(data.entries());
-
-  for (const [key, value] of entries) {
-    if (key === "newWorkspace") {
-      formData.append(key, JSON.stringify(true));
-    } else {
-      formData.append(key, value);
-    }
-  }
-
-  console.log(formData);
+export async function POST(requestBuilder: RequestBuilder) {
+  requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/documents/add`)
+    .setMethod("POST")
+    .setCredentials("include");
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/documents/add`,
-      {
-        method: "POST",
-        body: formData,
-        credentials: "include"
-      }
-    );
+    const response = await fetch(requestBuilder.build());
 
     if (response.ok) {
       const responseData = await response.json();

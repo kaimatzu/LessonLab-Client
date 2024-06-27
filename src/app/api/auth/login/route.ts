@@ -1,9 +1,12 @@
-import { AuthResponse } from "@/lib/hooks/user-context";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
+import { AuthResponse } from "@/lib/hooks/context-providers/user-context";
 
 /**
  * Authenticates a user with the provided credentials.
  * 
  * This function sends a POST request to the backend server to authenticate the user.
+ * It uses the `RequestBuilder` class to construct the request, setting the appropriate URL,
+ * method, and credentials.
  * It expects the request to contain form-data with the following fields:
  * - username: The username of the user.
  * - password: The password of the user.
@@ -11,22 +14,41 @@ import { AuthResponse } from "@/lib/hooks/user-context";
  * If the authentication is successful, the server will return the user data and an authToken
  * which will be stored as a cookie for subsequent requests.
  * 
- * @param request - The request object containing the user credentials.
+ * Usage:
+ * 
+ * ```typescript
+ * import { POST as loginUser } from '@/app/api/users/login/route';
+ * import RequestBuilder from "@/lib/hooks/builders/request-builder";
+ * 
+ * const handleLogin = async (credentials: { username: string; password: string; }) => {
+ *   const { identifier, password } = credentials;
+ *   const formData = new FormData();
+ *   formData.append('identifier', identifier);
+ *   formData.append('password', password);
+ *   
+ *   const requestBuilder = new RequestBuilder()
+ *     .setBody(formData);
+ *     
+ *   const response = await loginUser(requestBuilder);
+ *   if (response.ok) {
+ *     const responseData = await response.json();
+ *     console.log("User logged in successfully:", responseData);
+ *   } else {
+ *     console.error("Failed to log in");
+ *   }
+ * };
+ * ```
+ * 
+ * @param requestBuilder - The RequestBuilder instance used to construct the login request.
  * @returns A Response object with the authentication result.
  */
-export async function POST(request: Request) {
-    const formData = await request.formData();
+export async function POST(requestBuilder: RequestBuilder) {
+    requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`)
+        .setMethod("POST")
+        .setCredentials("include");
 
-    const identifier = formData.get("identifier");
-    const password = formData.get("password");
-
-    console.log("Route: ", identifier, password);
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`, {
-            method: "POST",
-            body: formData,
-            credentials: 'include',
-        });
+        const response = await fetch(requestBuilder.build());
 
         if (response.ok) {
             const responseData: AuthResponse = await response.json();

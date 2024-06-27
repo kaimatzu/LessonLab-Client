@@ -31,6 +31,7 @@ export default function MaterialPage() {
     }
   }, [pathname, workspaces, currentChat, currentWorkspace]);
 
+  // TODO: Change how this is called to use request builder
   const handleDeleteWorkspace = async (workspaceId: string) => {
     setIsDeleting(true);
     console.log(`/api/files/?namespaceId=${workspaceId}`);
