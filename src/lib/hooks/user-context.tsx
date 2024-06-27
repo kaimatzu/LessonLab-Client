@@ -1,6 +1,7 @@
 // client/src/lib/hooks/user-context.tsx
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useRef } from "react";
 import { useRouteContext, RouteProvider } from '@/lib/hooks/route-context';
+import WindowActivityProvider from '@/lib/hooks/window-activity-context';
 import Cookies from 'js-cookie';
 import { POST as autoLogin } from '@/app/api/auth/auto-login/route';
 
@@ -37,22 +38,27 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [user, setUser] = useState<User | null>(null);
     const { push } = useRouteContext();
+    const initialized = useRef(false)
+    
+    async function checkAuth() {
+        console.log("check auth")
+        const { responseData, success } = await autoLogin(); // May return an AuthResponse or an error string
+        if (success && responseData && responseData.user) {
+            setUser(responseData.user);
+            localStorage.setItem("user", JSON.stringify(responseData.user));
+            push('/workspace'); // Redirect to /workspace if authenticated
+        } else {
+            console.error("Authentication failed:", responseData);
+            push('/auth');
+        }
+    };
 
     useEffect(() => {
-        async function checkAuth() {
-            const { responseData, success } = await autoLogin(); // May return an AuthResponse or an error string
-            if (success && responseData && responseData.user) {
-                setUser(responseData.user);
-                localStorage.setItem("user", JSON.stringify(responseData.user));
-                push('/workspace'); // Redirect to /workspace if authenticated
-            } else {
-                console.error("Authentication failed:", responseData);
-                push('/auth');
-            }
-        };
-    
-        checkAuth();
-    }, [push]);
+        if (!initialized.current) {
+            initialized.current = true
+            checkAuth();
+        }
+    }, [push, initialized]);
 
     const saveUser = (user: User) => {
         setUser(user);
@@ -75,9 +81,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
 // Wrapping the UserProvider with RouteProvider
 export const CombinedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <RouteProvider>
-    <UserProvider>
-      {children}
-    </UserProvider>
-  </RouteProvider>
+    <WindowActivityProvider>
+        <RouteProvider>
+            <UserProvider>
+            {children}
+            </UserProvider>
+        </RouteProvider>
+    </WindowActivityProvider>
 );

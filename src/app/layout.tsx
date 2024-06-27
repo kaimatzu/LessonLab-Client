@@ -6,7 +6,7 @@ import "./globals.css";
 import { CombinedProvider } from '@/lib/hooks/user-context';
 import { useRouteContext } from '@/lib/hooks/route-context';
 import { useUserContext } from '@/lib/hooks/user-context';
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 

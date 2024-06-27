@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
 import { POST as uploadFilePost } from "@/app/api/files/route";
+import { POST as createMaterialPost } from "@/app/api/material/route";
 
 const validFileTypes = ["application/pdf"];
 
@@ -48,34 +49,51 @@ export default function NewPage() {
     }
 
     // Manually create a request object with formData
+    // const request = new Request('', {
+    //   method: 'POST',
+    //   body: formData,
+    // });
+
     const request = new Request('', {
       method: 'POST',
-      body: formData,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({
+        materialName: title,
+        materialType: "LESSON"
+      }),
+      credentials: "include",
     });
 
     try {
-      const response = await uploadFilePost(request).catch(error => {
-          console.error("Error uploading files:", error);
-          return null;
+      // const response = await uploadFilePost(request).catch(error => {
+      //     console.error("Error uploading files:", error);
+      //     return null;
+      // });
+      const response = await createMaterialPost(request).catch(error => {
+        console.error("Error creating material:", error);
+        return null;
       });
+
       
       if (response) {
         const data = await response.json();
         console.log("Files uploaded successfully:", data);
   
         const newWorkspace: Workspace = {
-          id: data.namespaceId,
-          name: title,
+          id: data.MaterialID,
+          name: data.MaterialName,
           createdAt: Date.now(),
           fileUrls: [],
         };
         addWorkspace(newWorkspace);
   
-        router.push(`/workspace/${data.namespaceId}`);
+        router.push(`/workspace/${data.MaterialId}`);
       }
     } catch (error) {
-      console.error("Error uploading files:", error);
-      alert(`Failed to upload files. Please try again. ${error}`);
+      console.error("Error creating material:", error);
+      alert(`Failed to create material. Please try again. ${error}`);
     } finally {
       setIsLoading(false);
     }
