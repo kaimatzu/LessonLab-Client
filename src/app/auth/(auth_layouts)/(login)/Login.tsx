@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/login-form';
-import { useUserContext } from '@/lib/hooks/user-context';
+import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as loginPost } from '@/app/api/auth/login/route'
 
 interface LoginPageProps {

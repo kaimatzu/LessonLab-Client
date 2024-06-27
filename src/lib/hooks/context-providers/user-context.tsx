@@ -1,7 +1,7 @@
 // client/src/lib/hooks/user-context.tsx
 import React, { createContext, useState, useEffect, useContext, useRef } from "react";
-import { useRouteContext, RouteProvider } from '@/lib/hooks/route-context';
-import WindowActivityProvider from '@/lib/hooks/window-activity-context';
+import { useRouteContext, RouteProvider } from '@/lib/hooks/context-providers/route-context';
+import WindowActivityProvider from '@/lib/hooks/context-providers/window-activity-context';
 import Cookies from 'js-cookie';
 import { POST as autoLogin } from '@/app/api/auth/auto-login/route';
 

@@ -4,7 +4,7 @@
 import { useChat } from 'ai/react';
 import { ChatMessage } from './chat-message';
 import UploadButton from '../ui/ui-composite/upload-button';
-import { Workspace } from '@/lib/hooks/workspace-material-context';
+import { Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { PromptGrid } from '../ui/ui-composite/prompt-grid';
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Tooltip } from '../ui/ui-composite/tooltip';

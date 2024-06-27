@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/workspace-material-context";
+import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import Spinner from "@/components/ui/ui-base/spinner";
 import { POST as uploadFilePost } from "@/app/api/files/route";
 import { POST as createMaterialPost } from "@/app/api/material/route";

@@ -3,9 +3,9 @@
 // import { metadata } from './metadata';
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { CombinedProvider } from '@/lib/hooks/user-context';
-import { useRouteContext } from '@/lib/hooks/route-context';
-import { useUserContext } from '@/lib/hooks/user-context';
+import { CombinedProvider } from '@/lib/hooks/context-providers/user-context';
+import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
+import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { useEffect, useSyncExternalStore } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });

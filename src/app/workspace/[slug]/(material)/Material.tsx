@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Chat from '@/components/material/material';
-import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/workspace-material-context';
+import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { ChatTitle } from '@/components/ui/ui-base/material-title';
 import { usePathname, useRouter } from 'next/navigation';
 import { FaTrash } from 'react-icons/fa';

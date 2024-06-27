@@ -4,7 +4,7 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes } from 'react-icons/tb';
 import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
-import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/workspace-material-context';
+import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './tooltip';
 import ThemeSwitcher from '../ui-base/theme-switcher';

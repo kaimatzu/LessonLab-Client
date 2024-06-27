@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import Overlay from "@/components/ui/ui-base/overlay";
 import RegisterForm from "@/components/ui/ui-composite/register-form";
-import { useUserContext } from "@/lib/hooks/user-context";
+import { useUserContext } from "@/lib/hooks/context-providers/user-context";
 import { POST as registerPost } from "@/app/api/auth/register/route";
 
 interface RegisterPageProps {

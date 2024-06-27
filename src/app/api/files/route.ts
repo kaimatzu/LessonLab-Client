@@ -71,6 +71,7 @@ export async function POST(request: Request) {
       {
         method: "POST",
         body: formData,
+        credentials: "include"
       }
     );
 

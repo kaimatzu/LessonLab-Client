@@ -49,6 +49,7 @@ export default function UploadButton({
     formData.append('namespaceId', workspaceId);
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append('files', selectedFiles[i]);
+      console.log(selectedFiles[i].name)
     }
 
     // Manually create a request object with formData
@@ -58,13 +59,18 @@ export default function UploadButton({
     });
 
     try {
-      const response = await uploadFilePost(request);
-
-      const data = await response.json();
-      console.log("Files uploaded successfully:", data);
-      // Reset the input field after successful upload
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+      const response = await uploadFilePost(request).catch(error => {
+          console.error("Error uploading files:", error);
+          return null;
+      });
+      
+      if (response) {
+        const data = await response.json();
+        console.log("Files uploaded successfully:", data);
+        // Reset the input field after successful upload
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
       }
     } catch (error) {
       console.error('Error uploading files:', error);
