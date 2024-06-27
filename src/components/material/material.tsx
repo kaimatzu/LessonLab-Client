@@ -17,23 +17,28 @@ const fetchFileUrls = async (workspaceId: string) => {
   try {
     const response = await fetch(`/api/files/?namespaceId=${workspaceId}`);
     if (!response.ok) {
+      alert('Failed to fetch files response not ok')
       throw new Error('Failed to fetch file URLs');
     }
     const files: FetchedFile[] = await response.json();
     return files;
   } catch (error) {
+    alert('Failed to fetch files error')
     console.error('Error fetching file URLs:', error);
     return [];
   }
 };
 
 export default function Chat({ workspace }: { workspace: Workspace }) {
+  // The value of the api parameter of the `useChat` function defaults to 
+  // /api/chat this will send a request to SERVERURL/api/chat
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     body: { namespaceId: workspace.id },
   });
 
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
+  const [materialType, setMaterialType] = useState('lesson') // either 'quiz' or 'lesson' sets either quiz or lesson generation
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
   const [prompts, setPrompts] = useState<Prompt[]>([
@@ -49,12 +54,13 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
   const [shouldSubmit, setShouldSubmit] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
-
+  // For submitting prompt by pressing on one of the prompts in the prompt grid
   const handlePromptSubmit = (prompt: Prompt) => {
     handleInputChange({ target: { value: prompt.content } } as ChangeEvent<HTMLInputElement>);
     setShouldSubmit(true);
   };
 
+  // Side effect for when `handlePromptSubmit` is called. This should do a submit event like activating the onSubmit callback
   useEffect(() => {
     if (shouldSubmit) {
       const form = document.querySelector('form');
@@ -79,7 +85,6 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
       console.error('Error deleting file:', error);
     }
   };
-
 
   const [documentTrayIsOpen, setDocumentTrayIsOpen] = useState(false);
 
@@ -106,8 +111,9 @@ export default function Chat({ workspace }: { workspace: Workspace }) {
 
   const [viewMode, setViewMode] = useState('markdown'); // 'chat' or 'markdown'
 
-  const initialContent = 
-`# Milkdown Vanilla Commonmark
+  // TODO: Get from generated content from backend
+  const initialContent =
+    `# Milkdown Vanilla Commonmark
 
 > You're scared of a world where you're needed.
 
@@ -119,7 +125,7 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
     <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
       <button
         onClick={() => setViewMode(viewMode === 'chat' ? 'markdown' : 'chat')}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded"
+        className="mb-4 px-4 py-2 bg-primary text-zinc-950 rounded-md"
       >
         {viewMode === 'chat' ? 'Switch to Markdown' : 'Switch to Chat'}
       </button>
@@ -197,10 +203,10 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
             </div>
 
             {/* Document Tray */}
-            <div className='flex flex-col items-center bg-white/80 dark:bg-zinc-950 backdrop-blur-lg border border-gray-300 dark:border-zinc-100 rounded shadow-md'>
+            <div className='flex flex-col items-center bg-white/80 dark:bg-zinc-950 backdrop-blur-lg border border-gray-300 dark:border-zinc-100/10 rounded shadow-md'>
               <button
                 onClick={toggleOpen}
-                className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-zinc-900 border-b`}
+                className={`flex flex-row items-center justify-center font-normal cursor-pointer w-full p-2 gap-1 transition duration-200 ease-in-out hover:bg-slate-50 dark:hover:bg-zinc-900 ${documentTrayIsOpen ? 'border-b dark:border-zinc-100/10' : ''}`}
               >
                 <span className='text-gray-500 dark:text-zinc-500 text-sm'>
                   {workspace.locked ? "View Documents" : "Manage Documents"}{' '}
@@ -236,10 +242,10 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
         </>
       ) : (
         // Wrapper for styling
-        
+
         // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap max-w-fit w-full"> 
         // <div className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100 whitespace-pre-wrap w-full">
-          <MilkdownEditorWrapper initialContent={initialContent} />
+        <MilkdownEditorWrapper initialContent={initialContent} />
         // </div>
       )}
     </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes } from 'react-icons/tb';
-import { FaRocket, FaPlus, FaLock } from 'react-icons/fa';
+import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
@@ -79,7 +79,7 @@ const Sidenav: React.FC = () => {
             href="/workspace/new"
             isActive={isActive('/workspace/new')}
             isCollapsed={isCollapsed}
-            icon={<FaPlus className={`${isCollapsed ? '' : 'scale-75'} ${isActive('/workspace/new') ? 'text-white dark:text-zinc-900' : 'text-[#1C17FF] dark:text-zinc-100'}`} />}
+            icon={<FaPlus className={`${isCollapsed ? 'hover:text-white' : 'scale-75 hover:text-white'} ${isActive('/workspace/new') ? 'text-primary hover:text-white' : 'text-primary hover:text-white'}`} />}
             animatedBorder
           />
         </ul>
@@ -113,9 +113,9 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Tooltip text={<span>{title}{locked && <span className="ml-2">(Read-Only)</span>}</span>}>
           <Link
             href={href}
-            className={`flex items-center text-gray-800 dark:text-zinc-100 no-underline rounded mb-1 
-            ${isActive ? 'bg-[#1C17FF] text-white dark:bg-zinc-100 dark:text-zinc-900 transition-colors duration-0'
-                : 'hover:bg-gray-100 hover:text-gray-900 hover:bg-zinc-800 hover:text-zinc-200'
+            className={`flex items-center no-underline rounded mb-1 
+            ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
+                : 'hover:bg-yellow-300/80'
               } transition-all duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
@@ -127,9 +127,9 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
       ) : (
         <Link
           href={href}
-          className={`flex items-center text-gray-800 dark:text-zinc-100 no-underline rounded mb-1 
-          ${isActive ? 'bg-[#1C17FF] text-white dark:bg-zinc-100 dark:text-zinc-900 transition-colors duration-0'
-              : 'hover:bg-gray-100 hover:text-gray-900 hover:bg-zinc-800 hover:text-zinc-200'
+          className={`flex items-center no-underline rounded mb-1 
+          ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
+              : 'hover:bg-yellow-300/80'
             } transition-all duration-100 justify-start px-4 py-4 ${animatedBorder ? 'border-glow' : ''}`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}

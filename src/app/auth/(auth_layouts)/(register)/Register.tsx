@@ -49,7 +49,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
         const responseData = await response.json();
         console.log("User registered successfully:", responseData);
         setUser(responseData.user); // Set the user data in context
-        router.push('/workspace'); 
+        router.push('/workspace');
       } else {
         const errorData = await response.json();
         console.error("Failed to register:", errorData);
@@ -63,7 +63,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
 
   return (
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Register"} closable={false}>
-      <div className="p-4">
+      <div className="pt-4">
         <RegisterForm onSwitchToLogin={switchForm} handleSubmit={handleSubmit} />
       </div>
     </Overlay>

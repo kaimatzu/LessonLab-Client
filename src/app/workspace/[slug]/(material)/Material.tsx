@@ -13,6 +13,7 @@ export default function MaterialPage() {
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+
   let currentWorkspaceId: string;
   let currentWorkspace;
   let currentChat;
@@ -75,7 +76,7 @@ export default function MaterialPage() {
         </svg>
       ) : (currentWorkspace && currentChat &&
         <>
-          <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border border-separate backdrop-blur-sm'>
+          <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border dark:border-zinc-50/10 border-separate backdrop-blur-sm'>
             <div className='flex flex-row gap-5 align-middle items-center'>
               <ChatTitle workspace={currentWorkspace} />
               {!currentWorkspace.locked &&

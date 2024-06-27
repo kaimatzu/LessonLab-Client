@@ -41,8 +41,8 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
         const responseData = await response.json();
         console.log("User logged in successfully:", responseData);
         setUser(responseData.user); // Set the user data in context
-        router.push('/workspace'); 
-        
+        router.push('/workspace');
+
       } else {
         const errorData = await response.json();
         console.error("Failed to log in:", errorData);
@@ -56,8 +56,8 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
 
   return (
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} closable={false}>
-      <div className="p-4">
-        <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit}/>
+      <div className="pt-4">
+        <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
       </div>
     </Overlay>
   );

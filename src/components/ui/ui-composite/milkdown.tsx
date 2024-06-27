@@ -8,6 +8,7 @@ import { prism } from '@milkdown/plugin-prism';
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
 import '../css/milkdown.css'
+import { Ctx } from '@milkdown/ctx';
 
 
 interface MilkdownEditorProps {
@@ -15,6 +16,7 @@ interface MilkdownEditorProps {
 }
 
 const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
+
   useEditor((root) =>
     Editor.make()
       .config((ctx) => {
@@ -44,3 +46,20 @@ export const MilkdownEditorWrapper: React.FC<{ initialContent: string }> = ({ in
     </MilkdownProvider>
   );
 };
+
+// https://www.youtube.com/watch?v=moj-hTXBgz4
+// https://www.youtube.com/watch?v=mX4MqIdw1KM
+// See: `useOnClickOutside` hook
+function mouseClickHandler(ctx: Ctx, event: Event) {
+  // If event is right click then:
+  event.preventDefault() // prevents opening default context menu from browser
+  // open a context menu
+
+}
+
+// TODO list:
+/*
+  Add right click event handler
+  Add context menu opener on right click in markdown
+  https://milkdown.dev/blog/build-your-own-milkdown-copilot#overview
+*/

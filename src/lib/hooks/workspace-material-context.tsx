@@ -7,6 +7,7 @@ export interface Workspace {
   fileUrls: string[];
   createdAt: number;
   locked?: boolean;
+  // materialType: string
 }
 
 export interface WorkspaceMaterialContextValue {
@@ -17,14 +18,17 @@ export interface WorkspaceMaterialContextValue {
 
 const defaultValue: WorkspaceMaterialContextValue = {
   workspaces: [],
-  addWorkspace: () => {},
-  removeWorkspace: () => {},
+  addWorkspace: () => { },
+  removeWorkspace: () => { },
 };
 
 export const WorkspaceMaterialContext = createContext<WorkspaceMaterialContextValue>(defaultValue);
 export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext);
 
 const defaultWorkspaces: Workspace[] = [
+  // TODO: Add material type field to workspaces so it can be passed as a context to child components like the sidenav and can then be rendered accordingly
+  // { id: 'default', name: 'Richard Feynman Lectures', locked: true, createdAt: 1, fileUrls: [], materialType: 'lesson' },
+  // { id: 'empty', name: 'Empty Workspace', locked: true, createdAt: 2, fileUrls: [], materialType: 'lesson' },
   { id: 'default', name: 'Richard Feynman Lectures', locked: true, createdAt: 1, fileUrls: [] },
   { id: 'empty', name: 'Empty Workspace', locked: true, createdAt: 2, fileUrls: [] },
 ];
