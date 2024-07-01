@@ -40,6 +40,11 @@ export default function NewPage() {
     //   return;
     // }
 
+    const formSubmitter = (e.nativeEvent as SubmitEvent).submitter;
+    const materialType = formSubmitter?.getAttribute("value");
+
+    console.log("Creating:", materialType);
+
     setIsLoading(true);
 
     const formData = new FormData();
@@ -52,7 +57,7 @@ export default function NewPage() {
     .setBody(
       JSON.stringify({
           materialName: title,
-          materialType: "LESSON"
+          materialType: materialType
       })
     );
 
@@ -88,7 +93,7 @@ export default function NewPage() {
   return (
     <div className="flex flex-col items-center justify-center h-full rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-950">
       <div className="w-full max-w-xl rounded-md p-6">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}> {/* Default is LESSON */}
           <input
             type="text"
             ref={inputRef}
@@ -130,6 +135,7 @@ export default function NewPage() {
             <button
               name="lesson"
               type="submit"
+              value="LESSON"
               className="w-full py-3 text-lg font-medium text-zinc-900 bg-primary rounded-md 
             hover:bg-yellow-600 focus:outline-none flex items-center justify-center"
               disabled={isLoading}
@@ -143,6 +149,7 @@ export default function NewPage() {
             <button
               name="quiz"
               type="submit"
+              value="QUIZ"
               className="w-full py-3 text-lg font-medium text-zinc-900 bg-primary rounded-md 
             hover:bg-yellow-600 focus:outline-none flex items-center justify-center"
               disabled={isLoading}
