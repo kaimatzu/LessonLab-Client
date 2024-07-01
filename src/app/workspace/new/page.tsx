@@ -75,6 +75,7 @@ export default function NewPage() {
         const newWorkspace: Workspace = {
           id: data.MaterialID,
           name: data.MaterialName,
+          materialType: data.MaterialType,
           createdAt: Date.now(),
           fileUrls: [],
         };
