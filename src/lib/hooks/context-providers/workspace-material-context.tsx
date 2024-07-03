@@ -208,19 +208,36 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
 
   const deleteSpecification = (workspaceId: string, specificationId: string) => {
     const updatedWorkspaces = workspaces.map((workspace) =>
-      workspace.id === workspaceId
-        ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
-        : workspace
+        workspace.id === workspaceId
+            ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
+            : workspace
     );
     setWorkspaces(updatedWorkspaces);
 
     if (selectedWorkspace && selectedWorkspace.id === workspaceId) {
-      setSelectedWorkspace({
-        ...selectedWorkspace,
-        specifications: selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId),
-      });
+        const updatedSpecifications = selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId);
+        let newSelectedSpecificationId = '';
+
+        if (updatedSpecifications.length > 0) {
+            const index = selectedWorkspace.specifications.findIndex((spec) => spec.id === specificationId);
+
+            if (index === selectedWorkspace.specifications.length - 1) {
+                // If it was the highest index, set to the previous one
+                newSelectedSpecificationId = updatedSpecifications[index - 1]?.id || '';
+            } else {
+                // Otherwise, set to the next one
+                newSelectedSpecificationId = updatedSpecifications[index]?.id || '';
+            }
+        }
+
+        setSelectedWorkspace({
+            ...selectedWorkspace,
+            specifications: updatedSpecifications,
+        });
+        setSelectedSpecificationId(newSelectedSpecificationId);
     }
-  };
+};
+
 
   const getSpecifications = async (workspaceId: string) => {
     const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${workspaceId}`)

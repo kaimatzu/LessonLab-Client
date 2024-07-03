@@ -270,8 +270,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         }
     };
 
-
-    // TODO: Make this call the backend
     const addNewSpecification = async () => { 
         if (!selectedWorkspace) {
             return;
@@ -337,14 +335,40 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         }
     }, [selectedSpecificationId])
     
+    const _deleteCurrentSpecification = async (MaterialID: string, SpecificationID: string) => {
+        const requestBuilder = new RequestBuilder()
+            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${MaterialID}/${SpecificationID}`)
+            .setMethod("DELETE")
+            .setHeaders({ 'Content-Type': 'application/json' })
+            .setBody(JSON.stringify({ MaterialID: MaterialID, SpecificationID: SpecificationID }))
+            .setCredentials("include")
+            try {
+                const response = await fetch(requestBuilder.build());
+                if (response.ok) {
+                    return true;
+                } else {
+                    console.error('Error removing specification:', response.statusText);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error removing specification:', error);
+                return false;
+            }
+    };
     // // TODO: Make this call the backend
-    // const deleteSpec = (specId: string) => {
-    // if (workspace.specifications.length > 1) {
-    //     deleteSpecification(workspace.id, specId);
-    // } else {
-    //     alert('A material must have at least one specification.');
-    // }
-    // };
+    const deleteCurrentSpecification = async () => {
+        if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
+            if (selectedWorkspace.specifications.length > 1) {
+                // console.log(selectedWorkspace.id, selectSpecificationRef.current.value);
+                const response = await _deleteCurrentSpecification(selectedWorkspace.id, selectSpecificationRef.current.value);
+                if (response) {
+                    deleteSpecification(selectedWorkspace.id, selectSpecificationRef.current.value);
+                }
+            } else {
+                alert('A material must have at least one specification.');
+            }
+        }
+    };
 
     const updateSpecificationName = async (name: string) => {
         const requestBuilder = new RequestBuilder()
@@ -661,7 +685,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                     <div className="flex flex-row justify-between items-center">
                         <h1 className="text-lg font-normal">Specifications</h1>
                         <div className="flex flex-row justify-end">
-                            <div className="cursor-pointer" onClick={() => {}}>
+                            <div className="cursor-pointer" onClick={() => deleteCurrentSpecification()}>
                                 <RiDeleteBinLine className="w-6 h-6" />
                             </div>
                             <div className="cursor-pointer" onClick={() => addNewSpecification()}>
