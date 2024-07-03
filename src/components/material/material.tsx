@@ -21,6 +21,7 @@ import { MilkdownEditorWrapper } from "../ui/ui-composite/milkdown";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import { Message } from "ai";
+import { SkeletonLoader } from "../ui/ui-base/skeleton-loader";
 
 const fetchFileUrls = async (workspaceId: string) => {
     try {
@@ -107,8 +108,15 @@ This is a demo for using Milkdown with **Vanilla Typescript**.`;
                         handleDeleteFile={handleDeleteFile}
                     />
                 ) : (
-                    <MilkdownEditorWrapper initialContent={initialContent} />
+                    <>
+                        {workspace.materialType === "LESSON" ? (
+                            <MilkdownEditorWrapper initialContent={initialContent} />
+                        ) : (
+                            <SkeletonLoader /> // Placeholder
+                        )}
+                    </>
                 )}
+
             </div>
             <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile}/>
         </div>
