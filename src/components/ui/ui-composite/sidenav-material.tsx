@@ -475,8 +475,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                     <div className="flex flex-row justify-between items-center">
                         <h1 className="text-lg font-normal">Specifications</h1>
                         <div className="flex flex-row justify-end">
-                            <div className="cursor-pointer" onClick={() => deleteCurrentSpecification()}>
-                                <RiDeleteBinLine className="w-6 h-6" />
+                            <div className={`${selectSpecificationRef.current?.length === 1 ? '' : 'cursor-pointer'}`} 
+                                onClick={() => {
+                                selectSpecificationRef.current?.length === 1 ? {} : deleteCurrentSpecification()
+                            }}>
+                                <RiDeleteBinLine className={`${selectSpecificationRef.current?.length === 1 ? 'text-gray-500' : ''} w-6 h-6`} />
                             </div>
                             <div className="cursor-pointer" onClick={() => addNewSpecification()}>
                                 <RiAddFill className="w-6 h-6" />
