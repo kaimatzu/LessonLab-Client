@@ -479,7 +479,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                                 onClick={() => {
                                 selectSpecificationRef.current?.length === 1 ? {} : deleteCurrentSpecification()
                             }}>
-                                <RiDeleteBinLine className={`${selectSpecificationRef.current?.length === 1 ? 'text-gray-500' : ''} w-6 h-6`} />
+                                <RiDeleteBinLine className={`${selectSpecificationRef.current?.length === 1 ? 'text-gray-300' : ''} w-6 h-6`} />
                             </div>
                             <div className="cursor-pointer" onClick={() => addNewSpecification()}>
                                 <RiAddFill className="w-6 h-6" />
