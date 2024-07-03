@@ -16,6 +16,7 @@ import "../css/sidenav.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
 import { FetchedFile } from "@/app/api/files/route";
+import { v4 as uuidv4 } from "uuid";
 
 interface SidenavMaterialProps {
     workspace: Workspace;
@@ -45,6 +46,8 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
     
+    const [materialSpecifications, setMaterialSpecifications] = useState<Specification[]>([]);
+    const [selectedSpecificationIndex, setSelectedSpecificationIndex] = useState(0);
     const [name, setName] = useState('');
     const [topic, setTopic] = useState('');
     const [writingLevel, setWritingLevel] = useState('Elementary');
@@ -53,27 +56,30 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     const [isTopicFocused, setIsTopicFocused] = useState(false);
     const [focusedAdditionalSpecIndex, setFocusedAdditionalSpecIndex] = useState<number | null>(null);
     const [isMaterialSpecificationsInitialized, setIsMaterialSpecificationsInitialized] = useState(false);
+    const selectSpecificationRef = useRef<HTMLSelectElement>(null);
+
     useEffect(() => {
         const initializeSpecifications = async () => {
         if (!isMaterialSpecificationsInitialized) {
-            console.log("This is fucking called");
             setIsMaterialSpecificationsInitialized(true);
             if (selectedWorkspace) {
-            if (selectedWorkspace.specifications.length > 0) {
-                const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId) || selectedWorkspace.specifications[0];
-                setName(spec.name);
-                setTopic(spec.topic);
-                setWritingLevel(spec.writingLevel);
-                setComprehensionLevel(spec.comprehensionLevel);
-                
-                const data = await fetchAdditionalSpecifications();
-                const additionalSpecifications = data.map((additionalSpec: any) => ({
-                    id: additionalSpec.AdditionalSpecID,
-                    content: additionalSpec.SpecificationText
-                }));
-                console.log(additionalSpecifications);
-                setAdditionalSpecs(additionalSpecifications);
-            }
+                if (selectedWorkspace.specifications.length > 0) {
+                    // TODO: Change this implementation. selectedSpecificationId must be set here via some local storage value or the 0th index
+                    const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId) || selectedWorkspace.specifications[0];
+                    setName(spec.name);
+                    setTopic(spec.topic);
+                    setWritingLevel(spec.writingLevel);
+                    setComprehensionLevel(spec.comprehensionLevel);
+                    selectSpecification(selectedWorkspace.specifications[0].id)
+                    
+                    const data = await fetchAdditionalSpecifications();
+                    const additionalSpecifications = data.map((additionalSpec: any) => ({
+                        id: additionalSpec.AdditionalSpecID,
+                        content: additionalSpec.SpecificationText
+                    }));
+                    console.log(additionalSpecifications);
+                    setAdditionalSpecs(additionalSpecifications);
+                }
             }
         }
         };
@@ -227,6 +233,9 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     }, [name, topic, writingLevel, comprehensionLevel, additionalSpecs]);
     
     const handleSpecificationSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const index = event.target.selectedIndex;
+        console.log("Spec index: ", index);
+        console.log("Material specs set: ", materialSpecifications)
         selectSpecification(event.target.value);
     };
 
@@ -244,22 +253,89 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         }
     };
 
-    // // TODO: Make this call the backend
-    // const addNewSpecification = () => { 
-    //     const newSpec: Specification = {
-    //         id: '',
-    //         name: '',
-    //         topic: '',
-    //         writingLevel: 'Elementary',
-    //         comprehensionLevel: 'Simple',
-    //         additionalSpecs: [''],
-    //     };
-    //     addSpecification(workspace.id, newSpec);
-    //     setTopic('');
-    //     setWritingLevel('Elementary');
-    //     setComprehensionLevel('Simple');
-    //     setAdditionalSpecs(['']);
-    // };
+    const _addNewSpecification = async () => {
+        const requestBuilder = new RequestBuilder()
+            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
+            .setMethod("POST")
+            .setHeaders({ 'Content-Type': 'application/json' })
+            .setBody(JSON.stringify({ MaterialID: selectedWorkspace?.id }))
+            .setCredentials("include")
+        try {
+            const response = await fetch(requestBuilder.build());
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error inserting specification:', error);
+        }
+    };
+
+
+    // TODO: Make this call the backend
+    const addNewSpecification = async () => { 
+        if (!selectedWorkspace) {
+            return;
+        }
+        const result = await _addNewSpecification()
+        console.log(result)
+        const newSpec: Specification = {
+            id: result.SpecificationID,
+            name: '',
+            topic: '',
+            writingLevel: 'Elementary',
+            comprehensionLevel: 'Simple',
+            additionalSpecs: [],
+        };
+        addSpecification(selectedWorkspace.id, newSpec);
+
+        // setName('')
+        // setTopic('');
+        // setWritingLevel('Elementary');
+        // setComprehensionLevel('Simple');
+        // setAdditionalSpecs([]);
+        
+        // if (selectSpecificationRef.current) {
+        //     // selectSpecificationRef.current.selectedIndex = selectedWorkspace.specifications.length - 1 
+            
+        //     console.log("Inside add new specification")
+        //     console.log("Selected index: ", selectedSpecificationIndex)
+        //     console.log("Selected ref index: ", selectSpecificationRef.current.selectedIndex)
+        //     console.log("Selected ref length: ", selectSpecificationRef.current.length)
+        //     console.log("Current workspace spec array length: ", selectedWorkspace.specifications.length)
+
+        //     setSelectedSpecificationIndex(selectedWorkspace.specifications.length)
+        // }
+        // if (selectedWorkspace) {
+        //     updateSpecification(selectedWorkspace.id, newSpec)
+        // }
+    };
+
+    useEffect(() => {
+        if (selectedWorkspace && selectSpecificationRef.current) {
+            // selectSpecificationRef.current.selectedIndex = selectedSpecificationIndex;
+            // selectSpecificationRef.current.value = 
+            console.log("Inside use effect")
+            console.log("Selected index: ", selectedSpecificationIndex)
+            console.log("Selected ref index: ", selectSpecificationRef.current.selectedIndex)
+            console.log("Selected ref length: ", selectSpecificationRef.current.length)
+        }
+    }, [selectedSpecificationIndex])
+
+    useEffect(() => {
+        if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
+            const selectedSpecification = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId);
+            if (selectedSpecification) {
+                setName(selectedSpecification.name);
+                setTopic(selectedSpecification.topic);
+                setWritingLevel(selectedSpecification.writingLevel);
+                setComprehensionLevel(selectedSpecification.comprehensionLevel);
+                setAdditionalSpecs(selectedSpecification.additionalSpecs);
+            }
+            selectSpecificationRef.current.value = selectedSpecificationId
+            console.log("Updated ", selectedWorkspace?.specifications);
+            console.log("Spec id Updated ", selectedSpecificationId);
+        }
+    }, [selectedSpecificationId])
     
     // // TODO: Make this call the backend
     // const deleteSpec = (specId: string) => {
@@ -584,15 +660,28 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                 <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
                     <div className="flex flex-row justify-between items-center">
                         <h1 className="text-lg font-normal">Specifications</h1>
+                        <div className="flex flex-row justify-end">
+                            <div className="cursor-pointer" onClick={() => {}}>
+                                <RiDeleteBinLine className="w-6 h-6" />
+                            </div>
+                            <div className="cursor-pointer" onClick={() => addNewSpecification()}>
+                                <RiAddFill className="w-6 h-6" />
+                            </div>
+                        </div>
                     </div>
-                    <select value={selectedSpecificationId || ''} onChange={handleSpecificationSelect}>
-                        {workspace.specifications.map((spec) => (
+                    <div className="flex flex-col gap-2">
+                    <div className="text-sm text-gray-500">Select Specification</div>
+                    <select className="border border-gray-400 rounded"
+                        ref={selectSpecificationRef}
+                        value={selectedSpecificationId || ''} 
+                        // defaultValue={selectSpecificationRef.current[0]}
+                        onChange={handleSpecificationSelect}>
+                        {selectedWorkspace ? (selectedWorkspace.specifications.map((spec) => (
                             <option className="truncate w-4/5 text-left" key={spec.id} value={spec.id}>
                                 {spec.name}
                             </option>
-                        ))}
+                        ))) : (<></>)}
                     </select>
-                    <div className="flex flex-col gap-2">
                     <div className="text-sm text-gray-500">Specification Name</div>
                     {name !== null ? (
                         <input

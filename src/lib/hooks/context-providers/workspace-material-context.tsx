@@ -122,13 +122,13 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     fetchSpecifications();
   }, [selectedWorkspace, materialSpecificationsInitialized]);
 
-  useEffect(() => {
-    if (selectedWorkspace && selectedWorkspace.specifications.length > 0) {
-      setSelectedSpecificationId(selectedWorkspace.specifications[0].id);
-    } else {
-      setSelectedSpecificationId(null);
-    }
-  }, [selectedWorkspace]);
+  // useEffect(() => {
+  //   if (selectedWorkspace && selectedWorkspace.specifications.length > 0) {
+  //     setSelectedSpecificationId(selectedWorkspace.specifications[0].id);
+  //   } else {
+  //     setSelectedSpecificationId(null);
+  //   }
+  // }, [selectedWorkspace]);
 
   const addWorkspace = (workspace: Workspace) => {
     const updatedWorkspaces = [...workspaces, { ...workspace, createdAt: Date.now() }];
@@ -181,6 +181,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
           spec.id === specification.id ? specification : spec
         ),
       });
+      // setSelectedSpecificationId(specification.id)
     }
   };
 
@@ -191,12 +192,17 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         : workspace
     );
     setWorkspaces(updatedWorkspaces);
+    
+    console.log(workspaceId)
+    console.log(specification)
 
     if (selectedWorkspace && selectedWorkspace.id === workspaceId) {
       setSelectedWorkspace({
         ...selectedWorkspace,
         specifications: [...selectedWorkspace.specifications, specification],
       });
+      setSelectedSpecificationId(specification.id)
+      console.log("Added specifications debug: ", [...selectedWorkspace.specifications, specification])
     }
   };
 
