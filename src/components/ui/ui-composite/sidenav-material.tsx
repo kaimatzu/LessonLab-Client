@@ -16,7 +16,16 @@ import "../css/sidenav.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
 import { FetchedFile } from "@/app/api/files/route";
-import { v4 as uuidv4 } from "uuid";
+import { POST as _addNewSpecification, DELETE as _deleteCurrentSpecification,
+    updateSpecificationName, 
+    updateSpecificationTopic, 
+    updateSpecificationWritingLevel,
+    updateSpecificationComprehensionLevel,
+    fetchAdditionalSpecifications,
+    insertAdditionalSpecification,
+    updateAdditionalSpecification,
+    removeAdditionalSpecification,
+ } from "@/app/api/material/specification/route"
 
 interface SidenavMaterialProps {
     workspace: Workspace;
@@ -46,8 +55,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
     
-    const [materialSpecifications, setMaterialSpecifications] = useState<Specification[]>([]);
-    const [selectedSpecificationIndex, setSelectedSpecificationIndex] = useState(0);
     const [name, setName] = useState('');
     const [topic, setTopic] = useState('');
     const [writingLevel, setWritingLevel] = useState('Elementary');
@@ -72,7 +79,8 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                     setComprehensionLevel(spec.comprehensionLevel);
                     selectSpecification(selectedWorkspace.specifications[0].id)
                     
-                    const data = await fetchAdditionalSpecifications();
+                    console.log(selectedSpecificationId)
+                    const data = await fetchAdditionalSpecifications(selectedWorkspace.specifications[0].id);
                     const additionalSpecifications = data.map((additionalSpec: any) => ({
                         id: additionalSpec.AdditionalSpecID,
                         content: additionalSpec.SpecificationText
@@ -233,9 +241,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     }, [name, topic, writingLevel, comprehensionLevel, additionalSpecs]);
     
     const handleSpecificationSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const index = event.target.selectedIndex;
-        console.log("Spec index: ", index);
-        console.log("Material specs set: ", materialSpecifications)
         selectSpecification(event.target.value);
     };
 
@@ -253,28 +258,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         }
     };
 
-    const _addNewSpecification = async () => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
-            .setMethod("POST")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ MaterialID: selectedWorkspace?.id }))
-            .setCredentials("include")
-        try {
-            const response = await fetch(requestBuilder.build());
-            const data = await response.json();
-            console.log(data);
-            return data;
-        } catch (error) {
-            console.error('Error inserting specification:', error);
-        }
-    };
-
     const addNewSpecification = async () => { 
         if (!selectedWorkspace) {
             return;
         }
-        const result = await _addNewSpecification()
+        const requestBuilder = new RequestBuilder()
+            .setBody(JSON.stringify({ MaterialID: selectedWorkspace?.id }))
+        const result = await _addNewSpecification(requestBuilder)
         console.log(result)
         const newSpec: Specification = {
             id: result.SpecificationID,
@@ -285,82 +275,14 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
             additionalSpecs: [],
         };
         addSpecification(selectedWorkspace.id, newSpec);
-
-        // setName('')
-        // setTopic('');
-        // setWritingLevel('Elementary');
-        // setComprehensionLevel('Simple');
-        // setAdditionalSpecs([]);
-        
-        // if (selectSpecificationRef.current) {
-        //     // selectSpecificationRef.current.selectedIndex = selectedWorkspace.specifications.length - 1 
-            
-        //     console.log("Inside add new specification")
-        //     console.log("Selected index: ", selectedSpecificationIndex)
-        //     console.log("Selected ref index: ", selectSpecificationRef.current.selectedIndex)
-        //     console.log("Selected ref length: ", selectSpecificationRef.current.length)
-        //     console.log("Current workspace spec array length: ", selectedWorkspace.specifications.length)
-
-        //     setSelectedSpecificationIndex(selectedWorkspace.specifications.length)
-        // }
-        // if (selectedWorkspace) {
-        //     updateSpecification(selectedWorkspace.id, newSpec)
-        // }
     };
-
-    useEffect(() => {
-        if (selectedWorkspace && selectSpecificationRef.current) {
-            // selectSpecificationRef.current.selectedIndex = selectedSpecificationIndex;
-            // selectSpecificationRef.current.value = 
-            console.log("Inside use effect")
-            console.log("Selected index: ", selectedSpecificationIndex)
-            console.log("Selected ref index: ", selectSpecificationRef.current.selectedIndex)
-            console.log("Selected ref length: ", selectSpecificationRef.current.length)
-        }
-    }, [selectedSpecificationIndex])
-
-    useEffect(() => {
-        if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
-            const selectedSpecification = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId);
-            if (selectedSpecification) {
-                setName(selectedSpecification.name);
-                setTopic(selectedSpecification.topic);
-                setWritingLevel(selectedSpecification.writingLevel);
-                setComprehensionLevel(selectedSpecification.comprehensionLevel);
-                setAdditionalSpecs(selectedSpecification.additionalSpecs);
-            }
-            selectSpecificationRef.current.value = selectedSpecificationId
-            console.log("Updated ", selectedWorkspace?.specifications);
-            console.log("Spec id Updated ", selectedSpecificationId);
-        }
-    }, [selectedSpecificationId])
     
-    const _deleteCurrentSpecification = async (MaterialID: string, SpecificationID: string) => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${MaterialID}/${SpecificationID}`)
-            .setMethod("DELETE")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ MaterialID: MaterialID, SpecificationID: SpecificationID }))
-            .setCredentials("include")
-            try {
-                const response = await fetch(requestBuilder.build());
-                if (response.ok) {
-                    return true;
-                } else {
-                    console.error('Error removing specification:', response.statusText);
-                    return false;
-                }
-            } catch (error) {
-                console.error('Error removing specification:', error);
-                return false;
-            }
-    };
-    // // TODO: Make this call the backend
     const deleteCurrentSpecification = async () => {
         if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
             if (selectedWorkspace.specifications.length > 1) {
-                // console.log(selectedWorkspace.id, selectSpecificationRef.current.value);
-                const response = await _deleteCurrentSpecification(selectedWorkspace.id, selectSpecificationRef.current.value);
+                const requestBuilder = new RequestBuilder()
+                    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${selectedWorkspace.id}/${selectSpecificationRef.current.value}`)
+                const response = await _deleteCurrentSpecification(requestBuilder);
                 if (response) {
                     deleteSpecification(selectedWorkspace.id, selectSpecificationRef.current.value);
                 }
@@ -370,62 +292,32 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         }
     };
 
-    const updateSpecificationName = async (name: string) => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/name`)
-            .setMethod("PATCH")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Name: name }))
-            .setCredentials("include")
-
-        try {
-            await fetch(requestBuilder.build());
-        } catch (error) {
-            console.error('Error updating specification name:', error);
+    useEffect(() => {
+        const changeCallback = async () => {
+            if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
+                const selectedSpecification = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId);
+                if (selectedSpecification) {
+                    setName(selectedSpecification.name);
+                    setTopic(selectedSpecification.topic);
+                    setWritingLevel(selectedSpecification.writingLevel);
+                    setComprehensionLevel(selectedSpecification.comprehensionLevel);
+    
+                    const data = await fetchAdditionalSpecifications(selectedSpecification.id);
+                    const additionalSpecifications = data.map((additionalSpec: any) => ({
+                        id: additionalSpec.AdditionalSpecID,
+                        content: additionalSpec.SpecificationText
+                    }));
+                    console.log(additionalSpecifications);
+                    setAdditionalSpecs(additionalSpecifications);
+                }
+                selectSpecificationRef.current.value = selectedSpecificationId
+            }
         }
-    };
 
-    const updateSpecificationTopic = async (topic: string) => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/topic`)
-            .setMethod("PATCH")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Topic: topic }))
-            .setCredentials("include")
-        try {
-            await fetch(requestBuilder.build());
-        } catch (error) {
-            console.error('Error updating specification topic:', error);
-        }
-    };
+        changeCallback();
+    }, [selectedSpecificationId])
 
-    const updateSpecificationComprehensionLevel = async (comprehensionLevel: string) => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/comprehensionlevel`)
-            .setMethod("PATCH")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, ComprehensionLevel: comprehensionLevel }))
-            .setCredentials("include")
-        try {
-            await fetch(requestBuilder.build());
-        } catch (error) {
-            console.error('Error updating specification comprehension level:', error);
-        }
-    };
 
-    const updateSpecificationWritingLevel = async (writingLevel: string) => {
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/writinglevel`)
-            .setMethod("PATCH")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, WritingLevel: writingLevel }))
-            .setCredentials("include")
-        try {
-            await fetch(requestBuilder.build());
-        } catch (error) {
-            console.error('Error updating specification writing level:', error);
-        }
-    };
 
     // Update Additional Specifications
     const handleAdditionalSpecChange = (index: number, value: string) => {
@@ -448,114 +340,12 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     
     // Insert Additional Specifications
     const addAdditionalSpecField = async () => {
-        const result = await insertAdditionalSpecification(additionalSpecs.length);
+        const result = await insertAdditionalSpecification(additionalSpecs.length, selectedSpecificationId!, additionalSpecs);
         if (result) {
             setAdditionalSpecs([...additionalSpecs, { id: result.newSpecId, content: '' }]);
         }
     };
         
-    const insertAdditionalSpecification = async (index: number) => {
-        const additionalSpec = additionalSpecs[index];
-        try {
-          const requestBody = {
-            SpecificationID: selectedSpecificationId,
-            LastAdditionalSpecificationID: additionalSpec ? additionalSpec.id || null : null
-          };
-      
-          const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications`)
-            .setMethod("POST")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify(requestBody))
-            .setCredentials("include");
-      
-          const response = await fetch(requestBuilder.build());
-          
-          if(response.ok) {
-              const result = await response.json();
-              return result;
-          } else {
-            console.error('Error inserting additional specification:', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error inserting additional specification:', error);
-        }
-    };
-
-    const fetchAdditionalSpecifications = async () => {
-        try {
-          const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${selectedSpecificationId}`)
-            .setMethod("GET")
-            .setCredentials("include");
-      
-          const response = await fetch(requestBuilder.build());
-      
-          if (response.ok) {
-            const data = await response.json();
-
-            console.log(data)
-            return data.additionalSpecifications;
-          } else {
-            console.error('Error fetching additional specifications:', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error fetching additional specifications:', error);
-        }
-    };
-      
-    const updateAdditionalSpecification = async (index: number, SpecificationText: string) => {
-        const additionalSpec = additionalSpecs[index];
-        console.log("Update called", additionalSpecs)
-        try {
-          const requestBody = {
-            AdditionalSpecID: additionalSpec.id,
-            SpecificationText: SpecificationText,
-          };
-      
-          const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications`)
-            .setMethod("PATCH")
-            .setHeaders({ 'Content-Type': 'application/json' })
-            .setBody(JSON.stringify(requestBody))
-            .setCredentials("include");
-      
-          const response = await fetch(requestBuilder.build());
-          
-          if(response.ok) {
-              const result = await response.json();
-              return result;
-          } else {
-            console.error('Error updating additional specification:', response.statusText);
-          }
-        } catch (error) {
-          console.error('Error updating additional specification:', error);
-        }
-    };
-
-    const removeAdditionalSpecification = async (index: number) => {
-        const additionalSpec = additionalSpecs[index];
-        console.log("Delete called")
-
-        const requestBuilder = new RequestBuilder()
-            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${additionalSpec.id}`)
-            .setMethod("DELETE")
-            .setCredentials("include");
-    
-        try {
-            const response = await fetch(requestBuilder.build());
-            if (response.ok) {
-                return true;
-            } else {
-                console.error('Error removing additional specification:', response.statusText);
-                return false;
-            }
-        } catch (error) {
-            console.error('Error removing additional specification:', error);
-            return false;
-        }
-    };
-
     useEffect(() => {
         const handleGlobalDragOver = (event: DragEvent) => {
             event.preventDefault();
@@ -713,7 +503,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                             className="border border-gray-400 p-2 rounded"
                             value={name}
                             onChange={(e) => {setName(e.target.value)}}
-                            onBlur={(e) => updateSpecificationName(e.target.value)}
+                            onBlur={(e) => updateSpecificationName(selectedSpecificationId!, e.target.value)}
                             onKeyDown={(e) => handleInputKeyDown(e, () => {})}
                             placeholder="Specification Name"
                         />
@@ -732,7 +522,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                                     className="w-full h-20 p-2"
                                     value={topic}
                                     onChange={(e) => setTopic(e.target.value)}
-                                    onBlur={(e) => updateSpecificationTopic(e.target.value)}
+                                    onBlur={(e) => updateSpecificationTopic(selectedSpecificationId!,e.target.value)}
                                     onKeyDown={(e) => handleTextareaKeyDown(e, () => {})}
                                     placeholder="Provide a topic..."
                                 />
@@ -748,7 +538,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                             value={writingLevel}
                             onChange={(e) => {
                                 setWritingLevel(e.target.value)
-                                updateSpecificationWritingLevel(e.target.value);
+                                updateSpecificationWritingLevel(selectedSpecificationId!, e.target.value);
                             }}
                         >
                             <option>Elementary</option>
@@ -762,7 +552,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                             value={comprehensionLevel}
                             onChange={(e) => {
                                 setComprehensionLevel(e.target.value)
-                                updateSpecificationComprehensionLevel(e.target.value);
+                                updateSpecificationComprehensionLevel(selectedSpecificationId!, e.target.value);
                             }}
                         >
                             <option>Simple</option>
@@ -784,7 +574,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
                                         className="w-full h-20 p-2"
                                         value={spec.content}
                                         onChange={(e) => handleAdditionalSpecChange(index, e.target.value)}
-                                        onBlur={(e) => {e.target.value === '' ? removeAdditionalSpecification(index) : updateAdditionalSpecification(index, e.target.value) }}
+                                        onBlur={(e) => {e.target.value === '' ? removeAdditionalSpecification(index, additionalSpecs) : updateAdditionalSpecification(index, e.target.value, additionalSpecs) }}
                                         onKeyDown={(e) => handleTextareaKeyDown(e, () => { setFocusedAdditionalSpecIndex(null) })}
                                         placeholder="Additional specifications..."
                                     />
