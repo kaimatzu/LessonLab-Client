@@ -24,8 +24,8 @@ export default function UploadButton({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
     if (files) {
       const validFiles = Array.from(files).filter(
         (file) => file.type === 'text/plain' || file.type === 'application/pdf'

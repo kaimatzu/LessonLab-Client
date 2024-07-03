@@ -9,9 +9,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <WorkspaceMaterialProvider>
       <div className="block h-screen bg-white dark:bg-zinc-900 w-full">
         <Header />
-        <div className="flex h-full w-full">
+        {/* TODO: Figure out how to implement correct height of main elements if styling breaks for some reason, this is a temporary measure */}
+        <div className="flex h-[calc(100%-72px)] w-full"> 
           <Sidenav />
-          <main className="flex-1 p-4 overflow-auto w-full">{children}</main>
+          <main className="flex-1 pr-4 overflow-auto w-full">{children}</main>
         </div>
       </div>
     </WorkspaceMaterialProvider>

@@ -7,6 +7,7 @@ import Overlay from '../ui-base/overlay';
 import { Item } from './transaction/item';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
+import ThemeSwitcher from '../ui-base/theme-switcher';
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -44,6 +45,9 @@ const Header: React.FC = () => {
         </div>
 
         <div className="ml-auto flex space-x-4">
+          <div className='hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer'>
+              <ThemeSwitcher />
+          </div>
           {user ? <button className="relative px-4 py-2 bg-[#f1c41b] text-zinc-950 rounded-md hover:bg-yellow-500" onClick={handleLogout}>
             Logout
           </button>

@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Chat from '@/components/material/material';
+import Material from '@/components/material/material';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { ChatTitle } from '@/components/ui/ui-base/material-title';
 import { usePathname, useRouter } from 'next/navigation';
 import { FaTrash } from 'react-icons/fa';
 import { Tooltip } from '@/components/ui/ui-composite/tooltip';
+import SidenavMaterial from '@/components/ui/ui-composite/sidenav-material';
 
 export default function MaterialPage() {
   const { workspaces, removeWorkspace } = useWorkspaceMaterialContext();
@@ -77,7 +78,7 @@ export default function MaterialPage() {
         </svg>
       ) : (currentWorkspace && currentChat &&
         <>
-          <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border dark:border-zinc-50/10 border-separate backdrop-blur-sm'>
+          {/* <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border dark:border-zinc-50/10 border-separate backdrop-blur-sm'>
             <div className='flex flex-row gap-5 align-middle items-center'>
               <ChatTitle workspace={currentWorkspace} />
               {!currentWorkspace.locked &&
@@ -93,10 +94,8 @@ export default function MaterialPage() {
 
                 </button>}
             </div>
-          </div>
-          <div className="flex justify-center items-center h-full w-full">
-            <Chat workspace={currentWorkspace} />
-          </div>
+          </div> */}
+          <Material workspace={currentWorkspace} />
         </>
       )}
     </div>

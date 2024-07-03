@@ -78,6 +78,14 @@ export default function NewPage() {
           materialType: data.MaterialType,
           createdAt: Date.now(),
           fileUrls: [],
+          specifications: [{
+            id: data.SpecificationID,
+            name: '',
+            topic: '',
+            writingLevel: "Elementary",
+            comprehensionLevel: "Simple",
+            additionalSpecs: []
+          }]
         };
         addWorkspace(newWorkspace);
         

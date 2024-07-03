@@ -1,74 +1,89 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { TbNotes } from 'react-icons/tb';
+import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
 import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './tooltip';
-import ThemeSwitcher from '../ui-base/theme-switcher';
+import '../css/sidenav.css'
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { workspaces, workspacesInitialized } = useWorkspaceMaterialContext();
+  const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceMaterialContext();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  const isActive = (path: string) => {
-    return pathname === path;
+  const handleWorkspaceClick = (workspaceId: string | null) => {
+    console.log("selecting workspace ", workspaceId);
+    selectWorkspace(workspaceId);
   };
+
+  const isActive = (path: string) => pathname === path;
 
   const sortedChats = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
   return (
-    <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900">
-      <div
-        className={`bg-white dark:bg-zinc-900 p-4 transition-all duration-500 ease-in-out border-r-1 shadow-lg !overflow-x-visible 
-        ${isCollapsed ? 'w-16 max-w-[470px]' : 'max-w-[470px] w-[300px]'} 
-        overflow-y-scroll no-scrollbar`}
-      >
+    <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 shadow-lg">
+      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? 'w-16 max-w-[0px]' : 'max-w-[370px] w-[250px] '}`}> 
         <div className={`text-black mb-2 mt-2 dark:text-zinc-100`}>
-          <div className={`hover:bg-gray-100 dark:hover:bg-zinc-500 justify-center py-2 px-2 rounded inline-block`}>
-            <ThemeSwitcher />
+          <div className={`flex align-middle p-3 rounded`}>
+          <div className={`mr-2`}></div>
+          <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Materials</span>
           </div>
         </div>
 
-        <ul className="!overflow-visible">
-          {!workspacesInitialized ? (
-            <SkeletonLoader />
-          ) : workspaces.length === 0 ? (
-            <></>
-          ) : (
-            <>
-              {sortedChats.map((workspace: Workspace) => {
-                if (!workspace) return null;
-                return (
-                  <SidenavItem
-                    key={workspace.id}
-                    title={workspace.name}
-                    href={`/workspace/${workspace.id}`}
-                    isActive={isActive(`/workspace/${workspace.id}`)}
-                    isCollapsed={isCollapsed}
-                    locked={workspace.locked}
-                  />
-                );
-              })}
-            </>
-          )}
+        <div
+          className={` bg-transparent dark:bg-zinc-900 !overflow-x-visible 
+          ${isCollapsed ? 'scrollbar-hidden no-scrollbar' : 'px-3 custom-scrollbar'} 
+          overflow-y-scroll`}
+        >
+
+          <ul className="!overflow-hidden">
+            {!workspacesInitialized ? (
+              <SkeletonLoader />
+            ) : workspaces.length === 0 ? (
+              <></>
+            ) : (
+              <>
+                {sortedChats.map((workspace: Workspace) => {
+                  if (!workspace) return null;
+                  return (
+                    <SidenavItem
+                      key={workspace.id}
+                      title={workspace.name}
+                      href={`/workspace/${workspace.id}`}
+                      isActive={isActive(`/workspace/${workspace.id}`)}
+                      onClick={() => handleWorkspaceClick(workspace.id)}
+                      icon={ workspace.materialType === "LESSON" ? (<TbBook />) : (<TbPencil />)}
+                      isCollapsed={isCollapsed}
+                      locked={workspace.locked}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </ul>
+        </div>
+
+        <div className='list-none p-4'>
           <SidenavItem
-            title="Create Workspace"
-            href="/workspace/new"
-            isActive={isActive('/workspace/new')}
-            isCollapsed={isCollapsed}
-            icon={<FaPlus className={`${isCollapsed ? 'hover:text-white' : 'scale-75 hover:text-white'} ${isActive('/workspace/new') ? 'text-primary hover:text-white' : 'text-primary hover:text-white'}`} />}
-            animatedBorder
+              title="Create Workspace"
+              href="/workspace/new"
+              isActive={isActive('/workspace/new')}
+              onClick={() => handleWorkspaceClick(null)}
+              isCollapsed={isCollapsed}
+              icon={<FaPlus className={`${isCollapsed ? 'hidden' : 'scale-75 hover:text-white'} ${isActive('/workspace/new') ? 'text-primary hover:text-white' : 'text-primary hover:text-white'}`} />}
+              animatedBorder
           />
-        </ul>
+        </div>
+
       </div>
+
       <button
         onClick={toggleSidebar}
         className="relative mb-4 w-fit my-4 ml-2 rounded-lg px-2 dark:bg-zinc-900 hover:bg-slate-50 dark:hover:bg-zinc-800 flex z-0
@@ -89,19 +104,21 @@ interface SidenavItemProps {
   icon?: React.ReactNode;
   locked?: boolean;
   animatedBorder?: boolean;
+  onClick?: () => void;
 }
 
-const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder }) => {
+const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick  }) => {
   return (
     <li>
       {isCollapsed ? (
         <Tooltip text={<span>{title}{locked && <span className="ml-2">(Read-Only)</span>}</span>}>
           <Link
             href={href}
+            onClick={onClick}
             className={`flex items-center no-underline rounded mb-1 
             ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
                 : 'hover:bg-yellow-300/80'
-              } transition-all duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
+              } transition-[width] duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -112,10 +129,11 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
       ) : (
         <Link
           href={href}
+          onClick={onClick}
           className={`flex items-center no-underline rounded mb-1 
           ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
               : 'hover:bg-yellow-300/80'
-            } transition-all duration-100 justify-start px-4 py-4 ${animatedBorder ? 'border-glow' : ''}`}
+            } transition-[width] duration-100 justify-start p-3 ${animatedBorder ? 'border-glow' : ''}`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>

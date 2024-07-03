@@ -52,9 +52,10 @@ export async function POST(requestBuilder: RequestBuilder) {
       console.log("Material created successfully:", responseData);
       return new Response(
         JSON.stringify({ 
-          MaterialID: responseData.MaterialID,
-          MaterialName: responseData.MaterialName,
-          MaterialType: responseData.MaterialType,
+          MaterialID: responseData.material.MaterialID,
+          MaterialName: responseData.material.MaterialName,
+          MaterialType: responseData.material.MaterialType,
+          SpecificationID: responseData.specificationID
       }),
         { status: 200 }
       );
@@ -118,7 +119,8 @@ export async function GET(requestBuilder: RequestBuilder) {
           const filteredMaterials = materials.map((material: any) => ({
               MaterialID: material.MaterialID,
               MaterialName: material.MaterialName,
-              MaterialType: material.MaterialType
+              MaterialType: material.MaterialType,
+              CreatedAt: material.CreatedAt
           }));
 
           return new Response(JSON.stringify(filteredMaterials), { status: 200 });
