@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .milkdown {
-  @apply bg-slate-50 px-2 py-4 m-5 border rounded;
+  @apply bg-zinc-50 dark:bg-zinc-800 px-2 py-4 m-5 border border-zinc-950/10 dark:border-zinc-50/10 rounded-md;
   flex-grow: 1;
 }
 
@@ -37,4 +37,91 @@
 pre[data-language]:focus {
   border-color: #00b4d8; 
   border-width: medium;
+}
+
+.milkdown-theme-nord h1, h2, h3 {
+  @apply dark:text-zinc-100
+}
+
+.milkdown-theme-nord p {
+  @apply dark:text-zinc-100
+}
+
+.milkdown-theme-nord strong {
+  @apply dark:text-zinc-50
+}
+
+.milkdown-theme-nord blockquote {
+  @apply not-italic font-serif border-l-4 border-zinc-50 pl-4;
+}
+
+.milkdown-theme-nord code {
+  @apply text-yellow-700 dark:text-primary font-mono font-normal;
+}
+
+.milkdown-theme-nord pre {
+  @apply bg-zinc-700;
+}
+
+.milkdown-theme-nord pre code {
+  @apply text-inherit dark:text-zinc-100;
+}
+
+.milkdown-theme-nord img {
+  @apply max-w-full !my-0 inline-block;
+}
+
+.milkdown-theme-nord.prose :where(blockquote):not(:where([class~="not-prose"] *)) {
+  @apply font-normal;
+}
+
+.milkdown-theme-nord.prose :where(ol > li):not(:where([class~="not-prose"] *))::marker,
+.milkdown-theme-nord.prose :where(ul > li):not(:where([class~="not-prose"] *))::marker {
+  @apply text-zinc-950 dark:text-zinc-50;
+}
+
+
+.milkdown-theme-nord.prose :where(blockquote p:first-of-type):not(:where([class~="not-prose"] *))::before,
+.milkdown-theme-nord.prose :where(blockquote p:first-of-type):not(:where([class~="not-prose"] *))::after {
+  content: '';
+}
+
+.milkdown-theme-nord.prose :where(code):not(:where([class~="not-prose"] *))::before,
+.milkdown-theme-nord.prose :where(code):not(:where([class~="not-prose"] *))::after {
+  content: '';
+}
+
+.milkdown-theme-nord.prose .tableWrapper {
+  @apply overflow-x-auto relative;
+}
+
+.milkdown-theme-nord.prose table {
+  @apply text-sm border shadow-md sm:rounded-lg;
+}
+
+.milkdown-theme-nord.prose td,
+.milkdown-theme-nord.prose th {
+  @apply !py-3 !px-6;
+}
+
+.milkdown-theme-nord.prose tr {
+  @apply border-b border-gray-200 dark:border-gray-600;
+}
+
+.milkdown-theme-nord.prose :where(td, th) p {
+  @apply !m-0;
+}
+
+.milkdown-theme-nord.prose :where(td, th):nth-child(odd) {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+.milkdown-theme-nord.prose.ProseMirror .selectedCell:after {
+  @apply bg-zinc-500;
+}
+
+/* A little workaround to turn the element into a space */
+.milkdown-theme-nord.prose br[data-is-inline="true"],
+.milkdown-theme-nord.prose br[data-is-inline="true"]::after {
+  content: ' '
 }
