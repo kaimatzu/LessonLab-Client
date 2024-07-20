@@ -54,12 +54,12 @@ export default function NewPage() {
     }
 
     const requestBuilder = new RequestBuilder()
-    .setBody(
-      JSON.stringify({
+      .setBody(
+        JSON.stringify({
           materialName: title,
           materialType: materialType
-      })
-    );
+        })
+      );
 
     try {
       const response = await createMaterial(requestBuilder).catch(error => {
@@ -67,7 +67,6 @@ export default function NewPage() {
         return null;
       });
 
-      
       if (response && response.ok) {
         const data = await response.json();
         console.log("Created material successfully:", data);
@@ -88,7 +87,7 @@ export default function NewPage() {
           }]
         };
         addWorkspace(newWorkspace);
-        
+
         router.push(`/workspace/${data.MaterialID}`);
       }
     } catch (error) {
@@ -102,7 +101,7 @@ export default function NewPage() {
   return (
     <div className="flex flex-col items-center justify-center h-full rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-950">
       <div className="w-full max-w-xl rounded-md p-6">
-        <form onSubmit={handleSubmit}> {/* Default is LESSON */}
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             ref={inputRef}

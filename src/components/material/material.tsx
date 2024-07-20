@@ -22,6 +22,7 @@ import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import { Message } from "ai";
 import { SkeletonLoader } from "../ui/ui-base/skeleton-loader";
+import Quiz from "./quiz";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -123,7 +124,9 @@ int main() {
             {workspace.materialType === "LESSON" ? (
               <MilkdownEditorWrapper initialContent={initialContent} />
             ) : (
-              <SkeletonLoader /> // Placeholder
+              <Quiz />
+              // <SkeletonLoader /> // Placeholder
+              // TODO: Place quiz component here
             )}
           </>
         )}
