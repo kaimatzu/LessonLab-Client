@@ -6,9 +6,35 @@ import { z } from 'zod';
 import { FetchedFile } from '@/app/api/files/route';
 import { Card } from '../ui/ui-base/card';
 import { Input } from '../ui/ui-base/input';
-import { Button } from '../ui/ui-base/button';
 import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
+import { Button } from '../ui/ui-base/button';
+
+type Choice = {
+  content: string
+  correct: boolean
+}
+
+type Identification = {
+  question: string
+  answer: string
+}
+
+type MultipleChoice = {
+  question: string
+  choices: Choice[]
+}
+
+type ItemType = Identification | MultipleChoice
+
+type ItemProps = {
+  num: number
+  item: ItemType
+}
+
+type MultipleChoiceProps = {
+  choices: Choice[]
+}
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -32,10 +58,24 @@ const fetchFileUrls = async (workspaceId: string) => {
 // an item can be multiple choice or identification
 
 
-
 // Use object for quiz generation
 // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-object
 const Quiz = () => {
+
+  // const items: ItemType[] = []
+  const items: ItemType[] = [
+    { question: 'What faction won in world war 2?', answer: 'Allies' },
+    { question: 'What continent is China in?', answer: 'Asia' },
+    { question: 'What is the tallest mountain?', answer: 'Mount Everest' },
+    {
+      question: 'What is the number after 68?', choices: [
+        { content: '70', correct: false },
+        { content: '69', correct: false },
+        { content: '67', correct: false },
+        { content: '420', correct: false },
+      ]
+    },
+  ];
 
   // `object` is the output object
   // `submit` is the callback function to submit the prompt
@@ -48,43 +88,14 @@ const Quiz = () => {
   const [fetchingFiles, setFetchingFiles] = useState(true);
 
   return (
-    <div>
-      {/* <Button onClick={() => submit('example input')}>Generate</Button> */}
-      <Item num={1} />
+    <div className='flex flex-col gap-4'>
+      {items.length === 0 ? <Button onClick={() => submit('example input')}>Generate</Button> : items.map((item, index) => <Item num={index + 1} item={item} />)}
       {/* {object?.content && <p>{object.content}</p>} */}
     </div>
   )
 }
 
-interface Choice {
-  content: string
-  correct: boolean
-}
-
-interface Identification {
-  question: string
-  answer: string
-}
-
-interface MultipleChoice {
-  question: string
-  choices: Choice[]
-}
-
-type ItemType = Identification | MultipleChoice
-
-interface ItemProps {
-  item: ItemType
-}
-
-interface Props {
-  num: number
-}
-
-// const Item = ({ item }: ItemProps) => {
-const Item = ({ num }: Props) => {
-
-  const [type, setType] = useState('identification')
+const Item = ({ num, item }: ItemProps) => {
 
   return (
     // <Card className='p-4 w-96'>
@@ -93,37 +104,27 @@ const Item = ({ num }: Props) => {
         {num}.
       </div>
       <div className='p-4'>
-        Whos your daddy?
+        {item.question}
       </div>
-      {/* TODO: Render conditionally here Either identification or multiple choice VVV */}
       <div className='p-4'>
-        {type === 'identification' ? (<Input />) : (<MulipleChoice />)}  {/* TODO: Replace null with multiple choice */}
+        {'answer' in item ? <Input /> : <MultipleChoice choices={item.choices} />}
       </div>
     </Card>
-
   )
-
 }
 
-const MulipleChoice = () => {
+const MultipleChoice = ({ choices }: MultipleChoiceProps) => {
 
   return (
     <RadioGroup>
-      <div className='flex gap-2'>
-        <RadioGroupItem value='mama' id='mama' />
-        <Label htmlFor='mama'>Mama</Label>
-      </div>
-      <div className='flex gap-2'>
-        <RadioGroupItem value='papa' id='papa' />
-        <Label htmlFor='papa'>Papa</Label>
-      </div>
+      {choices.map((choice, index) => (
+        <div className='flex gap-2' key={index}>
+          <RadioGroupItem value={choice.content} id={choice.content} />
+          <Label htmlFor={choice.content}>{choice.content}</Label>
+        </div>
+      ))}
     </RadioGroup >
   )
-}
-
-// This function finds out if the item type is identification or not
-function isIdentification(item: ItemType): item is Identification {
-  return (item as Identification).answer !== undefined
 }
 
 export default Quiz
