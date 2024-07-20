@@ -2,7 +2,11 @@
 import { useEffect, useState } from 'react';
 import { FaMoon } from 'react-icons/fa';
 
-export default function ThemeSwitcher() {
+interface Props {
+  className: string
+}
+
+export default function ThemeSwitcher({ className }: Props) {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
@@ -24,6 +28,8 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <FaMoon onClick={toggleTheme} />
+    <div className={className} onClick={toggleTheme}>
+      <FaMoon />
+    </div>
   );
 }

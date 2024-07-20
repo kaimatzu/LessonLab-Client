@@ -5,6 +5,8 @@ import { experimental_useObject as useObject } from 'ai/react'
 import { z } from 'zod';
 import { FetchedFile } from '@/app/api/files/route';
 import { Card } from '../ui/ui-base/card';
+import { Input } from '../ui/ui-base/input';
+import { Button } from '../ui/ui-base/button';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -45,23 +47,65 @@ const Quiz = () => {
 
   return (
     <div>
-      <button onClick={() => submit('example input')}>Generate</button>
-      <Item />
+      {/* <Button onClick={() => submit('example input')}>Generate</Button> */}
+      <Item num={1} />
       {/* {object?.content && <p>{object.content}</p>} */}
     </div>
   )
 }
 
-const Item = () => {
+interface Choice {
+  content: string
+  correct: boolean
+}
+
+interface Identification {
+  question: string
+  answer: string
+}
+
+interface MultipleChoice {
+  question: string
+  choices: Choice[]
+}
+
+type ItemType = Identification | MultipleChoice
+
+interface ItemProps {
+  item: ItemType
+}
+
+interface Props {
+  num: number
+}
+
+// const Item = ({ item }: ItemProps) => {
+const Item = ({ num }: Props) => {
+
+  const [type, setType] = useState('identification')
 
   return (
-    <Card className='p-4'>
+    // <Card className='p-4 w-96'>
+    <Card className='p-4 w-[1000px]'>
       <div>
-        Question part over here
+        {num}.
+      </div>
+      <div className='p-4'>
+        Whos your daddy?
+      </div>
+      {/* TODO: Render conditionally here Either identification or multiple choice VVV */}
+      <div className='p-4'>
+        {type === 'identification' ? (<Input />) : (null)}  {/* TODO: Replace null with multiple choice */}
       </div>
     </Card>
+
   )
 
+}
+
+// This function finds out if the item type is identification or not
+function isIdentification(item: ItemType): item is Identification {
+  return (item as Identification).answer !== undefined
 }
 
 export default Quiz
