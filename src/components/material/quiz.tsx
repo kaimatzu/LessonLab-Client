@@ -7,6 +7,8 @@ import { FetchedFile } from '@/app/api/files/route';
 import { Card } from '../ui/ui-base/card';
 import { Input } from '../ui/ui-base/input';
 import { Button } from '../ui/ui-base/button';
+import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
+import { Label } from '../ui/ui-base/label';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -95,12 +97,28 @@ const Item = ({ num }: Props) => {
       </div>
       {/* TODO: Render conditionally here Either identification or multiple choice VVV */}
       <div className='p-4'>
-        {type === 'identification' ? (<Input />) : (null)}  {/* TODO: Replace null with multiple choice */}
+        {type === 'identification' ? (<Input />) : (<MulipleChoice />)}  {/* TODO: Replace null with multiple choice */}
       </div>
     </Card>
 
   )
 
+}
+
+const MulipleChoice = () => {
+
+  return (
+    <RadioGroup>
+      <div className='flex gap-2'>
+        <RadioGroupItem value='mama' id='mama' />
+        <Label htmlFor='mama'>Mama</Label>
+      </div>
+      <div className='flex gap-2'>
+        <RadioGroupItem value='papa' id='papa' />
+        <Label htmlFor='papa'>Papa</Label>
+      </div>
+    </RadioGroup >
+  )
 }
 
 // This function finds out if the item type is identification or not
