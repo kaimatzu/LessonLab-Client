@@ -1,27 +1,103 @@
-import React from 'react';
-import { Editor, rootCtx, defaultValueCtx } from '@milkdown/core';
+import React, { useEffect, useRef, useState } from 'react';
+import {   Editor,
+  rootCtx,
+  defaultValueCtx,
+  editorViewCtx,
+  schemaCtx
+} from '@milkdown/core';
 import { nord } from '@milkdown/theme-nord';
-import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/react';
+import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/react';
 import { commonmark } from '@milkdown/preset-commonmark';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
+import {
+  // tooltip,
+  // tooltipPlugin,
+  // createToggleIcon,
+  // defaultButtons,
+} from "@milkdown/plugin-tooltip";
 import { prism } from '@milkdown/plugin-prism';
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
 import '../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
-
+import { Page, useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { insert, replaceAll } from "@milkdown/utils";
+import { updatePageContent } from '@/app/api/material/page/route';
+import { Console } from 'console';
 
 interface MilkdownEditorProps {
   initialContent: string;
 }
 
 const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
+  const { workspaces, removeWorkspace,
+    selectedWorkspace,
+    selectedPageId,
+    updateLessonPage
+  } = useWorkspaceMaterialContext();
 
-  useEditor((root) =>
+  const [content, setContent] = useState("# Hey there");
+  const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const { get } = useEditor((root) =>
     Editor.make()
       .config((ctx) => {
         ctx.set(rootCtx, root);
-        ctx.set(defaultValueCtx, initialContent);
+        // ctx.set(defaultValueCtx, initialContent);
+        ctx.set(defaultValueCtx, lessonPage.content);
+        ctx
+        .get(listenerCtx)
+        .beforeMount((ctx) => {
+          console.log("beforeMount");
+        })
+        .mounted((ctx) => {
+          console.log("mounted");
+          // insert("# Default Title");
+        })
+        .updated((ctx, doc, prevDoc) => {
+          console.log("updated", doc, prevDoc);
+          console.log("updated JSON", doc.toJSON());
+        })
+        .markdownUpdated((ctx, markdown, prevMarkdown) => {
+          console.log(
+            "markdownUpdated to=",
+            markdown,
+            "\nprev=",
+            prevMarkdown
+          );
+          setContent(markdown);
+        })
+        .blur((ctx) => {
+          console.log("Editor has lost focus. Updating content immediately...");
+
+          // Clear any existing timeout
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null; // Clear the reference to the timeout
+          }
+
+          if (selectedWorkspace) {
+            updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
+            console.log(selectedWorkspace.id, {
+                id: lessonPage.id,
+                content: lessonPage.content,
+                title: lessonPage.title
+              });
+            updateLessonPage(selectedWorkspace.id, {
+              id: lessonPage.id,
+              content: lessonPage.content,
+              title: lessonPage.title
+            })
+          }
+        })
+        .focus((ctx) => {
+          const view = ctx.get(editorViewCtx);
+          console.log("focus", view);
+        })
+        .destroy((ctx) => {
+          console.log("destroy");
+        });
       })
       .config(nord) // Editor Theme
       .use(commonmark)
@@ -30,9 +106,70 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
       .config((ctx) => {
         ctx.get(listenerCtx).markdownUpdated((ctx, markdown) => {
           console.log(markdown); // Handle the editor content change as needed
+          setLessonPage(lessonPage => ({
+            ...lessonPage,
+            content: markdown
+          }));
         });
       }),
   );
+
+  useEffect(() => {
+    if (selectedWorkspace && selectedPageId) {
+      const foundPage = selectedWorkspace.pages?.find(page => page.id === selectedPageId); // TODO: Implement better null check later
+      if (foundPage) {
+        console.log("found page", foundPage)
+        setLessonPage(foundPage); 
+        get()?.action(replaceAll(foundPage.content));
+      } else {
+        console.log("did not find page");
+      }
+    } else {
+      setLessonPage({ id: '', title: '', content: '' }); 
+    }
+  }, [selectedPageId, selectedWorkspace]);
+  
+  // useEffect(() => {
+  //   // get()?.action(replaceAll(lessonPage.content));
+  //   if (selectedWorkspace) {
+  //     updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
+  //   }
+  // }, [lessonPage, selectedWorkspace])
+  
+  useEffect(() => {
+    console.log("timeout func")
+    if (lessonPage.content) {
+      // Clear any existing timeout to reset the inactivity timer
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+      // Set a new timeout
+      timeoutRef.current = setTimeout(() => {
+        console.log("Inactivity detected. Updating content...");
+        if (selectedWorkspace) {
+          updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
+          updateLessonPage(selectedWorkspace.id, {
+            id: lessonPage.id,
+            content: lessonPage.content,
+            title: lessonPage.title
+          })
+          console.log("Update called")
+        }
+      }, 2000);  // 2 seconds of inactivity
+    }
+
+    // Cleanup on component unmount or when dependencies change
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [lessonPage.content]);
+
+  useEffect(() => {
+    // const editorInstance = get();
+    // if (editorInstance) {
+    //   editorInstance.action(replaceAll(lessonPage.content));
+    // }
+    console.log("Content", lessonPage.content);
+  }, [lessonPage.content]);
 
   return <Milkdown />;
 };
