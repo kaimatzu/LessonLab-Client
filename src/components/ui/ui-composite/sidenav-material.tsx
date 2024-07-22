@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Link from "next/link";
 import { TbNotes, TbBook, TbPencil } from "react-icons/tb";
 import { FaPlus, FaLock } from "react-icons/fa";
@@ -28,6 +28,7 @@ import {
   removeAdditionalSpecification,
 } from "@/app/api/material/specification/route"
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
+import { IsGenerationDisabledContext } from "@/components/material/material";
 
 interface SidenavMaterialProps {
   workspace: Workspace;
@@ -38,6 +39,7 @@ interface SidenavMaterialProps {
 }
 
 const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fetchingFiles, uploadCompletionCallback, handleDeleteFile }) => {
+  const ctx = useContext(IsGenerationDisabledContext)
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const { workspaces, workspacesInitialized,
@@ -382,6 +384,18 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // For generation button ability
+  // if one field in the sidenav is empty disable generation button
+  useEffect(() => {
+
+    if (topic === '' || name === '') {
+      ctx?.setGenerationDisabled(true)
+    } else {
+      ctx?.setGenerationDisabled(false)
+    }
+
+  }, [topic, name])
 
   return (
     <div className="flex flex-row !w-fit !min-w-fit h-full !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">

@@ -8,6 +8,7 @@ import { Workspace } from "@/lib/hooks/context-providers/workspace-material-cont
 import { PromptGrid } from "../ui/ui-composite/prompt-grid";
 import React, {
   ChangeEvent,
+  createContext,
   useCallback,
   useEffect,
   useRef,
@@ -40,6 +41,20 @@ const fetchFileUrls = async (workspaceId: string) => {
     return [];
   }
 };
+
+// isGenerationDisabled context
+interface GenerationDisabledContextProps {
+  generationDisabled: boolean
+  setGenerationDisabled: (val: boolean) => void
+}
+
+export const IsGenerationDisabledContext = createContext<GenerationDisabledContextProps | undefined>(undefined)
+
+export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+  const [generationDisabled, setGenerationDisabled] = useState<boolean>(true)
+
+  return <IsGenerationDisabledContext.Provider value={{ generationDisabled, setGenerationDisabled }}>{children}</IsGenerationDisabledContext.Provider>
+}
 
 export default function Material({ workspace }: { workspace: Workspace }) {
   const [files, setFiles] = useState<FetchedFile[]>([]);
@@ -99,40 +114,42 @@ int main() {
 
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
-      <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
-        <button
-          onClick={() =>
-            setViewMode(viewMode === "chat" ? "markdown" : "chat")
-          }
-          className="mb-4 px-4 py-2 bg-primary text-zinc-950 rounded-md"
-        >
-          {viewMode === "chat"
-            ? "Switch to Markdown"
-            : "Switch to Chat"}
-        </button>
+      <IsGenerationDisabledProvider>
+        <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
+          <button
+            onClick={() =>
+              setViewMode(viewMode === "chat" ? "markdown" : "chat")
+            }
+            className="mb-4 px-4 py-2 bg-primary text-zinc-950 rounded-md"
+          >
+            {viewMode === "chat"
+              ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
+              : "Switch to Chat"}
+          </button>
 
-        {viewMode === "chat" ? (
-          <Chat
-            workspace={workspace}
-            fetchingFiles={fetchingFiles}
-            files={files}
-            fetchFiles={fetchFiles}
-            handleDeleteFile={handleDeleteFile}
-          />
-        ) : (
-          <>
-            {workspace.materialType === "LESSON" ? (
-              <MilkdownEditorWrapper initialContent={initialContent} />
-            ) : (
-              <Quiz />
-              // <SkeletonLoader /> // Placeholder
-              // TODO: Place quiz component here
-            )}
-          </>
-        )}
+          {viewMode === "chat" ? (
+            <Chat
+              workspace={workspace}
+              fetchingFiles={fetchingFiles}
+              files={files}
+              fetchFiles={fetchFiles}
+              handleDeleteFile={handleDeleteFile}
+            />
+          ) : (
+            <>
+              {workspace.materialType === "LESSON" ? (
+                <MilkdownEditorWrapper initialContent={initialContent} />
+              ) : (
+                <Quiz />
+                // <SkeletonLoader /> // Placeholder
+                // TODO: Place quiz component here
+              )}
+            </>
+          )}
 
-      </div>
-      <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />
+        </div>
+        <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />
+      </IsGenerationDisabledProvider>
     </div>
   );
 }
