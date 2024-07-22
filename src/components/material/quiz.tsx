@@ -125,9 +125,8 @@ const Quiz = () => {
   const [fetchingFiles, setFetchingFiles] = useState(true);
 
   return (
-    <div className='flex flex-col gap-4'>
-      {object?.items?.length === 0 || !object || !object.items ? <Button disabled={ctx?.generationDisabled} onClick={() => submit({ prompt: 'example input' })}>Generate</Button> : object?.items?.map((item, index) => {
-
+    <div className='flex flex-col gap-4 h-full items-center justify-center'>
+      {object?.items?.length === 0 || !object || !object.items ? <Button className='' disabled={ctx?.generationDisabled} onClick={() => { }}>Generate</Button> : object?.items?.map((item, index) => {
         // convert from zod to type
         // check what type
         // assign depending on the type
