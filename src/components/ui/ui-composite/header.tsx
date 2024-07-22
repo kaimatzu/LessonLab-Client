@@ -45,9 +45,9 @@ const Header: React.FC = () => {
         </div>
 
         <div className="ml-auto flex space-x-4 justify-center align-center">
-          <div className='hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'>
-            <ThemeSwitcher />
-          </div>
+          {/* <div className='hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'> */}
+          <ThemeSwitcher className={'hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} />
+          {/* </div> */}
           {user ? <button className="relative px-4 py-2 bg-[#f1c41b] text-zinc-950 rounded-md hover:bg-yellow-500" onClick={handleLogout}>
             Logout
           </button>

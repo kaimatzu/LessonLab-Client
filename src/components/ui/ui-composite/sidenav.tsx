@@ -29,11 +29,11 @@ const Sidenav: React.FC = () => {
 
   return (
     <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 shadow-lg">
-      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? 'w-16 max-w-[0px]' : 'max-w-[370px] w-[250px] '}`}> 
+      <div className={`flex flex-col transition-all duration-500 ease-in-out ${isCollapsed ? 'w-16 max-w-[0px]' : 'max-w-[370px] w-[250px] '}`}>
         <div className={`text-black mb-2 mt-2 dark:text-zinc-100`}>
           <div className={`flex align-middle p-3 rounded`}>
-          <div className={`mr-2`}></div>
-          <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Materials</span>
+            <div className={`mr-2`}></div>
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Materials</span>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ const Sidenav: React.FC = () => {
                       href={`/workspace/${workspace.id}`}
                       isActive={isActive(`/workspace/${workspace.id}`)}
                       onClick={() => handleWorkspaceClick(workspace.id)}
-                      icon={ workspace.materialType === "LESSON" ? (<TbBook />) : (<TbPencil />)}
+                      icon={workspace.materialType === "LESSON" ? (<TbBook />) : (<TbPencil />)}
                       isCollapsed={isCollapsed}
                       locked={workspace.locked}
                     />
@@ -72,13 +72,13 @@ const Sidenav: React.FC = () => {
 
         <div className='list-none p-4'>
           <SidenavItem
-              title="Create Workspace"
-              href="/workspace/new"
-              isActive={isActive('/workspace/new')}
-              onClick={() => handleWorkspaceClick(null)}
-              isCollapsed={isCollapsed}
-              icon={<FaPlus className={`${isCollapsed ? 'hidden' : 'scale-75 hover:text-white'} ${isActive('/workspace/new') ? 'text-primary hover:text-white' : 'text-primary hover:text-white'}`} />}
-              animatedBorder
+            title="Create Workspace"
+            href="/workspace/new"
+            isActive={isActive('/workspace/new')}
+            onClick={() => handleWorkspaceClick(null)}
+            isCollapsed={isCollapsed}
+            icon={<FaPlus className={`${isCollapsed ? 'hidden' : 'scale-75 hover:text-white'} ${isActive('/workspace/new') ? 'text-primary hover:text-white' : 'text-primary hover:text-white'}`} />}
+            animatedBorder
           />
         </div>
 
@@ -107,7 +107,7 @@ interface SidenavItemProps {
   onClick?: () => void;
 }
 
-const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick  }) => {
+const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick }) => {
   return (
     <li>
       {isCollapsed ? (
@@ -116,9 +116,9 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
             href={href}
             onClick={onClick}
             className={`flex items-center no-underline rounded mb-1 
-            ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
+            ${isActive ? 'bg-primary text-zinc-900 duration-0'
                 : 'hover:bg-yellow-300/80'
-              } transition-[width] duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
+              } duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -131,9 +131,9 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           href={href}
           onClick={onClick}
           className={`flex items-center no-underline rounded mb-1 
-          ${isActive ? 'bg-primary text-zinc-900 transition-colors duration-0'
+          ${isActive ? 'bg-primary text-zinc-900 duration-0'
               : 'hover:bg-yellow-300/80'
-            } transition-[width] duration-100 justify-start p-3 ${animatedBorder ? 'border-glow' : ''}`}
+            } duration-100 justify-start p-3 ${animatedBorder ? 'border-glow' : ''}`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>
