@@ -6,6 +6,7 @@ import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
   AdditionalSpecification,
+  Page,
   Specification,
   useWorkspaceMaterialContext,
   Workspace,
@@ -50,7 +51,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     getSpecifications,
     selectedSpecificationId,
     selectSpecification,
+    addLessonPage,
+    selectPage,
   } = useWorkspaceMaterialContext();
+
+  // File handling
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [popupContent, setPopupContent] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -59,6 +64,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Material Specifications
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
   const [writingLevel, setWritingLevel] = useState('Elementary');
@@ -69,6 +75,10 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
   const [isMaterialSpecificationsInitialized, setIsMaterialSpecificationsInitialized] = useState(false);
   const selectSpecificationRef = useRef<HTMLSelectElement>(null);
 
+  // Lesson Pages
+  // const [lessonPages, setLessonPages] = useState<Page[]>([]);
+  const [isLessonPagesInitialized, setIsLessonPagesInitialized] = useState(false);
+  
   useEffect(() => {
     const initializeSpecifications = async () => {
       if (!isMaterialSpecificationsInitialized) {
@@ -296,30 +306,30 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     }
   };
 
-  useEffect(() => {
-    const changeCallback = async () => {
-      if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
-        const selectedSpecification = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId);
-        if (selectedSpecification) {
-          setName(selectedSpecification.name);
-          setTopic(selectedSpecification.topic);
-          setWritingLevel(selectedSpecification.writingLevel);
-          setComprehensionLevel(selectedSpecification.comprehensionLevel);
-
-          const data = await fetchAdditionalSpecifications(selectedSpecification.id);
-          const additionalSpecifications = data.map((additionalSpec: any) => ({
-            id: additionalSpec.AdditionalSpecID,
-            content: additionalSpec.SpecificationText
-          }));
-          console.log(additionalSpecifications);
-          setAdditionalSpecs(additionalSpecifications);
+    useEffect(() => {
+        const changeSidenavValuesCallback = async () => {
+            if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
+                const selectedSpecification = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId);
+                if (selectedSpecification) {
+                    setName(selectedSpecification.name);
+                    setTopic(selectedSpecification.topic);
+                    setWritingLevel(selectedSpecification.writingLevel);
+                    setComprehensionLevel(selectedSpecification.comprehensionLevel);
+    
+                    const data = await fetchAdditionalSpecifications(selectedSpecification.id);
+                    const additionalSpecifications = data.map((additionalSpec: any) => ({
+                        id: additionalSpec.AdditionalSpecID,
+                        content: additionalSpec.SpecificationText
+                    }));
+                    console.log(additionalSpecifications);
+                    setAdditionalSpecs(additionalSpecifications);
+                }
+                selectSpecificationRef.current.value = selectedSpecificationId
+            }
         }
-        selectSpecificationRef.current.value = selectedSpecificationId
-      }
-    }
 
-    changeCallback();
-  }, [selectedSpecificationId])
+        changeSidenavValuesCallback();
+    }, [selectedSpecificationId])
 
 
 
@@ -398,7 +408,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
   }, [topic, name])
 
   return (
-    <div className="flex flex-row !w-fit !min-w-fit h-full !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
+    <div className="flex flex-row !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
       <div
         className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[380px] w-[320px] "}`}
       >
@@ -609,16 +619,30 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
           </div>
         </div>
 
-        <div className="border-t border-border my-2"></div>
-
-        <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="text-lg font-normal">Pages</h1>
-            <div className="cursor-pointer" onClick={() => { }}>
-              <RiAddFill className="w-6 h-6" />
-            </div>
-          </div>
-        </div>
+                <div className="border-t border-gray-600 my-2"></div>
+                
+                {selectedWorkspace?.materialType === "LESSON" ? (
+                    <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
+                        <div className="flex flex-row justify-between items-center"> 
+                            <h1 className="text-lg font-normal">Pages</h1>
+                            <div className="cursor-pointer" onClick={() => {addLessonPage(selectedWorkspace.id)}}>
+                                <RiAddFill className="w-6 h-6" />
+                            </div>
+                        </div>
+                        {selectedWorkspace.pages?.map((page, index) => (
+                            <div 
+                                className="flex items-center justify-between bg-gray-300 rounded p-3 mb-2 cursor-pointer"
+                                key={page.id}
+                                onClick={() => {selectPage(page.id)}}
+                            >
+                                {page.id}
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <>
+                    </>
+                )}
 
       </div>
     </div>
