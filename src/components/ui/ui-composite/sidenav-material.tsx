@@ -619,31 +619,30 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
           </div>
         </div>
 
-                <div className="border-t border-gray-600 my-2"></div>
-                
-                {selectedWorkspace?.materialType === "LESSON" ? (
-                    <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-                        <div className="flex flex-row justify-between items-center"> 
-                            <h1 className="text-lg font-normal">Pages</h1>
-                            <div className="cursor-pointer" onClick={() => {addLessonPage(selectedWorkspace.id)}}>
-                                <RiAddFill className="w-6 h-6" />
-                            </div>
-                        </div>
-                        {selectedWorkspace.pages?.map((page, index) => (
-                            <div 
-                                className="flex items-center justify-between bg-gray-300 rounded p-3 mb-2 cursor-pointer"
-                                key={page.id}
-                                onClick={() => {selectPage(page.id)}}
-                            >
-                                {page.id}
-                            </div>
-                        ))}
+        <div className="border-t border-gray-600 my-2"></div>
+        
+        {selectedWorkspace?.materialType === "LESSON" ? (
+            <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
+                <div className="flex flex-row justify-between items-center"> 
+                    <h1 className="text-lg font-normal">Pages</h1>
+                    <div className="cursor-pointer" onClick={() => {addLessonPage(selectedWorkspace.id)}}>
+                        <RiAddFill className="w-6 h-6" />
                     </div>
-                ) : (
-                    <>
-                    </>
-                )}
-
+                </div>
+                {selectedWorkspace.pages?.map((page, index) => (
+                    <div 
+                        className="flex items-center justify-between bg-gray-300 rounded p-3 mb-2 cursor-pointer"
+                        key={page.id}
+                        onClick={() => {selectPage(page.id)}}
+                    >
+                        {page.id}
+                    </div>
+                ))}
+            </div>
+        ) : (
+            <>
+            </>
+        )}
       </div>
     </div>
   );

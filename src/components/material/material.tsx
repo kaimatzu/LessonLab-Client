@@ -150,7 +150,20 @@ int main() {
         ) : (
           <>
             {workspace.materialType === "LESSON" ? (
-              <MilkdownEditorWrapper initialContent={initialContent} />
+              <>
+                <input
+                  type="text"
+                  // ref={inputRef}
+                  // value={title}
+                  // onChange={(e) => setTitle(e.target.value)}
+                  className="w-full font-bold px-4 py-0 text-opacity-75 text-5xl bg-transparent border-black dark:border-zinc-100 
+                  rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
+                  placeholder="Untitled"
+                />
+                <MilkdownEditorWrapper initialContent={
+                  initialContent
+                } />
+              </>
             ) : (
               <Quiz />
               // <SkeletonLoader /> // Placeholder
