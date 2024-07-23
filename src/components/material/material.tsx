@@ -4,7 +4,7 @@
 import { useChat } from "ai/react";
 import { ChatMessage } from "./chat-message";
 import UploadButton from "../ui/ui-composite/upload-button";
-import { Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { Page, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import { PromptGrid } from "../ui/ui-composite/prompt-grid";
 import React, {
   ChangeEvent,
@@ -17,6 +17,7 @@ import React, {
 import { Tooltip } from "../ui/ui-composite/tooltip";
 import FileCard from "../ui/ui-base/file-card";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { IoIosSwap } from "react-icons/io";
 import { FetchedFile } from "@/app/api/files/route";
 import { MilkdownEditorWrapper } from "../ui/ui-composite/milkdown";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
@@ -57,9 +58,15 @@ export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: 
 }
 
 export default function Material({ workspace }: { workspace: Workspace }) {
+  const { workspaces, removeWorkspace,
+    selectedWorkspace,
+    selectedPageId
+  } = useWorkspaceMaterialContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [materialType, setMaterialType] = useState("LESSON"); // either 'quiz' or 'lesson' sets either quiz or lesson generation
+
+  const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
 
   // TODO: Change how this is called to use request builder
   const handleDeleteFile = async (documentId: string) => {
@@ -115,37 +122,54 @@ int main() {
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
       <IsGenerationDisabledProvider>
-        <div className="relative flex flex-col h-full py-24 items-center justify-start w-full">
-          <button
-            onClick={() =>
-              setViewMode(viewMode === "chat" ? "markdown" : "chat")
-            }
-            className="mb-4 px-4 py-2 bg-primary text-zinc-950 rounded-md"
-          >
-            {viewMode === "chat"
-              ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
-              : "Switch to Chat"}
-          </button>
+        <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
+        <div className="flex flex-row h-full w-full items-start justify-start">
+            <button
+              onClick={() =>
+                setViewMode(viewMode === "chat" ? "markdown" : "chat")
+              }
+              className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
+            >
+            <div className="flex flex-row items-start justify-start">
+              <IoIosSwap className="w-6 h-6 mr-2"/>
+                {viewMode === "chat"
+                  ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
+                  : "Switch to Chat"}
+            </div>
+            </button>
+        </div>
 
-          {viewMode === "chat" ? (
-            <Chat
-              workspace={workspace}
-              fetchingFiles={fetchingFiles}
-              files={files}
-              fetchFiles={fetchFiles}
-              handleDeleteFile={handleDeleteFile}
-            />
-          ) : (
-            <>
-              {workspace.materialType === "LESSON" ? (
-                <MilkdownEditorWrapper initialContent={initialContent} />
-              ) : (
-                <Quiz />
-                // <SkeletonLoader /> // Placeholder
-                // TODO: Place quiz component here
-              )}
-            </>
-          )}
+        {viewMode === "chat" ? (
+          <Chat
+            workspace={workspace}
+            fetchingFiles={fetchingFiles}
+            files={files}
+            fetchFiles={fetchFiles}
+            handleDeleteFile={handleDeleteFile}
+          />
+        ) : (
+          <>
+            {workspace.materialType === "LESSON" ? (
+              <>
+                <input
+                  type="text"
+                  // ref={inputRef}
+                  // value={title}
+                  // onChange={(e) => setTitle(e.target.value)}
+                  className="w-full font-bold px-4 py-0 text-opacity-75 text-5xl bg-transparent border-black dark:border-zinc-100 
+                  rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
+                  placeholder="Untitled"
+                />
+                <MilkdownEditorWrapper initialContent={
+                  initialContent
+                } />
+              </>
+            ) : (
+              <Quiz />
+              // <SkeletonLoader /> // Placeholder
+            )}
+          </>
+        )}
 
         </div>
         <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />

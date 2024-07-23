@@ -84,7 +84,8 @@ export default function NewPage() {
             writingLevel: "Elementary",
             comprehensionLevel: "Simple",
             additionalSpecs: []
-          }]
+          }],
+          pages: []
         };
         addWorkspace(newWorkspace);
 
