@@ -22,7 +22,7 @@ import '../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
 import { Page, useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
-import { updatePageContent } from '@/app/api/material/page/route';
+import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
 import { Console } from 'console';
 
 interface MilkdownEditorProps {
@@ -171,15 +171,32 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
     console.log("Content", lessonPage.content);
   }, [lessonPage.content]);
 
-  return <Milkdown />;
+  return (
+    <div>
+      <input
+        type="text"
+        value={lessonPage.title}
+        onChange={(e) => setLessonPage((prev) => ({ ...prev, title: e.target.value }))}
+        className="w-full font-bold px-4 py-0 text-opacity-75 text-5xl bg-transparent border-black dark:border-zinc-100 
+        rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
+        placeholder="Untitled"
+        onBlur={() => {
+          if (selectedWorkspace) {
+            updatePageTitle(lessonPage.id, selectedWorkspace.id, lessonPage.title);
+          }
+        }}
+      />
+      <div className="editor-container" spellCheck="false">
+        <Milkdown />
+      </div>
+    </div>
+  );
 };
 
 export const MilkdownEditorWrapper: React.FC<{ initialContent: string }> = ({ initialContent }) => {
   return (
     <MilkdownProvider>
-      <div className="editor-container" spellCheck="false">
         <MilkdownEditor initialContent={initialContent} />
-      </div>
     </MilkdownProvider>
   );
 };

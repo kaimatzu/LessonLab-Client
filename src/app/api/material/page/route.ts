@@ -75,6 +75,21 @@ export async function updatePageContent(selectedPageId: string, lessonId: string
     const result = await fetch(requestBuilder.build());
     console.log(result);
   } catch (error) {
-    console.error('Error updating specification topic:', error);
+    console.error('Error updating page content:', error);
+  }
+}
+
+export async function updatePageTitle(selectedPageId: string, lessonId: string, title: string) {
+  const requestBuilder = new RequestBuilder()
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/lessons/pages/update/title`)
+    .setMethod("PATCH")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({ pageId: selectedPageId, lessonId: lessonId, newTitle: title }))
+    .setCredentials("include")
+  try {
+    const result = await fetch(requestBuilder.build());
+    console.log("Update page title:", result);
+  } catch (error) {
+    console.error('Error updating page title:', error);
   }
 }
