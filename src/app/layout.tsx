@@ -43,22 +43,23 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <CombinedProvider>
-          <AuthenticatedContent>{children}</AuthenticatedContent>
+          {/* <AuthenticatedContent>{children}</AuthenticatedContent> */}
+          {children}
         </CombinedProvider>
       </body>
     </html>
   );
 }
 
-function AuthenticatedContent({ children }: { children: React.ReactNode }) {
-  const { user } = useUserContext();
-  const { push } = useRouteContext();
+// function AuthenticatedContent({ children }: { children: React.ReactNode }) {
+//   const { user } = useUserContext();
+//   const { push } = useRouteContext();
 
-  useEffect(() => {
-    if (!user) {
-      push('/auth');
-    }
-  }, [user, push]);
+//   useEffect(() => {
+//     if (!user) {
+//       push('/auth');
+//     }
+//   }, [user, push]);
 
-  return <>{children}</>;
-}
+//   return <>{children}</>;
+// }

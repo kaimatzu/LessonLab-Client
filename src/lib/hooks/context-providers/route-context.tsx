@@ -6,6 +6,8 @@ interface RouteContextValue {
   push: (path: string) => void;
   replace: (path: string) => void;
   back: () => void;
+  getCurrentPath: () => string; 
+  getWindowPath: (window: Window) => string;
 }
 
 const RouteContext = createContext<RouteContextValue | undefined>(undefined);
@@ -25,8 +27,16 @@ export const RouteProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     router.back();
   };
 
+  const getCurrentPath = () => {
+    return window.location.pathname; // Function to return the current path using window.location
+  };
+
+  const getWindowPath = (window: Window) => {
+    return window.location.pathname; // Function to return the current path using window.location
+  };
+
   return (
-    <RouteContext.Provider value={{ push, replace, back }}>
+    <RouteContext.Provider value={{ push, replace, back, getCurrentPath, getWindowPath }}>
       {children}
     </RouteContext.Provider>
   );
