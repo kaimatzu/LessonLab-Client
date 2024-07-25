@@ -1,3 +1,5 @@
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
+
 export interface Item {
   name: string;
   amount: number;
@@ -5,61 +7,65 @@ export interface Item {
   description: string;
 }
 
-interface CheckoutSessionResponse {
-  data: {
-    data: {
-      id: string;
-      attributes: {
-        checkout_url: string;
-      };
-    };
-  };
-}
+// let socket = io('http://localhost:4001', {autoConnect: false});
+// let roomId = '';
 
-const generateReferenceNumber = (): string => {
-  const timestamp = Date.now();
-  return timestamp.toString();
-};
+// socket.on('connect', () => {
+//   console.log('Connected to server');
+//   retrieveData(roomId);
+// });
 
-export const createCheckoutSession = async (item: Item): Promise<CheckoutSessionResponse> => {
+// socket.on('payment_message', (data) => {
+//   console.log('Incoming message:', data);
+//   socket.disconnect();
+// }); 
+
+// socket.on('disconnect', () => {
+//   console.log('Disconnected from server');
+// })
+
+
+// const retrieveData = async (roomId: string): Promise<void> => {
+//   if (socket.connected) {
+//     console.log("Connecting to room...");
+//     socket.emit("room", roomId);
+
+//     // console.log("Requesting data...");
+//     // socket.emit("request_data", roomId);
+//   } else {
+//     console.error("Socket not connected");
+//   }
+// }
+
+// export const connectSocket = async (payment_intent_id: string): Promise<void> => {
+//   socket.connect();
+//   roomId = payment_intent_id;
+//   // socket.disconnect();
+// }
+
+export const createCheckoutSession = async (item: Item): Promise<any> => {
+  const requestBuilder = new RequestBuilder()
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transactions/purchase_tokens`)
+    .setMethod("POST")
+    .setCredentials("include")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({
+      amount: item.amount,
+      currency: item.currency,
+      description: item.description,
+      name: item.name,
+      quantity: 1
+    }));
+  
   try {
-    const response = await fetch('https://api.paymongo.com/v1/checkout_sessions', {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-        authorization: `Basic ${process.env.NEXT_PUBLIC_PM_API_KEY}`, // encoded key
-      },
-      body: JSON.stringify({
-        data: {
-          attributes: {
-            line_items: [
-              {
-                amount: item.amount,
-                currency: item.currency,
-                description: item.description,
-                name: item.name,
-                quantity: 1,
-              },
-            ],
-            payment_method_types: ['gcash'],
-            reference_number: generateReferenceNumber(),
-            send_email_receipt: true,
-            show_description: true,
-            show_line_items: true,
-            success_url: 'http://localhost:3000/',
-            cancel_url: 'http://localhost:3000/cancel_payment',
-            description: 'checkout description',
-          },
-        },
-      }),
-    });
+    const response = await fetch(requestBuilder.build());
 
     if (response.ok) {
-      const responseData: CheckoutSessionResponse = await response.json();
+      const responseData: any = await response.json();
+      // connectSocket(responseData.data.attributes.payment_intent.id)
       return responseData;
     } else {
-      throw new Error('Failed to create checkout session: ' + response.statusText);
+      console.error('Failed to create checkout session: ' + response.statusText);
     }
   } catch (error) {
     console.error('Error creating checkout session:', error);
@@ -78,15 +84,14 @@ export const expireSession = async (checkoutSessionId: string): Promise<void> =>
     });
 
     if (!response.ok) {
-      throw new Error('Failed to expire session: ' + response.statusText);
+      console.error('Failed to expire session: ' + response.statusText);
     }
   } catch (error) {
     console.error('Error expiring session:', error);
-    throw error;
   }
 };
 
-export const getSession = async (checkoutSessionId: string): Promise<CheckoutSessionResponse> => {
+export const getSession = async (checkoutSessionId: string): Promise<any> => {
   try {
     const response = await fetch(`https://api.paymongo.com/v1/checkout_sessions/${checkoutSessionId}`, {
       method: 'GET',
@@ -97,13 +102,12 @@ export const getSession = async (checkoutSessionId: string): Promise<CheckoutSes
     });
 
     if (response.ok) {
-      const responseData: CheckoutSessionResponse = await response.json();
+      const responseData: any= await response.json();
       return responseData;
     } else {
       throw new Error('Failed to get session: ' + response.statusText);
     }
   } catch (error) {
     console.error('Error getting session:', error);
-    throw error;
   }
 };

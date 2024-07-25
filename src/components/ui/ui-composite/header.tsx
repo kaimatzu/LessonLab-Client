@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
@@ -8,10 +8,25 @@ import { Item } from './transaction/item';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
 import ThemeSwitcher from '../ui-base/theme-switcher';
+import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [transactionOngoing, setTransactionOngoing] = useState(false);
+  const [checkoutWindow, setCheckoutWindow] = useState<Window>();
+
   const { user, clearUser } = useUserContext();
+  const { getWindowPath } = useRouteContext();
+
+  // useEffect(() => {
+  //   if (checkoutWindow) {
+  //     console.log("Opened window path:", getWindowPath(checkoutWindow));
+  //   }
+  // }, [checkoutWindow?.location])
+
+  // useEffect(() => {
+  //   console.log("Room id:", roomId);
+  // }, [roomId])
 
   const closeShop = () => {
     setIsShopOpen(!isShopOpen);
@@ -59,9 +74,14 @@ const Header: React.FC = () => {
         </div>
 
         <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} closable={true}>
-          <div className="flex p-4">
+          {transactionOngoing && (
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+              <div className="loader text-white">Transaction Ongoing...</div>
+            </div>
+          )}
+          <div className={`flex p-4 ${transactionOngoing ? "pointer-events-none" : ""}`}>
             {items.map((item, index) => (
-              <Item key={index} item={item} />
+              <Item key={index} item={item} checkoutWindow={checkoutWindow} setCheckoutWindow={setCheckoutWindow} />
             ))}
           </div>
         </Overlay>
