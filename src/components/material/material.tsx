@@ -3,11 +3,9 @@
 "use client";
 import { Page, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
-  ChangeEvent,
   createContext,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { IoIosSwap } from "react-icons/io";
@@ -15,7 +13,7 @@ import { FetchedFile } from "@/app/api/files/route";
 import { MilkdownEditorWrapper } from "../ui/ui-composite/milkdown";
 import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import Quiz from "./quiz";
-import { Chat } from "./chat"
+import { Chat } from "./chat/chat"
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
