@@ -18,7 +18,7 @@ export interface ChatMessageProps {
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
   return (
     <div
-      className={cn('group relative mb-4 flex items-start md:-ml-12 py-5')}
+      className={cn('group relative mb-4 flex items-start py-5')}
       {...props}
     >
       <div
@@ -60,6 +60,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
                 </a>
               )
             },
+            
             code({ node, inline, className, children, ...props }) {
               if (children.length) {
                 if (children[0] == '▍') {
