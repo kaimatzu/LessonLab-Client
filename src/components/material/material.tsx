@@ -123,7 +123,7 @@ int main() {
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
       <IsGenerationDisabledProvider>
         <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
-        <div className="flex flex-row h-full w-full items-start justify-start">
+        <div className="flex flex-row h-fit w-full items-start justify-start">
             <button
               onClick={() =>
                 setViewMode(viewMode === "chat" ? "markdown" : "chat")
