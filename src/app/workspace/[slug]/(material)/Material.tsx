@@ -3,24 +3,18 @@
 import React, { useEffect, useState } from 'react';
 import Material from '@/components/material/material';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
-import { ChatTitle } from '@/components/ui/ui-base/material-title';
 import { usePathname, useRouter } from 'next/navigation';
-import { FaTrash } from 'react-icons/fa';
-import { Tooltip } from '@/components/ui/ui-composite/tooltip';
-import SidenavMaterial from '@/components/ui/ui-composite/sidenav-material';
 
 export default function MaterialPage() {
-  const { workspaces, removeWorkspace } = useWorkspaceMaterialContext();
+  const { workspaces, removeWorkspace, selectWorkspace } = useWorkspaceMaterialContext();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  let currentWorkspaceId: string;
-  let currentWorkspace;
-  let currentChat;
-  currentWorkspaceId = pathname.split('/').pop() || '';
-  currentWorkspace = workspaces.find((workspace: Workspace) => workspace.id === currentWorkspaceId);
-  currentChat = workspaces.find((chat: Workspace) => chat.id === currentWorkspaceId);
+  let currentWorkspaceId = pathname.split('/').pop() || '';
+  let currentWorkspace = workspaces.find((workspace: Workspace) => workspace.id === currentWorkspaceId);
+  let currentChat = workspaces.find((chat: Workspace) => chat.id === currentWorkspaceId);
+
   const router = useRouter();
 
   // Get the current workspace and chat based on the URL slug

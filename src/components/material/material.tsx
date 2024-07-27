@@ -1,7 +1,7 @@
 // material.tsx where the upload call is made
 
 "use client";
-import { Page, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { Page, Specification, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
   createContext,
   useCallback,
@@ -47,17 +47,20 @@ export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: 
 }
 
 export default function Material({ workspace }: { workspace: Workspace }) {
-  const { workspaces, removeWorkspace,
-    selectedWorkspace,
-    selectedPageId
+  const { 
+    getSpecifications,
+    getLessonPages,
+    loadWorkspaceData,
   } = useWorkspaceMaterialContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
+  const [specifications, setSpecifications] = useState<Specification[]>([]);
+  const [lessonPages, setLessonPages] = useState<Page[]>([]);
+
   const [fetchingFiles, setFetchingFiles] = useState(true);
-  const [materialType, setMaterialType] = useState("LESSON"); // either 'quiz' or 'lesson' sets either quiz or lesson generation
+  const [fetchingSpecifications, setFetchingSpecifications] = useState(true);
+  const [fetchingLessonPages, setFetchingLessonPages] = useState(true);
 
-  const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
-
-  // TODO: Change how this is called to use request builder
+  // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
     console.log(
       `/api/files/?documentId=${documentId}&namespaceId=${workspace.id}`
@@ -84,29 +87,39 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     setFetchingFiles(false);
   }, [workspace.id]);
 
-  useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
+  useEffect(() => {fetchFiles()}, [fetchFiles]);
+
+  // const fetchSpecifications = useCallback(async () => {
+  //   setFetchingSpecifications(true);
+  //   const specifications = await getSpecifications(workspace.id);
+  //   console.log(specifications);
+  //   console.log(workspace.id)
+  //   setSpecifications(specifications);
+  //   setFetchingSpecifications(false);
+  // }, [workspace.id]);
+
+  // useEffect(() => {fetchSpecifications()}, [fetchSpecifications]);
+
+  // const fetchLessonPages = useCallback(async () => {
+  //   if (workspace.materialType === 'LESSON') {
+  //     setFetchingLessonPages(true);
+  //     const pages = await getLessonPages(workspace.id);
+  //     setLessonPages(pages);  
+  //     setFetchingLessonPages(false);
+  //   } else {
+  //     setLessonPages([])
+  //   }
+  // }, [workspace.id]);
+
+  // useEffect(() => {fetchLessonPages()}, [fetchLessonPages]);
+
+  const loadWorkspace = useCallback(async () => {
+    loadWorkspaceData(workspace.id);
+  }, [workspace.id])
+
+  useEffect(() => {loadWorkspace()}, [loadWorkspace]);
 
   const [viewMode, setViewMode] = useState("markdown"); // 'chat' or 'markdown'
-
-  // TODO: Get from generated content from backend
-  const initialContent = `# Milkdown Vanilla Commonmark
-
-> You're scared of a world where you're needed.
-
-This is a demo for using Milkdown with **Vanilla Typescript**.
-
-*Italic*
-
-\`This is a 'Code' element\`
-
-\`\`\`
-#include <stdio.h>
-int main() {
-    printf("Hello world\\n");
-    return 0;
-}`;
 
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
@@ -139,20 +152,22 @@ int main() {
         ) : (
           <>
             {workspace.materialType === "LESSON" ? (
-              <>
-                <MilkdownEditorWrapper initialContent={
-                  initialContent
-                } />
-              </>
+              <MilkdownEditorWrapper />
             ) : (
               <Quiz />
-              // <SkeletonLoader /> // Placeholder
             )}
           </>
         )}
 
         </div>
-        <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />
+        <SidenavMaterial 
+          workspace={workspace} 
+          files={files} 
+          fetchingFiles={fetchingFiles} 
+          uploadFileCompletionCallback={fetchFiles} 
+          specifications={specifications}
+          fetchingSpecifications={fetchingSpecifications}
+          handleDeleteFile={handleDeleteFile} />
       </IsGenerationDisabledProvider>
     </div>
   );
