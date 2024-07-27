@@ -1,4 +1,4 @@
-import { StreamingTextResponse, experimental_streamText } from "ai";
+import { StreamingTextResponse, experimental_streamText, streamText } from "ai";
 
 import { openai } from "@ai-sdk/openai";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
@@ -39,39 +39,6 @@ export const runtime = "edge";
  * @returns A StreamingTextResponse object containing the result of the chat interaction.
  * @throws An error if the expected prompt structure is not present in the server response.
  */
-// export async function POST(requestBuilder: RequestBuilder) {
-//   requestBuilder
-//     .setURL(`${process.env.SERVER_URL}/api/context/fetch`)
-//     .setMethod("POST")
-//     .setHeaders({ "Content-Type": "application/json" });
-
-//   const request = requestBuilder.build();
-
-//   const { messages, namespaceId } = await request.json();
-//   requestBuilder.setBody(JSON.stringify({ namespaceId, messages }));
-
-//   const response = await fetch(request);
-
-//   const { context } = await response.json();
-
-//   if (context && context.prompt && context.prompt.length > 0) {
-//     const systemContent = context.prompt[0].content;
-
-//     const result = await experimental_streamText({
-//       system: systemContent,
-//       temperature: 0.2,
-//       model: openai.chat("gpt-4-turbo"),
-//       maxRetries: 8,
-//       messages,
-//     });
-
-//     return new StreamingTextResponse(result.toAIStream());
-//   } else {
-//     throw new Error(
-//       "Unexpected server response structure: 'prompt' array is missing or empty."
-//     );
-//   }
-// }
 
 export async function POST(request: Request) {
   const { messages, namespaceId } = await request.json();
@@ -91,7 +58,7 @@ export async function POST(request: Request) {
   if (context && context.prompt && context.prompt.length > 0) {
     const systemContent = context.prompt[0].content;
 
-    const result = await experimental_streamText({
+    const result = await streamText({
       system: systemContent,
       temperature: 0.2,
       model: openai.chat("gpt-4-turbo"),

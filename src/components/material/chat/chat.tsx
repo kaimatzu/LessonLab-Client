@@ -115,7 +115,7 @@ export const Chat: React.FC<ChatProps> = ({
         {messages.map((m: Message) => (
           <div
             key={m.id}
-            className="whitespace-pre-wrap max-w-fit w-full"
+            className="whitespace-pre-wrap w-full"
           >
             <ChatMessage key={m.id} message={m} />
           </div>
