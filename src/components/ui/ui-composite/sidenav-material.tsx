@@ -1,18 +1,12 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import Link from "next/link";
-import { TbNotes, TbBook, TbPencil } from "react-icons/tb";
-import { FaPlus, FaLock } from "react-icons/fa";
 import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
   AdditionalSpecification,
-  Page,
   Specification,
   useWorkspaceMaterialContext,
   Workspace,
 } from "@/lib/hooks/context-providers/workspace-material-context";
-import { SkeletonLoader } from "../ui-base/skeleton-loader";
-import { Tooltip } from "./tooltip";
 import "../css/sidenav.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
@@ -30,25 +24,36 @@ import {
 } from "@/app/api/material/specification/route"
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
 import { IsGenerationDisabledContext } from "@/components/material/material";
+import { SkeletonLoader } from "../ui-base/skeleton-loader";
 
 interface SidenavMaterialProps {
   workspace: Workspace;
   files: FetchedFile[];
   fetchingFiles: boolean;
-  uploadCompletionCallback: () => void;
+  uploadFileCompletionCallback: () => void;
+  specifications: Specification[];
+  fetchingSpecifications: boolean;
   handleDeleteFile: (documentId: string) => Promise<void>;
 }
 
-const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fetchingFiles, uploadCompletionCallback, handleDeleteFile }) => {
+const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ 
+  workspace, 
+  files, 
+  fetchingFiles, 
+  uploadFileCompletionCallback, 
+  specifications,
+  // fetchingSpecifications,
+  handleDeleteFile 
+}) => {
   const ctx = useContext(IsGenerationDisabledContext)
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const { workspaces, workspacesInitialized,
+    fetchingSpecifications,
     selectedWorkspace,
     updateSpecification,
     addSpecification,
     deleteSpecification,
-    getSpecifications,
     selectedSpecificationId,
     selectSpecification,
     addLessonPage,
@@ -74,41 +79,48 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
   const [focusedAdditionalSpecIndex, setFocusedAdditionalSpecIndex] = useState<number | null>(null);
   const [isMaterialSpecificationsInitialized, setIsMaterialSpecificationsInitialized] = useState(false);
   const selectSpecificationRef = useRef<HTMLSelectElement>(null);
-
-  // Lesson Pages
-  // const [lessonPages, setLessonPages] = useState<Page[]>([]);
-  const [isLessonPagesInitialized, setIsLessonPagesInitialized] = useState(false);
   
+  // useEffect(() => {
+  //   const initializeSpecifications = async () => {
+  //     if (!isMaterialSpecificationsInitialized) {
+  //       setIsMaterialSpecificationsInitialized(true);
+  //       if (selectedWorkspace) {
+  //         if (selectedWorkspace.specifications.length > 0) {
+  //           // TODO: Change this implementation. selectedSpecificationId must be set here via some local storage value or the 0th index
+  //           const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId) || selectedWorkspace.specifications[0];
+  //           setName(spec.name);
+  //           setTopic(spec.topic);
+  //           setWritingLevel(spec.writingLevel);
+  //           setComprehensionLevel(spec.comprehensionLevel);
+  //           selectSpecification(selectedWorkspace.specifications[0].id)
+
+  //           console.log(selectedSpecificationId)
+  //           const data = await fetchAdditionalSpecifications(selectedWorkspace.specifications[0].id);
+  //           const additionalSpecifications = data.map((additionalSpec: any) => ({
+  //             id: additionalSpec.AdditionalSpecID,
+  //             content: additionalSpec.SpecificationText
+  //           }));
+  //           console.log(additionalSpecifications);
+  //           setAdditionalSpecs(additionalSpecifications);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   initializeSpecifications();
+  // }, [isMaterialSpecificationsInitialized, selectedSpecificationId, selectedWorkspace]);
+
   useEffect(() => {
-    const initializeSpecifications = async () => {
-      if (!isMaterialSpecificationsInitialized) {
-        setIsMaterialSpecificationsInitialized(true);
-        if (selectedWorkspace) {
-          if (selectedWorkspace.specifications.length > 0) {
-            // TODO: Change this implementation. selectedSpecificationId must be set here via some local storage value or the 0th index
-            const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId) || selectedWorkspace.specifications[0];
-            setName(spec.name);
-            setTopic(spec.topic);
-            setWritingLevel(spec.writingLevel);
-            setComprehensionLevel(spec.comprehensionLevel);
-            selectSpecification(selectedWorkspace.specifications[0].id)
-
-            console.log(selectedSpecificationId)
-            const data = await fetchAdditionalSpecifications(selectedWorkspace.specifications[0].id);
-            const additionalSpecifications = data.map((additionalSpec: any) => ({
-              id: additionalSpec.AdditionalSpecID,
-              content: additionalSpec.SpecificationText
-            }));
-            console.log(additionalSpecifications);
-            setAdditionalSpecs(additionalSpecifications);
-          }
-        }
-      }
-    };
-
-    initializeSpecifications();
-  }, [isMaterialSpecificationsInitialized, selectedSpecificationId, selectedWorkspace]);
-
+    console.log("sidenav material mounted")
+    console.log(fetchingSpecifications)
+    if (!fetchingSpecifications && selectedWorkspace) {
+      console.log(selectedWorkspace!.specifications)
+      // setName(selectedWorkspace!.specifications[0].name);
+      // setTopic(specifications[0].topic);
+      // setComprehensionLevel(specifications[0].comprehensionLevel);
+      // selectSpecification(specifications[0].id);
+    }
+  }, [fetchingSpecifications, selectedWorkspace])
 
   const togglePopup = (content: string) => {
     setPopupContent(popupContent === content ? null : content);
@@ -179,7 +191,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
     }
 
     setIsUploading(false);
-    uploadCompletionCallback();
+    uploadFileCompletionCallback();
   };
 
   const handleDivClick = () => {
@@ -496,7 +508,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
         </div>
 
         <div className="border-t border-border my-2"></div>
-
+        
+        {/* Specifications */}
+        {!fetchingSpecifications ? (
+        <>
+        {/* Specification Header */}
         <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
           <div className="flex flex-row justify-between items-center">
             <h1 className="text-lg font-normal">Specifications</h1>
@@ -512,6 +528,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
               </div>
             </div>
           </div>
+          {/* Specification Data */}
           <div className="flex flex-col gap-2">
             <div className="text-sm text-zinc-500">Select Specification</div>
             <select className="border border-border rounded focus-visible:outline-ring bg-background p-1 text-sm"
@@ -519,11 +536,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
               value={selectedSpecificationId || ''}
               // defaultValue={selectSpecificationRef.current[0]}
               onChange={handleSpecificationSelect}>
-              {selectedWorkspace ? (selectedWorkspace.specifications.map((spec) => (
+              {specifications.map((spec) => (
                 <option className="truncate w-4/5 text-left" key={spec.id} value={spec.id}>
                   {spec.name}
                 </option>
-              ))) : (<></>)}
+              ))}
             </select>
             <div className="text-sm text-zinc-500">Specification Name</div>
             {name !== null ? (
@@ -618,6 +635,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ workspace, files, fet
             </div>
           </div>
         </div>
+        </>) : (<SkeletonLoader />)}
 
         <div className="border-t border-gray-600 my-2"></div>
         
