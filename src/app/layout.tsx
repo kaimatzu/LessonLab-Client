@@ -4,9 +4,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CombinedProvider } from '@/lib/hooks/context-providers/user-context';
-import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
-import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import { useEffect, useSyncExternalStore } from 'react';
+import { Provider } from 'react-redux';
+import store from "@/redux/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,24 +41,12 @@ export default function RootLayout({
         <meta name="description" content="This is a simple multi-tenant RAG application built using Pinecone Serverless, the Vercel AI SDK and OpenAI. It uses namespaces to separate context between workspaces." />
       </head>
       <body className={inter.className}>
-        <CombinedProvider>
-          {/* <AuthenticatedContent>{children}</AuthenticatedContent> */}
-          {children}
-        </CombinedProvider>
+        <Provider store={store}>
+          <CombinedProvider>
+            {children}
+          </CombinedProvider>
+        </Provider>
       </body>
     </html>
   );
 }
-
-// function AuthenticatedContent({ children }: { children: React.ReactNode }) {
-//   const { user } = useUserContext();
-//   const { push } = useRouteContext();
-
-//   useEffect(() => {
-//     if (!user) {
-//       push('/auth');
-//     }
-//   }, [user, push]);
-
-//   return <>{children}</>;
-// }

@@ -3,8 +3,11 @@ import React, { createContext, useState, useEffect, useContext, useRef } from "r
 import { useRouteContext, RouteProvider } from '@/lib/hooks/context-providers/route-context';
 import WindowActivityProvider from '@/lib/hooks/context-providers/window-activity-context';
 import Cookies from 'js-cookie';
-import { POST as autoLogin } from '@/app/api/auth/auto-login/route';
-import io, { Socket } from 'socket.io-client';
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { checkAuth, clearUser, setUser } from '@/redux/userSlice';
+import { useSocket } from '@/lib/hooks/useSocket';
+import { useBroadcastChannel } from '@/lib/hooks/useBroadcastChannel';
 
 export interface User {
     userId: string;
@@ -26,6 +29,7 @@ export interface UserContextValue {
     connectSocket: (payment_intent_id: string) => void;
     isTransactionFinished: boolean;
     setIsTransactionFinished: React.Dispatch<React.SetStateAction<boolean>>;
+    setTransactionStatus:  React.Dispatch<React.SetStateAction<string>>;
     broadcastChannel: BroadcastChannel | null;
     transactionStatus: string;
 }
@@ -37,6 +41,7 @@ const defaultValue: UserContextValue = {
     connectSocket: () => { },
     isTransactionFinished: false,
     setIsTransactionFinished: () => {},
+    setTransactionStatus: () => {},
     broadcastChannel: null,
     transactionStatus: '',
 };
@@ -44,169 +49,103 @@ const defaultValue: UserContextValue = {
 export const UserContext = createContext<UserContextValue>(defaultValue);
 export const useUserContext = () => useContext(UserContext);
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
-    const [user, setUser] = useState<User | null>(null);
-    const { push, getCurrentPath } = useRouteContext();
-    const initialized = useRef(false)
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  const { push, getCurrentPath } = useRouteContext();
+  const initialized = useRef(false);
 
-    const [socket, setSocket] = useState<Socket>(io('http://localhost:4001', {autoConnect: false}));
-    const [socketConnected, setSocketConnected] = useState<boolean>(false);
-    const [transactionRoomId, setTransactionRoomId] = useState<string>('');
-    const [isTransactionFinished, setIsTransactionFinished] = useState<boolean>(false);
+  const {
+    broadcastChannel,
+    transactionStatus,
+    isTransactionFinished,
+    setTransactionStatus,
+    setIsTransactionFinished,
+  } = useBroadcastChannel('transaction_status');
 
-    const [broadcastChannel, setBroadcastChannel] = useState<BroadcastChannel>(new BroadcastChannel('transaction_status'));
-    const [transactionData, setTransactionData] = useState({ status: '', id: '' });
-    const [transactionWindowReady, setTransactionWindowReady] = useState<boolean>(false);
-    const [transactionStatus, setTransactionStatus] = useState<string>('');
+  const {
+    socket,
+    connectSocket,
+    transactionData,
+    setTransactionData,
+    socketConnected,
+  } = useSocket();
 
-    // async function checkAuth() {
-    //     console.log("check auth");
-    //     console.log(getCurrentPath());
+  useEffect(() => {
+    console.log("Checking for auth"); 
+    const checkAuthStatus = async () => {
+      const authToken = Cookies.get('autoLoginToken');
+      console.log(authToken)
+      const pathname = getCurrentPath();
 
-    //     const { responseData, success } = await autoLogin(); // May return an AuthResponse or an error string
-    //     if (success && responseData && responseData.user) {
-    //         setUser(responseData.user);
-    //         localStorage.setItem("user", JSON.stringify(responseData.user));
-    //         push('/workspace'); // Redirect to /workspace if authenticated
-    //     } else {
-    //         console.error("Authentication failed:", responseData);
-    //         push('/auth');
-    //     }
-    // };
+      if (!authToken) {
+        if (!pathname.startsWith('/auth')) {
+          push('/auth'); // Redirect to /auth if no authToken
+        }
+        return;
+      }
 
-    const checkAuth = async() => {
-        console.log("check auth");
-        const pathname = getCurrentPath(); // Get the current route path
-        const { responseData, success } = await autoLogin(); // May return an AuthResponse or an error string
-        
-        if (success && responseData && responseData.user) {
-            console.log("Authentication successful:", responseData);
+      if (!initialized.current) {
+        initialized.current = true;
+        const resultAction = await dispatch(checkAuth());
 
-            setUser(responseData.user);
-            localStorage.setItem("user", JSON.stringify(responseData.user));
-    
-            // Check if the current path is not in workspace or transaction paths
-            if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction')) {
-                push('/workspace'); // Redirect to /workspace if authenticated
-            }
+        if (checkAuth.fulfilled.match(resultAction)) {
+          if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction')) {
+            push('/workspace'); // Redirect to /workspace if authenticated
+          }
         } else {
-            console.error("Authentication failed:", responseData);
-            if (!pathname.startsWith('/auth')) {
-                push('/auth'); // Always redirect to /auth if unauthenticated
-            }
+          if (!pathname.startsWith('/auth')) {
+            push('/auth'); // Always redirect to /auth if unauthenticated
+          }
         }
+      }
     };
 
-    
-    useEffect(() => {
-        if (!initialized.current) {
-            initialized.current = true
-            checkAuth();
-        }
-    }, [push, initialized]);
+    checkAuthStatus();
+  }, [dispatch, push, getCurrentPath]);
 
-    const saveUser = (user: User) => {
-        setUser(user);
-        localStorage.setItem("user", JSON.stringify(user));
-    };
+  const saveUser = (user: User) => {
+    dispatch(setUser(user));
+    localStorage.setItem('user', JSON.stringify(user));
+  };
 
-    const clearUser = () => {
-        setUser(null);
-        localStorage.removeItem("user");
-        Cookies.remove('authToken');
-        push('/auth'); // Redirect to /auth on logout
-    };
+  const clearUserData = () => {
+    dispatch(clearUser());
+    localStorage.removeItem('user');
+    Cookies.remove('authToken');
+    Cookies.remove('autoLoginToken');
+    push('/auth'); // Redirect to /auth on logout
+  };
 
-    // Transaction functions
+  useEffect(() => {
+    // Fires when transaction window is ready to receive data and data is processed.
+    if (transactionData.id !== '' && transactionData.status !== '' && socketConnected) {
+      console.log('Broadcasting message:', transactionData);
+      broadcastChannel!.postMessage(transactionData);
 
-    useEffect(() => {
-        console.log("Initializing server socket connections...");
-
-        socket.on('connect', () => {
-            console.log('Connected to server');
-            setSocketConnected(true);
-        });
-          
-        socket.on('payment_message', (data) => {
-            console.log('Incoming message:', data);
-            setTransactionData({ status: data.payment_status, id: data.payment_intent_id });
-            // broadcastChannel.postMessage({ status: data.payment_status, id: data.payment_intent_id });
-            // setIsTransactionFinished(true); // Set to true so the transaction result window can close if this value is changed. 
-            socket.disconnect();
-            setSocketConnected(false);
-        }); 
-          
-        socket.on('disconnect', () => {
-            console.log('Disconnected from server');
-        })
-    }, [])
-
-    useEffect(() => {
-        console.log("Initializing broadcast channel connections...");
-
-        broadcastChannel.onmessage = (event) => {
-            console.log('Receiving message:', event.data);
-            
-            // This is used by the transaction complete window
-            if (event.data.status) {
-                console.log("Transaction status:", event.data.status);
-                setTransactionStatus(event.data.status);
-                setIsTransactionFinished(true); // Set to true so the transaction result window can close if this value is changed. 
-            }
-
-            // This is used by the original context window
-            if (event.data.transaction_window_ready) {
-                console.log("Other transaction window ready to recieve processed data.");
-                setTransactionWindowReady(true);
-                // console.log('Broadcasting message:', transactionData);
-                // broadcastChannel.postMessage(transactionData);
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        const retrieveData = async (roomId: string): Promise<void> => {
-            console.log("Transaction room id:", transactionRoomId);
-
-            if (socket.connected) {
-              console.log("Connecting to room:", roomId);
-              socket.emit("room", roomId);
-            } else {
-              console.error("Socket not connected");
-            }
-        }
-
-        if (transactionRoomId !== '' && socketConnected) {
-            console.log("Socket status:", socket.connected)
-            retrieveData(transactionRoomId);
-        }
-    }, [transactionRoomId, socketConnected])
-
-    useEffect(() => {
-        // Fires when transaction window is ready to recieve data and data is processed.
-        if (transactionData.id !== '' && transactionData.status !== '' && transactionWindowReady) {
-            console.log('Broadcasting message:', transactionData);
-            broadcastChannel.postMessage(transactionData);
-
-            // Reset transaction data
-            setTransactionData({status: '', id: ''})
-            setTransactionWindowReady(false);
-        }
-    }, [transactionData, transactionWindowReady]);
-
-    const connectSocket = async (payment_intent_id: string): Promise<void> => {
-        socket.connect();
-        console.log(payment_intent_id);
-        setTransactionRoomId(payment_intent_id);
+      // Reset transaction data
+      setTransactionData({ status: '', id: '' });
+      setIsTransactionFinished(false);
     }
+  }, [transactionData, broadcastChannel, setTransactionData, setIsTransactionFinished, socketConnected]);
 
-    return (
-        <UserContext.Provider value={{ user, setUser: saveUser, clearUser, connectSocket, isTransactionFinished, setIsTransactionFinished, broadcastChannel, transactionStatus }}>
-            {children}
-        </UserContext.Provider>
-    );
+  return (
+    <UserContext.Provider
+      value={{
+        user,
+        setUser: saveUser,
+        clearUser: clearUserData,
+        connectSocket,
+        isTransactionFinished,
+        setIsTransactionFinished,
+        setTransactionStatus,
+        broadcastChannel,
+        transactionStatus,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // Wrapping the UserProvider with RouteProvider

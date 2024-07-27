@@ -1,20 +1,21 @@
-"use client"
+"use client";
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/login-form';
-import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import { POST as login } from '@/app/api/auth/login/route'
-import RequestBuilder from '@/lib/hooks/builders/request-builder';
+import { loginUser } from '@/redux/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 interface LoginPageProps {
   switchForm: () => void;
 }
 
 export default function LoginPage({ switchForm }: LoginPageProps) {
-  const { setUser } = useUserContext();
+  const dispatch = useAppDispatch();
   const router = useRouter();
+  const loading = useAppSelector((state) => state.user.loading);
+  const error = useAppSelector((state) => state.user.error);
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -22,32 +23,16 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
       identifier: { value: string };
       password: { value: string };
     };
-    const identifier = target.identifier.value;
-    const password = target.password.value;
-
     const formData = new FormData();
-    formData.append("identifier", identifier);
-    formData.append("password", password);
+    formData.append("identifier", target.identifier.value);
+    formData.append("password", target.password.value);
 
-    console.log("Page: ", identifier, password);
-    try {
-      const requestBuilder = new RequestBuilder().setBody(formData);
-
-      const response = await login(requestBuilder);
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("User logged in successfully:", responseData);
-        setUser(responseData.user); // Set the user data in context
-        router.push('/workspace');
-
-      } else {
-        const errorData = await response.json();
-        console.error("Failed to log in:", errorData);
-        // Handle login error (e.g., display error message to the user)
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      // Handle unexpected error
+    const resultAction = await dispatch(loginUser(formData));
+    if (loginUser.fulfilled.match(resultAction)) {
+      router.push('/workspace');
+    } else {
+      // Handle login error (e.g., display error message to the user)
+      console.error("Login failed");
     }
   };
 
@@ -55,6 +40,8 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} closable={false}>
       <div className="pt-4">
         <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
+        {loading && <p>Loading...</p>}
+        {error && <p>{error}</p>}
       </div>
     </Overlay>
   );
