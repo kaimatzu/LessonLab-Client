@@ -76,16 +76,6 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             },        
             code(props: any) {
               const { node, inline, className, children, ...rest } = props;
-              if (children.length) {
-                if (children[0] == '▍') {
-                  return (
-                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                  )
-                }
-
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
-
               const match = /language-(\w+)/.exec(className || '')
 
               if (inline) {
@@ -105,7 +95,10 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
                 />
               )
             },
+            
+            // Directives for Rendering Components           
             'artifact': Artifact
+
           } as Components}
         >
           {message.content}
