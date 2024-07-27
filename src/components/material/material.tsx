@@ -55,7 +55,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [materialType, setMaterialType] = useState("LESSON"); // either 'quiz' or 'lesson' sets either quiz or lesson generation
 
-  const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
+  const [lessonPage, setLessonPage] = useState<Page>({ id: '', title: '', content: '' });
 
   // TODO: Change how this is called to use request builder
   const handleDeleteFile = async (documentId: string) => {
@@ -112,44 +112,44 @@ int main() {
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
       <IsGenerationDisabledProvider>
         <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
-        <div className="flex flex-row h-fit w-full items-start justify-start">
+          <div className="flex flex-row h-fit w-full items-start justify-start">
             <button
               onClick={() =>
                 setViewMode(viewMode === "chat" ? "markdown" : "chat")
               }
               className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
             >
-            <div className="flex flex-row items-start justify-start">
-              <IoIosSwap className="w-6 h-6 mr-2"/>
+              <div className="flex flex-row items-start justify-start text-foreground">
+                <IoIosSwap className="w-6 h-6 mr-2" />
                 {viewMode === "chat"
                   ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
                   : "Switch to Chat"}
-            </div>
+              </div>
             </button>
-        </div>
+          </div>
 
-        {viewMode === "chat" ? (
-          <Chat
-            workspace={workspace}
-            fetchingFiles={fetchingFiles}
-            files={files}
-            fetchFiles={fetchFiles}
-            handleDeleteFile={handleDeleteFile}
-          />
-        ) : (
-          <>
-            {workspace.materialType === "LESSON" ? (
-              <>
-                <MilkdownEditorWrapper initialContent={
-                  initialContent
-                } />
-              </>
-            ) : (
-              <Quiz />
-              // <SkeletonLoader /> // Placeholder
-            )}
-          </>
-        )}
+          {viewMode === "chat" ? (
+            <Chat
+              workspace={workspace}
+              fetchingFiles={fetchingFiles}
+              files={files}
+              fetchFiles={fetchFiles}
+              handleDeleteFile={handleDeleteFile}
+            />
+          ) : (
+            <>
+              {workspace.materialType === "LESSON" ? (
+                <>
+                  <MilkdownEditorWrapper initialContent={
+                    initialContent
+                  } />
+                </>
+              ) : (
+                <Quiz />
+                // <SkeletonLoader /> // Placeholder
+              )}
+            </>
+          )}
 
         </div>
         <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />
