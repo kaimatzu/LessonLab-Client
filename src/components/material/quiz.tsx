@@ -137,7 +137,14 @@ const Quiz = () => {
         } else if ('choices' in item) {
           if (!item.choices)
             return null
-          return < Item num={index + 1} item={{ question: item?.question, choices: [{ content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },] }} />
+          return < Item num={index + 1} item={{
+            question: item?.question, choices: [
+              { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
+              { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
+              { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
+              { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
+            ]
+          }} />
         }
 
         return null
