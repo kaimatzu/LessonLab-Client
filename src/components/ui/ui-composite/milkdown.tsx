@@ -16,6 +16,9 @@ import {
   // defaultButtons,
 } from "@milkdown/plugin-tooltip";
 import { prism } from '@milkdown/plugin-prism';
+import { block } from "@milkdown/plugin-block";
+import { cursor } from "@milkdown/plugin-cursor";
+import { clipboard } from "@milkdown/plugin-clipboard";
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
 import '../css/milkdown.css'
@@ -25,18 +28,17 @@ import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
 import { Console } from 'console';
 
-interface MilkdownEditorProps {
-  initialContent: string;
-}
 
-const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
+const MilkdownEditor: React.FC<{}> = () => {
   const { workspaces, removeWorkspace,
     selectedWorkspace,
     selectedPageId,
     updateLessonPage
   } = useWorkspaceMaterialContext();
 
-  const [content, setContent] = useState("# Hey there");
+  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  
   const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -45,7 +47,7 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
       .config((ctx) => {
         ctx.set(rootCtx, root);
         // ctx.set(defaultValueCtx, initialContent);
-        ctx.set(defaultValueCtx, lessonPage.content);
+        ctx.set(defaultValueCtx, content);
         ctx
         .get(listenerCtx)
         .beforeMount((ctx) => {
@@ -78,15 +80,15 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
           }
 
           if (selectedWorkspace) {
-            updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
+            updatePageContent(lessonPage.id, selectedWorkspace.id, content);
             console.log(selectedWorkspace.id, {
                 id: lessonPage.id,
-                content: lessonPage.content,
+                content: content,
                 title: lessonPage.title
               });
             updateLessonPage(selectedWorkspace.id, {
               id: lessonPage.id,
-              content: lessonPage.content,
+              content: content,
               title: lessonPage.title
             })
           }
@@ -103,31 +105,35 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
       .use(commonmark)
       .use(prism) // Code Styling
       .use(listener)
-      .config((ctx) => {
-        ctx.get(listenerCtx).markdownUpdated((ctx, markdown) => {
-          console.log(markdown); // Handle the editor content change as needed
-          setLessonPage(lessonPage => ({
-            ...lessonPage,
-            content: markdown
-          }));
-        });
-      }),
+      .use(block)
+      .use(cursor)
+      .use(clipboard)
+      // .config((ctx) => {
+      //   ctx.get(listenerCtx).markdownUpdated((ctx, markdown) => {
+      //     console.log(markdown); // Handle the editor content change as needed
+      //     setLessonPage(lessonPage => ({
+      //       ...lessonPage,
+      //       content: markdown
+      //     }));
+      //   });
+      // }),
   );
 
-  useEffect(() => {
-    if (selectedWorkspace && selectedPageId) {
-      const foundPage = selectedWorkspace.pages?.find(page => page.id === selectedPageId); // TODO: Implement better null check later
-      if (foundPage) {
-        console.log("found page", foundPage)
-        setLessonPage(foundPage); 
-        get()?.action(replaceAll(foundPage.content));
-      } else {
-        console.log("did not find page");
-      }
-    } else {
-      setLessonPage({ id: '', title: '', content: '' }); 
-    }
-  }, [selectedPageId, selectedWorkspace]);
+  // useEffect(() => {
+  //   if (selectedWorkspace && selectedPageId) {
+  //     // TODO: Implement better null check later
+  //     const foundPage = selectedWorkspace.pages?.find(page => page.id === selectedPageId); 
+  //     if (foundPage) {
+  //       console.log("found page", foundPage)
+  //       setLessonPage({ id: foundPage.id, title: foundPage.title, content: foundPage.content }); 
+  //       get()?.action(replaceAll(foundPage.content));
+  //     } else {
+  //       console.log("did not find page");
+  //     }
+  //   } else {
+  //     setLessonPage({ id: '', title: '', content: '' }); 
+  //   }
+  // }, [selectedPageId, selectedWorkspace]);
   
   // useEffect(() => {
   //   // get()?.action(replaceAll(lessonPage.content));
@@ -138,7 +144,7 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
   
   useEffect(() => {
     console.log("timeout func")
-    if (lessonPage.content) {
+    if (content) {
       // Clear any existing timeout to reset the inactivity timer
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -146,10 +152,10 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
       timeoutRef.current = setTimeout(() => {
         console.log("Inactivity detected. Updating content...");
         if (selectedWorkspace) {
-          updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
+          updatePageContent(lessonPage.id, selectedWorkspace.id, content);
           updateLessonPage(selectedWorkspace.id, {
             id: lessonPage.id,
-            content: lessonPage.content,
+            content: content,
             title: lessonPage.title
           })
           console.log("Update called")
@@ -161,15 +167,15 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [lessonPage.content]);
+  }, [content]);
 
   useEffect(() => {
     // const editorInstance = get();
     // if (editorInstance) {
     //   editorInstance.action(replaceAll(lessonPage.content));
     // }
-    console.log("Content", lessonPage.content);
-  }, [lessonPage.content]);
+    console.log("Content", content);
+  }, [content]);
 
   return (
     <div>
@@ -193,10 +199,10 @@ const MilkdownEditor: React.FC<MilkdownEditorProps> = ({ initialContent }) => {
   );
 };
 
-export const MilkdownEditorWrapper: React.FC<{ initialContent: string }> = ({ initialContent }) => {
+export const MilkdownEditorWrapper: React.FC<{}> = () => {
   return (
     <MilkdownProvider>
-        <MilkdownEditor initialContent={initialContent} />
+        <MilkdownEditor />
     </MilkdownProvider>
   );
 };

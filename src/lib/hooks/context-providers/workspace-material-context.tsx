@@ -42,15 +42,18 @@ export interface WorkspaceMaterialContextValue {
   selectedWorkspace: Workspace | null;
   selectedSpecificationId: string | null;
   selectedPageId: string | null;
+  fetchingSpecifications: boolean;
+  loadWorkspaceData: (workspaceId: string) => void;
   selectWorkspace: (workspaceId: string | null) => void;
   selectSpecification: (specificationId: string) => void;
   updateWorkspaceName: (workspaceId: string, newName: string) => void;
   addWorkspace: (workspace: Workspace) => void;
   removeWorkspace: (workspaceId: string) => void;
   updateSpecification: (workspaceId: string, specification: Specification) => void;
+  getSpecifications: (workspaceId: string) => Promise<Specification[]>;
   addSpecification: (workspaceId: string, specification: Specification) => void;
   deleteSpecification: (workspaceId: string, specificationId: string) => void;
-  getSpecifications: (workspaceId: string) => Promise<void>;
+  getLessonPages: (lessonId: string) => Promise<Page[]>;
   addLessonPage: (lessonId: string) => Promise<void>;
   updateLessonPage: (lessonId: string, updatedPage: Page) => void;
   selectPage: (pageId: string) => void;
@@ -62,15 +65,22 @@ const defaultValue: WorkspaceMaterialContextValue = {
   selectedWorkspace: null,
   selectedSpecificationId: null,
   selectedPageId: null,
+  fetchingSpecifications: true,
+  loadWorkspaceData: () => {},
   selectWorkspace: () => {},
   selectSpecification: () => {},
   updateWorkspaceName: () => {},
   addWorkspace: () => {},
   removeWorkspace: () => {},
   updateSpecification: () => {},
+  getSpecifications: async (): Promise<Specification[]> => {
+    return [];
+  },
   addSpecification: () => {},
   deleteSpecification: () => {},
-  getSpecifications: () => Promise.resolve(),
+  getLessonPages: async(): Promise<Page[]> => {
+    return []
+  },
   addLessonPage: () => Promise.resolve(),
   updateLessonPage: () => {},
   selectPage: () => {},
@@ -83,12 +93,16 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [workspacesInitialized, setWorkspacesInitialized] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
-
+  
   const [selectedSpecificationId, setSelectedSpecificationId] = useState<string | null>(null);
   const [materialSpecificationsInitialized, setMaterialSpecificationsInitialized] = useState(false);
 
   const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
   const [lessonPagesInitialized, setLessonPagesInitialized] = useState(false);
+
+  ///////////////////////
+  const [fetchingSpecifications, setFetchingSpecifications] = useState(true);
+  const [fetchingLessonPages, setFetchingLessonPages] = useState(true);
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -104,12 +118,12 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         const fetchedWorkspaces = data.map((material: any) => ({
           id: material.MaterialID,
           name: material.MaterialName,
-          fileUrls: [],
+          // fileUrls: [],
           createdAt: material.CreatedAt,
           locked: false,
           materialType: material.MaterialType,
-          specifications: [],
-          pages: []
+          // specifications: [],
+          // pages: []
         }));
 
         setWorkspaces(fetchedWorkspaces);
@@ -122,67 +136,41 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     fetchMaterials();
   }, []);
 
-  useEffect(() => {
-    const fetchSideNavData = async () => {
-      if (selectedWorkspace && !materialSpecificationsInitialized && !lessonPagesInitialized) {
-        const specifications = await getSpecifications(selectedWorkspace.id).catch(error => {
-          console.error("Error fetching material specifications:", error);
-          return null;
-        });
-
-        const pages = selectedWorkspace.materialType === "QUIZ" ? [] : await getLessonPages(selectedWorkspace.id).catch(error => {
-          console.error("Error fetching material specifications:", error);
-          return null;
-        });
-
-        if (specifications && pages) {
-          setSelectedWorkspace(prevWorkspace => {
-            if (!prevWorkspace) return null;
-            return { ...prevWorkspace, specifications };
-          });
-          setMaterialSpecificationsInitialized(true);
-          setLessonPagesInitialized(true);
-        }
-      }
-    };
-
-    fetchSideNavData();
-  }, [selectedWorkspace, materialSpecificationsInitialized, lessonPagesInitialized]);
+  const loadWorkspaceData = async (workspaceId: string) => {
+    setFetchingSpecifications(true);
+    selectWorkspace(workspaceId);
+    const specifications = await getSpecifications(workspaceId);
+    // setSpecifications(specifications);
+    setFetchingSpecifications(false);
+  }
 
   // useEffect(() => {
-  //   if (selectedWorkspace && selectedWorkspace.specifications.length > 0) {
-  //     setSelectedSpecificationId(selectedWorkspace.specifications[0].id);
-  //   } else {
-  //     setSelectedSpecificationId(null);
-  //   }
-  // }, [selectedWorkspace]);
+  //   const fetchSideNavData = async () => {
+  //     if (selectedWorkspace && !materialSpecificationsInitialized && !lessonPagesInitialized) {
+  //       const specifications = await getSpecifications(selectedWorkspace.id).catch(error => {
+  //         console.error("Error fetching material specifications:", error);
+  //         return null;
+  //       });
 
-  // useEffect(() => {
-  //   const fetchLessonPages = async () => {
-  //     if (selectedWorkspace && !lessonPagesInitialized) {
-  //       let pages: Page[];
-  //       if (selectedWorkspace.materialType === "QUIZ") {
-  //         pages = []; // Quiz have no pages
-  //       }
-  //       else {
-  //         pages = await getLessonPages(selectedWorkspace.id).catch(error => {
-  //           console.error("Error fetching material specifications:", error);
-  //           return null;
-  //         });
-  //       }
+  //       const pages = selectedWorkspace.materialType === "QUIZ" ? [] : await getLessonPages(selectedWorkspace.id).catch(error => {
+  //         console.error("Error fetching material specifications:", error);
+  //         return null;
+  //       });
 
-  //       if (pages) {
+  //       if (specifications && pages) {
   //         setSelectedWorkspace(prevWorkspace => {
   //           if (!prevWorkspace) return null;
-  //           return { ...prevWorkspace, pages };
+  //           return { ...prevWorkspace, specifications };
   //         });
+  //         setMaterialSpecificationsInitialized(true);
+  //         setLessonPagesInitialized(true);
   //       }
-  //       setLessonPagesInitialized(true);
   //     }
   //   };
 
-  //   fetchLessonPages();
-  // }, [selectedWorkspace, lessonPagesInitialized]);
+  //   fetchSideNavData();
+  // }, [selectedWorkspace, materialSpecificationsInitialized, lessonPagesInitialized]);
+
 
   const addWorkspace = (workspace: Workspace) => {
     const updatedWorkspaces = [...workspaces, { ...workspace, createdAt: Date.now() }];
@@ -195,8 +183,6 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   };
 
   const selectWorkspace = (workspaceId: string | null) => {
-    setMaterialSpecificationsInitialized(false);
-    setLessonPagesInitialized(false);
     if (workspaceId === null) {
       setSelectedWorkspace(null);
       return;
@@ -293,7 +279,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     }
   };
 
-  const getSpecifications = async (workspaceId: string) => {
+  const getSpecifications = async (workspaceId: string): Promise<Specification[]> => {
     const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${workspaceId}`)
     const response = await _getSpecifications(requestBuilder).catch((error) => {
       console.error("Error fetching specifications:", error);
@@ -316,7 +302,9 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       const updatedWorkspaces = workspaces.map((workspace) =>
         workspace.id === workspaceId ? { ...workspace, specifications } : workspace
       );
-
+      
+      console.log(updatedWorkspaces);
+      console.log(selectedWorkspace);
       setWorkspaces(updatedWorkspaces);
 
       if (selectedWorkspace && selectedWorkspace.id === workspaceId) {
@@ -324,9 +312,12 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
           ...prevWorkspace!,
           specifications,
         }));
-        return specifications;
-      }
+      } 
+      
+      return specifications; // Maybe remove this later
     }
+
+    return []; // This too
   };
   
   const addLessonPage = async (lessonId: string) => {
@@ -433,15 +424,18 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         selectedWorkspace,
         selectedSpecificationId,
         selectedPageId,
+        fetchingSpecifications,
+        loadWorkspaceData,
         selectWorkspace,
         selectSpecification,
         updateWorkspaceName,
         addWorkspace,
         removeWorkspace,
         updateSpecification,
+        getSpecifications,
         addSpecification,
         deleteSpecification,
-        getSpecifications,
+        getLessonPages,
         updateLessonPage,
         addLessonPage,
         selectPage,

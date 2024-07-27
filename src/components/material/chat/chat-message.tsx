@@ -4,12 +4,18 @@
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+import remarkDirective from 'remark-directive'
+import remarkDirectiveRehype from 'remark-directive-rehype'
+import Artifact from '@/components/ui/ui-base/artifact'
 
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/ui-composite/codeblock'
 import { MemoizedReactMarkdown } from '@/components/ui/ui-base/markdown'
 import { IconPinecone, IconUser } from '@/components/ui/ui-base/icons'
 import { ChatMessageActions } from '@/components/material/chat/chat-message-actions'
+import { Components } from '@/lib/types/artifact-type'
+
+import React from 'react'
 
 export interface ChatMessageProps {
   message: Message
@@ -34,49 +40,47 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-visible">
         <MemoizedReactMarkdown
           className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100"
-          remarkPlugins={[remarkGfm, remarkMath]}
+          remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkDirectiveRehype]}
+          rehypePlugins={[]}
+          skipHtml={false}
           components={{
-            p({ children }) {
+            p(props: any) {
+              const { children } = props;
+              console.log("Creating p tag...");
               return <p className="mb-0 last:mb-0">{children}</p>
             },
-            li({ children }) {
+            li(props: any) {
+              const { children } = props;
               return <li className="max-h-fit ml-3 mb-3 max-w-2xl">{children}</li>
             },
-            ul({ children }) {
+            ul(props: any) {
+              const { children } = props;
               return <ul className="!list-disc max-h-fit !whitespace-normal">{children}</ul>
             },
-            ol({ children }) {
+            ol(props: any) {
+              const { children } = props;
               return <ol className="!list-decimal max-h-fit !whitespace-normal">{children}</ol>
             },
-            a({ node, className, children, ...props }) {
+            a(props: any) {
+              const { node, className, children, ...rest } = props;
               return (
                 <a
                   className="text-blue-600 dark:text-zinc-600 hover:underline font-bold"
                   target="_blank"
                   rel="noopener noreferrer"
-                  {...props}
+                  {...rest}
                 >
                   {children}
                 </a>
               )
-            },
-            
-            code({ node, inline, className, children, ...props }) {
-              if (children.length) {
-                if (children[0] == '▍') {
-                  return (
-                    <span className="mt-1 cursor-default animate-pulse">▍</span>
-                  )
-                }
-
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
-
+            },        
+            code(props: any) {
+              const { node, inline, className, children, ...rest } = props;
               const match = /language-(\w+)/.exec(className || '')
 
               if (inline) {
                 return (
-                  <code className={className} {...props}>
+                  <code className={className} {...rest}>
                     {children}
                   </code>
                 )
@@ -87,11 +91,15 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
                   key={Math.random()}
                   language={(match && match[1]) || ''}
                   value={String(children).replace(/\n$/, '')}
-                  {...props}
+                  {...rest}
                 />
               )
-            }
-          }}
+            },
+            
+            // Directives for Rendering Components           
+            'artifact': Artifact
+
+          } as Components}
         >
           {message.content}
         </MemoizedReactMarkdown>
