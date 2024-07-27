@@ -25,6 +25,8 @@ interface ChatProps {
   files: FetchedFile[];
   fetchFiles: () => Promise<void>;
   handleDeleteFile: (documentId: string) => Promise<void>;
+  generationDisabled: boolean
+  onGenerationChange: (val: boolean) => void
 }
 
 export const Chat: React.FC<ChatProps> = ({
@@ -33,6 +35,8 @@ export const Chat: React.FC<ChatProps> = ({
   files,
   fetchFiles,
   handleDeleteFile,
+  generationDisabled, // NOTE(hans): Unused, use this later to disable generation when specs is empty in sidenav
+  onGenerationChange
 }) => {
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
