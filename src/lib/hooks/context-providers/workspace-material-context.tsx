@@ -1,5 +1,5 @@
 // client/src/lib/hooks/workspace-material-context.tsx
-import React, { createContext, useState, useEffect, useContext, useCallback, useActionState, SetStateAction } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { GET as getMaterials } from '@/app/api/material/route';
 import { GET as _getSpecifications } from "@/app/api/material/specification/route";
 import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/material/page/route";
@@ -62,18 +62,18 @@ const defaultValue: WorkspaceMaterialContextValue = {
   selectedWorkspace: null,
   selectedSpecificationId: null,
   selectedPageId: null,
-  selectWorkspace: () => { },
-  selectSpecification: () => { },
-  updateWorkspaceName: () => { },
-  addWorkspace: () => { },
-  removeWorkspace: () => { },
-  updateSpecification: () => { },
-  addSpecification: () => { },
-  deleteSpecification: () => { },
+  selectWorkspace: () => {},
+  selectSpecification: () => {},
+  updateWorkspaceName: () => {},
+  addWorkspace: () => {},
+  removeWorkspace: () => {},
+  updateSpecification: () => {},
+  addSpecification: () => {},
+  deleteSpecification: () => {},
   getSpecifications: () => Promise.resolve(),
   addLessonPage: () => Promise.resolve(),
-  updateLessonPage: () => { },
-  selectPage: () => { },
+  updateLessonPage: () => {},
+  selectPage: () => {},
 };
 
 export const WorkspaceMaterialContext = createContext<WorkspaceMaterialContextValue>(defaultValue);
@@ -82,7 +82,7 @@ export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialCon
 export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [workspacesInitialized, setWorkspacesInitialized] = useState(false);
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null)
+  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
 
   const [selectedSpecificationId, setSelectedSpecificationId] = useState<string | null>(null);
   const [materialSpecificationsInitialized, setMaterialSpecificationsInitialized] = useState(false);
@@ -131,8 +131,8 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         });
 
         const pages = selectedWorkspace.materialType === "QUIZ" ? [] : await getLessonPages(selectedWorkspace.id).catch(error => {
-          console.error("Error fetching lesson pages:", error);
-          return null
+          console.error("Error fetching material specifications:", error);
+          return null;
         });
 
         if (specifications && pages) {
@@ -148,7 +148,6 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
 
     fetchSideNavData();
   }, [selectedWorkspace, materialSpecificationsInitialized, lessonPagesInitialized]);
-  // NOTE(hans): I think mao ni ang reason ngano mag sige og loop ang fetching
 
   // useEffect(() => {
   //   if (selectedWorkspace && selectedWorkspace.specifications.length > 0) {
@@ -248,7 +247,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         : workspace
     );
     setWorkspaces(updatedWorkspaces);
-
+    
     console.log(workspaceId)
     console.log(specification)
 
@@ -264,33 +263,33 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
 
   const deleteSpecification = (workspaceId: string, specificationId: string) => {
     const updatedWorkspaces = workspaces.map((workspace) =>
-      workspace.id === workspaceId
-        ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
-        : workspace
+        workspace.id === workspaceId
+            ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
+            : workspace
     );
     setWorkspaces(updatedWorkspaces);
 
     if (selectedWorkspace && selectedWorkspace.id === workspaceId) {
-      const updatedSpecifications = selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId);
-      let newSelectedSpecificationId = '';
+        const updatedSpecifications = selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId);
+        let newSelectedSpecificationId = '';
 
-      if (updatedSpecifications.length > 0) {
-        const index = selectedWorkspace.specifications.findIndex((spec) => spec.id === specificationId);
+        if (updatedSpecifications.length > 0) {
+            const index = selectedWorkspace.specifications.findIndex((spec) => spec.id === specificationId);
 
-        if (index === selectedWorkspace.specifications.length - 1) {
-          // If it was the highest index, set to the previous one
-          newSelectedSpecificationId = updatedSpecifications[index - 1]?.id || '';
-        } else {
-          // Otherwise, set to the next one
-          newSelectedSpecificationId = updatedSpecifications[index]?.id || '';
+            if (index === selectedWorkspace.specifications.length - 1) {
+                // If it was the highest index, set to the previous one
+                newSelectedSpecificationId = updatedSpecifications[index - 1]?.id || '';
+            } else {
+                // Otherwise, set to the next one
+                newSelectedSpecificationId = updatedSpecifications[index]?.id || '';
+            }
         }
-      }
 
-      setSelectedWorkspace({
-        ...selectedWorkspace,
-        specifications: updatedSpecifications,
-      });
-      setSelectedSpecificationId(newSelectedSpecificationId);
+        setSelectedWorkspace({
+            ...selectedWorkspace,
+            specifications: updatedSpecifications,
+        });
+        setSelectedSpecificationId(newSelectedSpecificationId);
     }
   };
 
@@ -329,13 +328,13 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       }
     }
   };
-
+  
   const addLessonPage = async (lessonId: string) => {
     const requestBuilder = new RequestBuilder()
-      .setBody(JSON.stringify({
-        LessonID: lessonId,
-        LastPageID: null,
-      }));
+    .setBody(JSON.stringify({
+      LessonID: lessonId, 
+      LastPageID: null,
+    }));
 
     const response = await _addLessonPage(requestBuilder).catch((error) => {
       console.error("Error creating new lesson page:", error);
@@ -349,7 +348,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       const page: Page = {
         id: data.PageID,
         title: '',
-        content: ''
+        content: '' 
       }
 
       if (selectedWorkspace) {
@@ -390,30 +389,30 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     }
 
   }
-
+  
   const updateLessonPage = (lessonId: string, updatedPage: Page) => {
     const updatedWorkspaces = workspaces.map(workspace =>
       workspace.id === lessonId
         ? {
-          ...workspace,
-          pages: workspace.pages.map(page =>
-            page.id === updatedPage.id ? updatedPage : page
-          ),
-        }
+            ...workspace,
+            pages: workspace.pages.map(page =>
+              page.id === updatedPage.id ? updatedPage : page
+            ),
+          }
         : workspace
     );
     setWorkspaces(updatedWorkspaces);
-
+  
     if (selectedWorkspace && selectedWorkspace.id === lessonId) {
       const updatedPages = selectedWorkspace.pages.map(page =>
         page.id === updatedPage.id ? updatedPage : page
       );
-
+  
       setSelectedWorkspace({
         ...selectedWorkspace,
         pages: updatedPages,
       });
-
+  
       // If the updated page is the currently selected one, update the selectedPageId as well
       if (selectedPageId === updatedPage.id) {
         setSelectedPageId(updatedPage.id);
@@ -421,11 +420,11 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     }
   };
 
-
+  
   const selectPage = (pageId: string) => {
     setSelectedPageId(pageId);
   };
-
+  
   return (
     <WorkspaceMaterialContext.Provider
       value={{

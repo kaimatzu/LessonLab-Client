@@ -3,6 +3,7 @@
 "use client";
 import { Page, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
+  createContext,
   useCallback,
   useEffect,
   useState,
@@ -31,12 +32,25 @@ const fetchFileUrls = async (workspaceId: string) => {
   }
 };
 
+// isGenerationDisabled context
+interface GenerationDisabledContextProps {
+  generationDisabled: boolean
+  setGenerationDisabled: (val: boolean) => void
+}
+
+export const IsGenerationDisabledContext = createContext<GenerationDisabledContextProps | undefined>(undefined)
+
+export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+  const [generationDisabled, setGenerationDisabled] = useState<boolean>(true)
+
+  return <IsGenerationDisabledContext.Provider value={{ generationDisabled, setGenerationDisabled }}>{children}</IsGenerationDisabledContext.Provider>
+}
+
 export default function Material({ workspace }: { workspace: Workspace }) {
   const { workspaces, removeWorkspace,
     selectedWorkspace,
     selectedPageId
   } = useWorkspaceMaterialContext();
-  const [generationDisabled, setGenerationDisabled] = useState<boolean>(false)
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [materialType, setMaterialType] = useState("LESSON"); // either 'quiz' or 'lesson' sets either quiz or lesson generation
@@ -74,11 +88,6 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     fetchFiles();
   }, [fetchFiles]);
 
-  const handleGenerationChange = (val: boolean) => {
-    setGenerationDisabled(val)
-    console.log('Generation changed: ', val)
-  }
-
   const [viewMode, setViewMode] = useState("markdown"); // 'chat' or 'markdown'
 
   // TODO: Get from generated content from backend
@@ -101,50 +110,50 @@ int main() {
 
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
-      <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
-        <div className="flex flex-row h-fit w-full items-start justify-start">
-          <button
-            onClick={() =>
-              setViewMode(viewMode === "chat" ? "markdown" : "chat")
-            }
-            className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
-          >
-            <div className="flex flex-row items-start justify-start text-foreground">
-              <IoIosSwap className="w-6 h-6 mr-2" />
-              {viewMode === "chat"
-                ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
-                : "Switch to Chat"}
-            </div>
-          </button>
+      <IsGenerationDisabledProvider>
+        <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
+          <div className="flex flex-row h-fit w-full items-start justify-start">
+            <button
+              onClick={() =>
+                setViewMode(viewMode === "chat" ? "markdown" : "chat")
+              }
+              className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
+            >
+              <div className="flex flex-row items-start justify-start text-foreground">
+                <IoIosSwap className="w-6 h-6 mr-2" />
+                {viewMode === "chat"
+                  ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
+                  : "Switch to Chat"}
+              </div>
+            </button>
+          </div>
+
+          {viewMode === "chat" ? (
+            <Chat
+              workspace={workspace}
+              fetchingFiles={fetchingFiles}
+              files={files}
+              fetchFiles={fetchFiles}
+              handleDeleteFile={handleDeleteFile}
+            />
+          ) : (
+            <>
+              {workspace.materialType === "LESSON" ? (
+                <>
+                  <MilkdownEditorWrapper initialContent={
+                    initialContent
+                  } />
+                </>
+              ) : (
+                <Quiz />
+                // <SkeletonLoader /> // Placeholder
+              )}
+            </>
+          )}
+
         </div>
-
-        {viewMode === "chat" ? (
-          <Chat
-            workspace={workspace}
-            fetchingFiles={fetchingFiles}
-            files={files}
-            fetchFiles={fetchFiles}
-            handleDeleteFile={handleDeleteFile}
-            generationDisabled={generationDisabled}
-            onGenerationChange={handleGenerationChange}
-          />
-        ) : (
-          <>
-            {workspace.materialType === "LESSON" ? (
-              <>
-                <MilkdownEditorWrapper initialContent={
-                  initialContent
-                } />
-              </>
-            ) : (
-              <Quiz generationDisabled={generationDisabled} onGenerationChange={handleGenerationChange} />
-              // <SkeletonLoader /> // Placeholder
-            )}
-          </>
-        )}
-
-      </div>
-      <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} generationDisabled={generationDisabled} onGenerationChange={handleGenerationChange} />
+        <SidenavMaterial workspace={workspace} files={files} fetchingFiles={fetchingFiles} uploadCompletionCallback={fetchFiles} handleDeleteFile={handleDeleteFile} />
+      </IsGenerationDisabledProvider>
     </div>
   );
 }
