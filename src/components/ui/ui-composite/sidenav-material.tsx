@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
@@ -22,9 +22,8 @@ import {
   updateAdditionalSpecification,
   removeAdditionalSpecification,
 } from "@/app/api/material/specification/route"
-import { POST as _addLessonPage }from '@/app/api/material/page/route'
+import { POST as _addLessonPage } from '@/app/api/material/page/route'
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
-import { IsGenerationDisabledContext } from "@/components/material/material";
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
 
 interface SidenavMaterialProps {
@@ -33,21 +32,23 @@ interface SidenavMaterialProps {
   fetchingFiles: boolean;
   uploadFileCompletionCallback: () => void;
   handleDeleteFile: (documentId: string) => Promise<void>;
+  onGenerationDisabledChange: (newValue: boolean) => void
 }
 
-const SidenavMaterial: React.FC<SidenavMaterialProps> = ({ 
-  workspace, 
-  files, 
-  fetchingFiles, 
-  uploadFileCompletionCallback, 
+const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
+  workspace,
+  files,
+  fetchingFiles,
+  uploadFileCompletionCallback,
   handleDeleteFile,
+  onGenerationDisabledChange
 }) => {
-  const ctx = useContext(IsGenerationDisabledContext);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
-  const { 
+  const {
     loading,
-    workspaces, 
+    workspaces,
     selectedWorkspace,
     specifications,
     specificationsLoading,
@@ -60,7 +61,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     addLessonPage,
     selectPage,
   } = useWorkspaceMaterialContext();
-  
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showAddFile, setShowAddFile] = useState(false);
@@ -308,7 +309,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
         }))
       const result = await _addLessonPage(requestBuilder);
       const data = await result.json();
-      
+
       addLessonPage(selectedWorkspace.id, {
         id: data.PageID,
         title: data.Title || 'Untitled',
@@ -319,11 +320,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
 
   useEffect(() => {
     if (topic === '' || name === '') {
-      ctx?.setGenerationDisabled(true);
+      onGenerationDisabledChange(true)
     } else {
-      ctx?.setGenerationDisabled(false);
+      onGenerationDisabledChange(false)
     }
-  }, [topic, name]);
+  }, [topic, name])
 
   return (
     <div className="flex flex-row !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
@@ -445,8 +446,8 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    onBlur={(e) => { updateSpecificationName(selectedSpecificationId!, e.target.value)}}
-                    onKeyDown={(e) => handleInputKeyDown(e, () => {})}
+                    onBlur={(e) => { updateSpecificationName(selectedSpecificationId!, e.target.value) }}
+                    onKeyDown={(e) => handleInputKeyDown(e, () => { })}
                     placeholder="Specification Name"
                   />
                 ) : (
@@ -464,7 +465,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
                       onBlur={(e) => updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
-                      onKeyDown={(e) => handleTextareaKeyDown(e, () => {})}
+                      onKeyDown={(e) => handleTextareaKeyDown(e, () => { })}
                       placeholder="Provide a topic..."
                     />
                   ) : (
@@ -531,7 +532,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
               </div>
             </div>
             <div className="border-t border-gray-600 my-2"></div>
-            
+
             {selectedWorkspace && selectedWorkspace.materialType === 'LESSON' ? (
               <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
                 <div className="flex flex-row justify-between items-center">

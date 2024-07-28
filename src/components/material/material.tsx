@@ -3,7 +3,6 @@
 "use client";
 import { Page, Specification, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
-  createContext,
   useCallback,
   useEffect,
   useState,
@@ -32,29 +31,16 @@ const fetchFileUrls = async (workspaceId: string) => {
   }
 };
 
-// isGenerationDisabled context
-interface GenerationDisabledContextProps {
-  generationDisabled: boolean
-  setGenerationDisabled: (val: boolean) => void
-}
-
-export const IsGenerationDisabledContext = createContext<GenerationDisabledContextProps | undefined>(undefined)
-
-export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: React.ReactNode }>) => {
-  const [generationDisabled, setGenerationDisabled] = useState<boolean>(true)
-
-  return <IsGenerationDisabledContext.Provider value={{ generationDisabled, setGenerationDisabled }}>{children}</IsGenerationDisabledContext.Provider>
-}
-
 export default function Material({ workspace }: { workspace: Workspace }) {
-  const { 
+  const {
     selectWorkspace,
     loadWorkspaceData,
     selectedWorkspace,
   } = useWorkspaceMaterialContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
-  
+  const [generationDisabled, setGenerationDisabled] = useState(true);
+
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
     console.log(
@@ -83,7 +69,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     setFetchingFiles(false);
   }, [workspace.id]);
 
-  useEffect(() => {fetchFiles()}, [fetchFiles]);
+  useEffect(() => { fetchFiles() }, [fetchFiles]);
 
   const loadWorkspace = useCallback(async () => {
     if (!selectedWorkspace || selectedWorkspace.id !== workspace.id) {
@@ -92,29 +78,32 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     loadWorkspaceData(workspace.id, selectedWorkspace);
   }, [workspace.id]);
 
-  useEffect(() => {loadWorkspace()}, [loadWorkspace]);
+  useEffect(() => { loadWorkspace() }, [loadWorkspace]);
 
   const [viewMode, setViewMode] = useState("markdown"); // 'chat' or 'markdown'
 
+  const handleGenerationDisabledChanged = (newValue: boolean) => {
+    setGenerationDisabled(newValue)
+  }
+
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
-      <IsGenerationDisabledProvider>
-        <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
-          <div className="flex flex-row h-fit w-full items-start justify-start">
-            <button
-              onClick={() =>
-                setViewMode(viewMode === "chat" ? "markdown" : "chat")
-              }
-              className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
-            >
-              <div className="flex flex-row items-start justify-start text-foreground">
-                <IoIosSwap className="w-6 h-6 mr-2" />
-                {viewMode === "chat"
-                  ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
-                  : "Switch to Chat"}
-              </div>
-            </button>
-          </div>
+      <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
+        <div className="flex flex-row h-fit w-full items-start justify-start">
+          <button
+            onClick={() =>
+              setViewMode(viewMode === "chat" ? "markdown" : "chat")
+            }
+            className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
+          >
+            <div className="flex flex-row items-start justify-start text-foreground">
+              <IoIosSwap className="w-6 h-6 mr-2" />
+              {viewMode === "chat"
+                ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
+                : "Switch to Chat"}
+            </div>
+          </button>
+        </div>
 
         {viewMode === "chat" ? (
           <Chat
@@ -129,21 +118,22 @@ export default function Material({ workspace }: { workspace: Workspace }) {
             {workspace.materialType === "LESSON" ? (
               <MilkdownEditorWrapper />
             ) : (
-              <Quiz />
+              <Quiz generationDisabled={generationDisabled} />
             )}
           </>
         )}
 
-        </div>
-        <SidenavMaterial 
-          workspace={workspace} 
-          files={files} 
-          fetchingFiles={fetchingFiles} 
-          uploadFileCompletionCallback={fetchFiles} 
-          // specifications={specifications}
-          // fetchingSpecifications={fetchingSpecifications}
-          handleDeleteFile={handleDeleteFile} />
-      </IsGenerationDisabledProvider>
+      </div>
+      <SidenavMaterial
+        workspace={workspace}
+        files={files}
+        fetchingFiles={fetchingFiles}
+        uploadFileCompletionCallback={fetchFiles}
+        // specifications={specifications}
+        // fetchingSpecifications={fetchingSpecifications}
+        handleDeleteFile={handleDeleteFile}
+        onGenerationDisabledChange={handleGenerationDisabledChanged}
+      />
     </div>
   );
 }
