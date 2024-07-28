@@ -248,10 +248,7 @@ const workspaceSlice = createSlice({
           workspace.specifications = specifications;
         }
         if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
-          console.log("There is selected workspace")
           state.selectedWorkspace.specifications = specifications;
-        } else {
-          console.log("No selected workspace")
         }
       })
       .addCase(fetchSpecifications.rejected, (state) => {

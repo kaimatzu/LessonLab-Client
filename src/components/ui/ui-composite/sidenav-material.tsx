@@ -22,10 +22,10 @@ import {
   updateAdditionalSpecification,
   removeAdditionalSpecification,
 } from "@/app/api/material/specification/route"
+import { POST as _addLessonPage }from '@/app/api/material/page/route'
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
 import { IsGenerationDisabledContext } from "@/components/material/material";
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
-import { useDispatch, useSelector } from "react-redux";
 
 interface SidenavMaterialProps {
   workspace: Workspace;
@@ -46,18 +46,19 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   const pathname = usePathname();
 
   const { 
+    loading,
     workspaces, 
     selectedWorkspace,
+    specifications,
+    specificationsLoading,
+    selectedSpecificationId,
+    pages,
     updateSpecification,
     addSpecification,
     deleteSpecification,
-    selectedSpecificationId,
     selectSpecification,
     addLessonPage,
     selectPage,
-    specifications,
-    loading,
-    specificationsLoading,
   } = useWorkspaceMaterialContext();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -74,6 +75,10 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   const [focusedAdditionalSpecIndex, setFocusedAdditionalSpecIndex] = useState<number | null>(null);
   const selectSpecificationRef = useRef<HTMLSelectElement>(null);
   const [isTopicFocused, setIsTopicFocused] = useState(false);
+
+  ////////////////////////////////////
+  ////////////File Handling///////////
+  ////////////////////////////////////
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -155,6 +160,38 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     );
     setUploadedFiles([...uploadedFiles, ...files]);
   };
+
+  useEffect(() => {
+    const handleGlobalDragOver = (event: DragEvent) => {
+      event.preventDefault();
+      setShowAddFile(true);
+    };
+
+    const handleGlobalDragEnter = (event: DragEvent) => {
+      event.preventDefault();
+      setShowAddFile(true);
+    };
+
+    const handleGlobalDragLeave = (event: DragEvent) => {
+      if (event.relatedTarget === null) {
+        setShowAddFile(false);
+      }
+    };
+
+    window.addEventListener("dragover", handleGlobalDragOver);
+    window.addEventListener("dragenter", handleGlobalDragEnter);
+    window.addEventListener("dragleave", handleGlobalDragLeave);
+
+    return () => {
+      window.removeEventListener("dragover", handleGlobalDragOver);
+      window.removeEventListener("dragenter", handleGlobalDragEnter);
+      window.removeEventListener("dragleave", handleGlobalDragLeave);
+    };
+  }, []);
+
+  ////////////////////////////////////
+  ///////Material Specifications//////
+  ////////////////////////////////////
 
   const handleSpecificationSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     selectSpecification(event.target.value);
@@ -258,33 +295,27 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     }
   };
 
-  useEffect(() => {
-    const handleGlobalDragOver = (event: DragEvent) => {
-      event.preventDefault();
-      setShowAddFile(true);
-    };
+  ////////////////////////////////////
+  /////////////Lesson Pages///////////
+  ////////////////////////////////////
 
-    const handleGlobalDragEnter = (event: DragEvent) => {
-      event.preventDefault();
-      setShowAddFile(true);
-    };
-
-    const handleGlobalDragLeave = (event: DragEvent) => {
-      if (event.relatedTarget === null) {
-        setShowAddFile(false);
-      }
-    };
-
-    window.addEventListener("dragover", handleGlobalDragOver);
-    window.addEventListener("dragenter", handleGlobalDragEnter);
-    window.addEventListener("dragleave", handleGlobalDragLeave);
-
-    return () => {
-      window.removeEventListener("dragover", handleGlobalDragOver);
-      window.removeEventListener("dragenter", handleGlobalDragEnter);
-      window.removeEventListener("dragleave", handleGlobalDragLeave);
-    };
-  }, []);
+  const createLessonPage = async () => {
+    if (selectedWorkspace && selectedWorkspace.materialType === 'LESSON') {
+      const requestBuilder = new RequestBuilder()
+        .setBody(JSON.stringify({
+          LessonID: selectedWorkspace.id,
+          LastPageID: null
+        }))
+      const result = await _addLessonPage(requestBuilder);
+      const data = await result.json();
+      
+      addLessonPage(selectedWorkspace.id, {
+        id: data.PageID,
+        title: data.Title || 'Untitled',
+        content: data.Content || '',
+      });
+    }
+  }
 
   useEffect(() => {
     if (topic === '' || name === '') {
@@ -505,13 +536,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
               <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
                 <div className="flex flex-row justify-between items-center">
                   <h1 className="text-lg font-normal">Pages</h1>
-                  <div className="cursor-pointer" 
-                    // onClick={() => addLessonPage(selectedWorkspace.id)}
-                    >
+                  <div className="cursor-pointer" onClick={createLessonPage}>
                     <RiAddFill className="w-6 h-6" />
                   </div>
                 </div>
-                {selectedWorkspace.pages?.map((page) => (
+                {pages?.map((page) => (
                   <div
                     className="flex items-center justify-between bg-gray-300 rounded p-3 mb-2 cursor-pointer"
                     key={page.id}

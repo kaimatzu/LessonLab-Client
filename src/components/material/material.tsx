@@ -49,22 +49,12 @@ export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: 
 export default function Material({ workspace }: { workspace: Workspace }) {
   const { 
     selectWorkspace,
-    selectSpecification,
-    selectPage,
     loadWorkspaceData,
     selectedWorkspace,
-    specificationsLoading,
-    specifications,
-    // lessonPages
   } = useWorkspaceMaterialContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
-  // const [specifications, setSpecifications] = useState<Specification[]>([]);
-  const [lessonPages, setLessonPages] = useState<Page[]>([]);
-
   const [fetchingFiles, setFetchingFiles] = useState(true);
-  const [fetchingSpecifications, setFetchingSpecifications] = useState(true);
-  const [fetchingLessonPages, setFetchingLessonPages] = useState(true);
-
+  
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
     console.log(
@@ -85,6 +75,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     }
   };
 
+  // TODO: move this to workspace context provider
   const fetchFiles = useCallback(async () => {
     setFetchingFiles(true);
     const files = await fetchFileUrls(workspace.id);
@@ -93,34 +84,6 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   }, [workspace.id]);
 
   useEffect(() => {fetchFiles()}, [fetchFiles]);
-
-  // const fetchSpecifications = useCallback(async () => {
-  //   setFetchingSpecifications(true);
-  //   const specifications = await getSpecifications(workspace.id);
-  //   console.log(specifications);
-  //   console.log(workspace.id)
-  //   setSpecifications(specifications);
-  //   setFetchingSpecifications(false);
-  // }, [workspace.id]);
-
-  // useEffect(() => {fetchSpecifications()}, [fetchSpecifications]);
-
-  // const fetchLessonPages = useCallback(async () => {
-  //   if (workspace.materialType === 'LESSON') {
-  //     setFetchingLessonPages(true);
-  //     const pages = await getLessonPages(workspace.id);
-  //     setLessonPages(pages);  
-  //     setFetchingLessonPages(false);
-  //   } else {
-  //     setLessonPages([])
-  //   }
-  // }, [workspace.id]);
-
-  // useEffect(() => {fetchLessonPages()}, [fetchLessonPages]);
-
-  // const loadWorkspace = useCallback(async () => {
-  //   loadWorkspaceData(workspace.id);
-  // }, [workspace.id])
 
   const loadWorkspace = useCallback(async () => {
     if (!selectedWorkspace || selectedWorkspace.id !== workspace.id) {
