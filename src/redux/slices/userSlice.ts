@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from './store';
+import { RootState } from '../store';
 import { POST as autoLogin } from '@/app/api/auth/auto-login/route';
 import { POST as login } from '@/app/api/auth/login/route';
 import { POST as register } from '@/app/api/auth/register/route';

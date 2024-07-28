@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
 import RegisterForm from "@/components/ui/ui-composite/register-form";
-import { registerUser } from '@/redux/userSlice';
+import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 interface RegisterPageProps {

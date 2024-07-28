@@ -4,7 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/login-form';
-import { loginUser } from '@/redux/userSlice';
+import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 interface LoginPageProps {

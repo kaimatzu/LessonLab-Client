@@ -48,12 +48,17 @@ export const IsGenerationDisabledProvider = ({ children }: Readonly<{ children: 
 
 export default function Material({ workspace }: { workspace: Workspace }) {
   const { 
-    getSpecifications,
-    getLessonPages,
+    selectWorkspace,
+    selectSpecification,
+    selectPage,
     loadWorkspaceData,
+    selectedWorkspace,
+    specificationsLoading,
+    specifications,
+    // lessonPages
   } = useWorkspaceMaterialContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
-  const [specifications, setSpecifications] = useState<Specification[]>([]);
+  // const [specifications, setSpecifications] = useState<Specification[]>([]);
   const [lessonPages, setLessonPages] = useState<Page[]>([]);
 
   const [fetchingFiles, setFetchingFiles] = useState(true);
@@ -113,9 +118,16 @@ export default function Material({ workspace }: { workspace: Workspace }) {
 
   // useEffect(() => {fetchLessonPages()}, [fetchLessonPages]);
 
+  // const loadWorkspace = useCallback(async () => {
+  //   loadWorkspaceData(workspace.id);
+  // }, [workspace.id])
+
   const loadWorkspace = useCallback(async () => {
-    loadWorkspaceData(workspace.id);
-  }, [workspace.id])
+    if (!selectedWorkspace || selectedWorkspace.id !== workspace.id) {
+      selectWorkspace(workspace.id);
+    }
+    loadWorkspaceData(workspace.id, selectedWorkspace);
+  }, [workspace.id]);
 
   useEffect(() => {loadWorkspace()}, [loadWorkspace]);
 
@@ -165,8 +177,8 @@ export default function Material({ workspace }: { workspace: Workspace }) {
           files={files} 
           fetchingFiles={fetchingFiles} 
           uploadFileCompletionCallback={fetchFiles} 
-          specifications={specifications}
-          fetchingSpecifications={fetchingSpecifications}
+          // specifications={specifications}
+          // fetchingSpecifications={fetchingSpecifications}
           handleDeleteFile={handleDeleteFile} />
       </IsGenerationDisabledProvider>
     </div>

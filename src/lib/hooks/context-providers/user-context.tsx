@@ -5,17 +5,9 @@ import WindowActivityProvider from '@/lib/hooks/context-providers/window-activit
 import Cookies from 'js-cookie';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { checkAuth, clearUser, setUser } from '@/redux/userSlice';
+import { checkAuth, clearUser, setUser, User } from '@/redux/slices/userSlice';
 import { useSocket } from '@/lib/hooks/useSocket';
 import { useBroadcastChannel } from '@/lib/hooks/useBroadcastChannel';
-
-export interface User {
-    userId: string;
-    userType: "STUDENT" | "TEACHER";
-    name: string;
-    email: string;
-    tokens: number;
-}
 
 export interface AuthResponse {
     user: User;
@@ -104,6 +96,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus();
   }, [dispatch, push, getCurrentPath]);
 
+  // This still needs to be called somewhere. 
   const saveUser = (user: User) => {
     dispatch(setUser(user));
     localStorage.setItem('user', JSON.stringify(user));
