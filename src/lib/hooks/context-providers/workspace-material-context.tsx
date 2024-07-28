@@ -66,24 +66,24 @@ const defaultValue: WorkspaceMaterialContextValue = {
   selectedSpecificationId: null,
   selectedPageId: null,
   fetchingSpecifications: true,
-  loadWorkspaceData: () => {},
-  selectWorkspace: () => {},
-  selectSpecification: () => {},
-  updateWorkspaceName: () => {},
-  addWorkspace: () => {},
-  removeWorkspace: () => {},
-  updateSpecification: () => {},
+  loadWorkspaceData: () => { },
+  selectWorkspace: () => { },
+  selectSpecification: () => { },
+  updateWorkspaceName: () => { },
+  addWorkspace: () => { },
+  removeWorkspace: () => { },
+  updateSpecification: () => { },
   getSpecifications: async (): Promise<Specification[]> => {
     return [];
   },
-  addSpecification: () => {},
-  deleteSpecification: () => {},
-  getLessonPages: async(): Promise<Page[]> => {
+  addSpecification: () => { },
+  deleteSpecification: () => { },
+  getLessonPages: async (): Promise<Page[]> => {
     return []
   },
   addLessonPage: () => Promise.resolve(),
-  updateLessonPage: () => {},
-  selectPage: () => {},
+  updateLessonPage: () => { },
+  selectPage: () => { },
 };
 
 export const WorkspaceMaterialContext = createContext<WorkspaceMaterialContextValue>(defaultValue);
@@ -93,7 +93,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [workspacesInitialized, setWorkspacesInitialized] = useState(false);
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
-  
+
   const [selectedSpecificationId, setSelectedSpecificationId] = useState<string | null>(null);
   const [materialSpecificationsInitialized, setMaterialSpecificationsInitialized] = useState(false);
 
@@ -233,7 +233,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         : workspace
     );
     setWorkspaces(updatedWorkspaces);
-    
+
     console.log(workspaceId)
     console.log(specification)
 
@@ -249,33 +249,33 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
 
   const deleteSpecification = (workspaceId: string, specificationId: string) => {
     const updatedWorkspaces = workspaces.map((workspace) =>
-        workspace.id === workspaceId
-            ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
-            : workspace
+      workspace.id === workspaceId
+        ? { ...workspace, specifications: workspace.specifications.filter((spec) => spec.id !== specificationId) }
+        : workspace
     );
     setWorkspaces(updatedWorkspaces);
 
     if (selectedWorkspace && selectedWorkspace.id === workspaceId) {
-        const updatedSpecifications = selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId);
-        let newSelectedSpecificationId = '';
+      const updatedSpecifications = selectedWorkspace.specifications.filter((spec) => spec.id !== specificationId);
+      let newSelectedSpecificationId = '';
 
-        if (updatedSpecifications.length > 0) {
-            const index = selectedWorkspace.specifications.findIndex((spec) => spec.id === specificationId);
+      if (updatedSpecifications.length > 0) {
+        const index = selectedWorkspace.specifications.findIndex((spec) => spec.id === specificationId);
 
-            if (index === selectedWorkspace.specifications.length - 1) {
-                // If it was the highest index, set to the previous one
-                newSelectedSpecificationId = updatedSpecifications[index - 1]?.id || '';
-            } else {
-                // Otherwise, set to the next one
-                newSelectedSpecificationId = updatedSpecifications[index]?.id || '';
-            }
+        if (index === selectedWorkspace.specifications.length - 1) {
+          // If it was the highest index, set to the previous one
+          newSelectedSpecificationId = updatedSpecifications[index - 1]?.id || '';
+        } else {
+          // Otherwise, set to the next one
+          newSelectedSpecificationId = updatedSpecifications[index]?.id || '';
         }
+      }
 
-        setSelectedWorkspace({
-            ...selectedWorkspace,
-            specifications: updatedSpecifications,
-        });
-        setSelectedSpecificationId(newSelectedSpecificationId);
+      setSelectedWorkspace({
+        ...selectedWorkspace,
+        specifications: updatedSpecifications,
+      });
+      setSelectedSpecificationId(newSelectedSpecificationId);
     }
   };
 
@@ -302,7 +302,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       const updatedWorkspaces = workspaces.map((workspace) =>
         workspace.id === workspaceId ? { ...workspace, specifications } : workspace
       );
-      
+
       console.log(updatedWorkspaces);
       console.log(selectedWorkspace);
       setWorkspaces(updatedWorkspaces);
@@ -312,20 +312,20 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
           ...prevWorkspace!,
           specifications,
         }));
-      } 
-      
+      }
+
       return specifications; // Maybe remove this later
     }
 
     return []; // This too
   };
-  
+
   const addLessonPage = async (lessonId: string) => {
     const requestBuilder = new RequestBuilder()
-    .setBody(JSON.stringify({
-      LessonID: lessonId, 
-      LastPageID: null,
-    }));
+      .setBody(JSON.stringify({
+        LessonID: lessonId,
+        LastPageID: null,
+      }));
 
     const response = await _addLessonPage(requestBuilder).catch((error) => {
       console.error("Error creating new lesson page:", error);
@@ -339,7 +339,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       const page: Page = {
         id: data.PageID,
         title: '',
-        content: '' 
+        content: ''
       }
 
       if (selectedWorkspace) {
@@ -380,30 +380,30 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     }
 
   }
-  
+
   const updateLessonPage = (lessonId: string, updatedPage: Page) => {
     const updatedWorkspaces = workspaces.map(workspace =>
       workspace.id === lessonId
         ? {
-            ...workspace,
-            pages: workspace.pages.map(page =>
-              page.id === updatedPage.id ? updatedPage : page
-            ),
-          }
+          ...workspace,
+          pages: workspace.pages.map(page =>
+            page.id === updatedPage.id ? updatedPage : page
+          ),
+        }
         : workspace
     );
     setWorkspaces(updatedWorkspaces);
-  
+
     if (selectedWorkspace && selectedWorkspace.id === lessonId) {
       const updatedPages = selectedWorkspace.pages.map(page =>
         page.id === updatedPage.id ? updatedPage : page
       );
-  
+
       setSelectedWorkspace({
         ...selectedWorkspace,
         pages: updatedPages,
       });
-  
+
       // If the updated page is the currently selected one, update the selectedPageId as well
       if (selectedPageId === updatedPage.id) {
         setSelectedPageId(updatedPage.id);
@@ -411,11 +411,11 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     }
   };
 
-  
+
   const selectPage = (pageId: string) => {
     setSelectedPageId(pageId);
   };
-  
+
   return (
     <WorkspaceMaterialContext.Provider
       value={{

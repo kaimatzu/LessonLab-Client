@@ -143,7 +143,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
             {workspace.materialType === "LESSON" ? (
               <MilkdownEditorWrapper />
             ) : (
-              <Quiz generationDisabled={generationDisabled} />
+              <Quiz generationDisabled={generationDisabled} workspace={workspace} />
             )}
           </>
         )}

@@ -8,10 +8,10 @@ const POST = async (req: Request) => {
 
   // const count = body.count
   // const prompt = body.prompt
-  // console.log()
+  // console.log(prompt)
 
   const result = await streamObject({
-    system: 'Generate a quiz according to the users specifications.',
+    system: 'You are a quiz generator that will generate questions and the answer keys according to the user\'s topic.',
     model: openai('gpt-3.5-turbo'),
     schema: z.object({
       items: z
@@ -32,7 +32,7 @@ const POST = async (req: Request) => {
           }),
         ])
         .array()
-        .length(body.count),
+      // .length(body.count),
     }),
     prompt: body.prompt
   })
