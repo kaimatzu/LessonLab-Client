@@ -9,6 +9,7 @@ import { Input } from '../ui/ui-base/input';
 import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
+import { Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 
 type Choice = {
   content: string | undefined
@@ -78,9 +79,10 @@ const fetchFileUrls = async (workspaceId: string) => {
 
 interface QuizProps {
   generationDisabled: boolean
+  workspace: Workspace
 }
 
-const Quiz = ({ generationDisabled }: QuizProps) => {
+const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
 
   // const items: ItemType[] = []
   const items: ItemType[] = [
@@ -128,7 +130,10 @@ const Quiz = ({ generationDisabled }: QuizProps) => {
 
   return (
     <div className='flex flex-col gap-4 h-full items-center justify-center'>
-      {object?.items?.length === 0 || !object || !object.items ? <Button className='' disabled={generationDisabled} onClick={() => { }}>Generate</Button> : object?.items?.map((item, index) => {
+      {object?.items?.length === 0 || !object || !object.items ? <Button disabled={generationDisabled} onClick={() => {
+        if (workspace.specifications.length > 0)
+          submit({ namespaceId: workspace.id, prompt: workspace.specifications[0].topic })
+      }}>Generate</Button> : object?.items?.map((item, index) => {
         // convert from zod to type
         // check what type
         // assign depending on the type

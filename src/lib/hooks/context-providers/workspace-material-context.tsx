@@ -6,20 +6,20 @@ import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/materi
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { 
-  fetchMaterials, 
-  fetchSpecifications, 
-  setSelectedWorkspace, 
-  setSelectedSpecificationId, 
-  setSelectedPageId, 
-  updateWorkspaceName, 
-  addWorkspace, 
-  removeWorkspace, 
-  addSpecification, 
-  updateSpecification, 
-  deleteSpecification, 
-  addLessonPage, 
-  updateLessonPage, 
+import {
+  fetchMaterials,
+  fetchSpecifications,
+  setSelectedWorkspace,
+  setSelectedSpecificationId,
+  setSelectedPageId,
+  updateWorkspaceName,
+  addWorkspace,
+  removeWorkspace,
+  addSpecification,
+  updateSpecification,
+  deleteSpecification,
+  addLessonPage,
+  updateLessonPage,
   fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
   selectPagesForSelectedWorkspace
@@ -91,24 +91,24 @@ const defaultValue: WorkspaceMaterialContextValue = {
   pages: [],
   loading: false,
   specificationsLoading: false,
-  loadWorkspaceData: () => {},
-  selectWorkspace: () => {},
-  selectSpecification: () => {},
-  updateWorkspaceName: () => {},
-  addWorkspace: () => {},
-  removeWorkspace: () => {},
-  updateSpecification: () => {},
+  loadWorkspaceData: () => { },
+  selectWorkspace: () => { },
+  selectSpecification: () => { },
+  updateWorkspaceName: () => { },
+  addWorkspace: () => { },
+  removeWorkspace: () => { },
+  updateSpecification: () => { },
   // getSpecifications: async (): Promise<Specification[]> => {
   //   return [];
   // },
-  addSpecification: () => {},
-  deleteSpecification: () => {},
+  addSpecification: () => { },
+  deleteSpecification: () => { },
   // getLessonPages: async(): Promise<Page[]> => {
   //   return []
   // },
   addLessonPage: () => Promise.resolve(),
-  updateLessonPage: () => {},
-  selectPage: () => {},
+  updateLessonPage: () => { },
+  selectPage: () => { },
 };
 
 export const WorkspaceMaterialContext = createContext(defaultValue);
@@ -125,7 +125,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const specifications = useAppSelector(selectSpecificationsForSelectedWorkspace);
   const specificationsLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
   const pages = useAppSelector(selectPagesForSelectedWorkspace);
-  
+
   useEffect(() => {
     dispatch(fetchMaterials());
   }, [dispatch]);
