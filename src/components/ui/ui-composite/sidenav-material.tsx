@@ -61,11 +61,8 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   } = useWorkspaceMaterialContext();
   
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [popupContent, setPopupContent] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showAddFile, setShowAddFile] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -77,12 +74,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   const [focusedAdditionalSpecIndex, setFocusedAdditionalSpecIndex] = useState<number | null>(null);
   const selectSpecificationRef = useRef<HTMLSelectElement>(null);
   const [isTopicFocused, setIsTopicFocused] = useState(false);
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setActiveDropdown(null);
-    }
-  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -164,35 +155,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     );
     setUploadedFiles([...uploadedFiles, ...files]);
   };
-
-  const handleRemoveFile = (index: number) => {
-    const newFiles = uploadedFiles.filter((_, i) => i !== index);
-    setUploadedFiles(newFiles);
-  };
-
-  const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
-  const isActive = (path: string) => {
-    return pathname === path;
-  };
-
-  // useEffect(() => {
-  //   if (selectedSpecificationId) {
-  //     console.log("Feedback loop")
-  //     const specifications = {
-  //       id: selectedSpecificationId,
-  //       name,
-  //       topic,
-  //       writingLevel,
-  //       comprehensionLevel,
-  //       additionalSpecs,
-  //     };
-  //     handleSpecificationChange(specifications);
-  //   }
-  // }, [name, topic, writingLevel, comprehensionLevel, additionalSpecs]);
-
 
   const handleSpecificationSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     selectSpecification(event.target.value);
@@ -321,13 +283,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
       window.removeEventListener("dragover", handleGlobalDragOver);
       window.removeEventListener("dragenter", handleGlobalDragEnter);
       window.removeEventListener("dragleave", handleGlobalDragLeave);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
