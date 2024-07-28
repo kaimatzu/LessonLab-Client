@@ -546,7 +546,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     key={page.id}
                     onClick={() => selectPage(page.id)}
                   >
-                    {page.id}
+                    {page.title}
                   </div>
                 ))}
               </div>

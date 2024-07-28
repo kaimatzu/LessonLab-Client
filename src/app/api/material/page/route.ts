@@ -73,7 +73,7 @@ export async function updatePageContent(selectedPageId: string, lessonId: string
     .setCredentials("include")
   try {
     const result = await fetch(requestBuilder.build());
-    console.log(result);
+    console.log("Update page content:", result);
   } catch (error) {
     console.error('Error updating page content:', error);
   }

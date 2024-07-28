@@ -23,13 +23,11 @@ import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
 import '../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
-import { Page, useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
-import { Console } from 'console';
 
-
-const MilkdownEditor: React.FC<{}> = () => {
+const MilkdownEditor: React.FC = () => {
   const { workspaces, removeWorkspace,
     selectedWorkspace,
     selectedPageId,
@@ -37,10 +35,30 @@ const MilkdownEditor: React.FC<{}> = () => {
   } = useWorkspaceMaterialContext();
 
   const [content, setContent] = useState("");
-  const [title, setTitle] = useState("");
   
   const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const selectedWorkspaceRef = useRef<Workspace | null>(selectedWorkspace);
+  const selectedPageIdRef = useRef<string | null>(selectedPageId);
+  const contentRef = useRef<string | null>(content);
+  const lessonTitleRef = useRef<string | null>(lessonPage.title);
+
+  useEffect(() => {
+    selectedWorkspaceRef.current = selectedWorkspace;
+  }, [selectedWorkspace]);
+
+  useEffect(() => {
+    selectedPageIdRef.current = selectedPageId;
+  }, [selectedPageId]);
+
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+  
+  useEffect(() => {
+    lessonTitleRef.current = lessonPage.title
+  }, [lessonPage]);
   
   const { get } = useEditor((root) =>
     Editor.make()
@@ -48,6 +66,7 @@ const MilkdownEditor: React.FC<{}> = () => {
         ctx.set(rootCtx, root);
         // ctx.set(defaultValueCtx, initialContent);
         ctx.set(defaultValueCtx, content);
+        // ctx.set(headingIdGeneratorCtx, true);
         ctx
         .get(listenerCtx)
         .beforeMount((ctx) => {
@@ -62,12 +81,12 @@ const MilkdownEditor: React.FC<{}> = () => {
           console.log("updated JSON", doc.toJSON());
         })
         .markdownUpdated((ctx, markdown, prevMarkdown) => {
-          console.log(
-            "markdownUpdated to=",
-            markdown,
-            "\nprev=",
-            prevMarkdown
-          );
+          // console.log(
+          //   "markdownUpdated to=",
+          //   markdown,
+          //   "\nprev=",
+          //   prevMarkdown
+          // );
           setContent(markdown);
         })
         .blur((ctx) => {
@@ -79,18 +98,30 @@ const MilkdownEditor: React.FC<{}> = () => {
             timeoutRef.current = null; // Clear the reference to the timeout
           }
 
-          if (selectedWorkspace) {
-            updatePageContent(lessonPage.id, selectedWorkspace.id, content);
-            console.log(selectedWorkspace.id, {
-                id: lessonPage.id,
-                content: content,
-                title: lessonPage.title
-              });
-            updateLessonPage(selectedWorkspace.id, {
-              id: lessonPage.id,
-              content: content,
-              title: lessonPage.title
-            })
+          const currentWorkspace = selectedWorkspaceRef.current;
+          const currentPageId = selectedPageIdRef.current;
+          const currentContent = contentRef.current;
+          const currentLessonTitle = lessonTitleRef.current; 
+
+          if (currentWorkspace && currentPageId && currentContent && currentLessonTitle) {
+            updatePageContent(currentPageId, currentWorkspace.id, currentContent);
+            updateLessonPage(
+              currentWorkspace.id,
+              {
+                id: currentPageId,
+                content: currentContent,
+                title: currentLessonTitle,
+              }
+            );
+            console.log("Blur",
+              {
+                id: currentPageId,
+                content: currentContent,
+                title: currentLessonTitle,
+              }
+            )
+          } else {
+            console.log("Did not update", currentWorkspace, currentPageId);
           }
         })
         .focus((ctx) => {
@@ -117,33 +148,25 @@ const MilkdownEditor: React.FC<{}> = () => {
       //     }));
       //   });
       // }),
-  );
-
-  // useEffect(() => {
-  //   if (selectedWorkspace && selectedPageId) {
-  //     // TODO: Implement better null check later
-  //     const foundPage = selectedWorkspace.pages?.find(page => page.id === selectedPageId); 
-  //     if (foundPage) {
-  //       console.log("found page", foundPage)
-  //       setLessonPage({ id: foundPage.id, title: foundPage.title, content: foundPage.content }); 
-  //       get()?.action(replaceAll(foundPage.content));
-  //     } else {
-  //       console.log("did not find page");
-  //     }
-  //   } else {
-  //     setLessonPage({ id: '', title: '', content: '' }); 
-  //   }
-  // }, [selectedPageId, selectedWorkspace]);
-  
-  // useEffect(() => {
-  //   // get()?.action(replaceAll(lessonPage.content));
-  //   if (selectedWorkspace) {
-  //     updatePageContent(lessonPage.id, selectedWorkspace.id, lessonPage.content);
-  //   }
-  // }, [lessonPage, selectedWorkspace])
+    );
   
   useEffect(() => {
-    console.log("timeout func")
+    if (selectedWorkspace && selectedWorkspace.pages && selectedPageId) {
+      console.log(selectedWorkspace, selectedPageId)
+      const foundPage = selectedWorkspace.pages.find(page => page.id === selectedPageId);
+      if (foundPage) {
+        setLessonPage({ id: foundPage.id, title: foundPage.title, content: foundPage.content });
+        get()?.action(replaceAll(foundPage.content));
+      } else {
+        console.warn("Page not found.");
+      }
+    } else {
+      console.log("Workspace has no pages.");
+      setLessonPage({ id: '', title: '', content: '' });
+    }
+  }, [selectedPageId, selectedWorkspace]);
+
+  useEffect(() => {
     if (content) {
       // Clear any existing timeout to reset the inactivity timer
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -153,11 +176,6 @@ const MilkdownEditor: React.FC<{}> = () => {
         console.log("Inactivity detected. Updating content...");
         if (selectedWorkspace) {
           updatePageContent(lessonPage.id, selectedWorkspace.id, content);
-          updateLessonPage(selectedWorkspace.id, {
-            id: lessonPage.id,
-            content: content,
-            title: lessonPage.title
-          })
           console.log("Update called")
         }
       }, 2000);  // 2 seconds of inactivity
@@ -170,12 +188,10 @@ const MilkdownEditor: React.FC<{}> = () => {
   }, [content]);
 
   useEffect(() => {
-    // const editorInstance = get();
-    // if (editorInstance) {
-    //   editorInstance.action(replaceAll(lessonPage.content));
-    // }
-    console.log("Content", content);
-  }, [content]);
+    // console.log(selectedWorkspace, selectedPageId);
+    // console.log("Title", lessonPage.title);
+    // console.log("Content", content);
+  }, [content, lessonPage.title]);
 
   return (
     <div>
@@ -189,6 +205,12 @@ const MilkdownEditor: React.FC<{}> = () => {
         onBlur={() => {
           if (selectedWorkspace) {
             updatePageTitle(lessonPage.id, selectedWorkspace.id, lessonPage.title);
+            console.log("About to update", lessonPage, lessonTitleRef.current);
+            updateLessonPage(selectedWorkspace.id, {
+              id: lessonPage.id,
+              title: lessonPage.title,
+              content: lessonPage.content,
+            });
           }
         }}
       />
@@ -199,27 +221,10 @@ const MilkdownEditor: React.FC<{}> = () => {
   );
 };
 
-export const MilkdownEditorWrapper: React.FC<{}> = () => {
+export const MilkdownEditorWrapper: React.FC = () => {
   return (
     <MilkdownProvider>
         <MilkdownEditor />
     </MilkdownProvider>
   );
 };
-
-// https://www.youtube.com/watch?v=moj-hTXBgz4
-// https://www.youtube.com/watch?v=mX4MqIdw1KM
-// See: `useOnClickOutside` hook
-function mouseClickHandler(ctx: Ctx, event: Event) {
-  // If event is right click then:
-  event.preventDefault() // prevents opening default context menu from browser
-  // open a context menu
-
-}
-
-// TODO list:
-/*
-  Add right click event handler
-  Add context menu opener on right click in markdown
-  https://milkdown.dev/blog/build-your-own-milkdown-copilot#overview
-*/
