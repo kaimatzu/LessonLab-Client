@@ -62,7 +62,6 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     selectPage,
   } = useWorkspaceMaterialContext();
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showAddFile, setShowAddFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
