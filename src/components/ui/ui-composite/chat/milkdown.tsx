@@ -21,7 +21,7 @@ import { cursor } from "@milkdown/plugin-cursor";
 import { clipboard } from "@milkdown/plugin-clipboard";
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
-import '../css/milkdown.css'
+import '../../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
 import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
