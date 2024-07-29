@@ -67,6 +67,7 @@ export interface WorkspaceMaterialContextValue {
   pages: Page[];
   loading: boolean;
   specificationsLoading: boolean;
+  pagesLoading: boolean;
   loadWorkspaceData: (workspaceId: string, currentSelectedWorkspace: Workspace | null) => void;
   selectWorkspace: (workspaceId: string | null) => void;
   selectSpecification: (specificationId: string) => void;
@@ -91,6 +92,7 @@ const defaultValue: WorkspaceMaterialContextValue = {
   pages: [],
   loading: false,
   specificationsLoading: false,
+  pagesLoading: false,
   loadWorkspaceData: () => { },
   selectWorkspace: () => { },
   selectSpecification: () => { },
@@ -98,14 +100,8 @@ const defaultValue: WorkspaceMaterialContextValue = {
   addWorkspace: () => { },
   removeWorkspace: () => { },
   updateSpecification: () => { },
-  // getSpecifications: async (): Promise<Specification[]> => {
-  //   return [];
-  // },
   addSpecification: () => { },
   deleteSpecification: () => { },
-  // getLessonPages: async(): Promise<Page[]> => {
-  //   return []
-  // },
   addLessonPage: () => Promise.resolve(),
   updateLessonPage: () => { },
   selectPage: () => { },
@@ -123,8 +119,9 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const selectedPageId = useAppSelector((state: RootState) => state.workspace.selectedPageId);
   const loading = useAppSelector((state: RootState) => state.workspace.loading);
   const specifications = useAppSelector(selectSpecificationsForSelectedWorkspace);
-  const specificationsLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
+  const specificationsLoading = useAppSelector((state: RootState) => state.workspace.specificationsLoading);
   const pages = useAppSelector(selectPagesForSelectedWorkspace);
+  const pagesLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
 
   useEffect(() => {
     dispatch(fetchMaterials());
@@ -209,6 +206,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         pages,
         loading,
         specificationsLoading,
+        pagesLoading,
         loadWorkspaceData,
         selectWorkspace,
         selectSpecification,

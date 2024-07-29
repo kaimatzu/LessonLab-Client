@@ -116,12 +116,6 @@ export default function Material({ workspace }: { workspace: Workspace }) {
         ) : (
           <Quiz generationDisabled={generationDisabled} workspace={workspace} />
         )}
-{/* 
-        {viewMode === "chat" ? (<></>
-        ) : (
-          <>
-          </>
-        )} */}
 
         <Overlay isOpen={isChatOpen} onClose={closeChat} overlayName={"Chat"} overlayType="chat">
           <Chat

@@ -23,16 +23,16 @@ const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 c
   },
 });
 
-const overlayContainerStyles = cva('fixed top-0 right-0 bottom-0 left-0 m-auto bg-zinc-900 rounded-lg z-[260] transition-opacity', {
+const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-zinc-900 rounded-lg z-[260] transition-opacity', {
   variants: {
     hidden: {
       true: 'opacity-0',
       false: 'opacity-100',
     },
     overlayType: {
-      transaction: 'h-fit w-fit p-8',
-      auth: 'relative h-fit w-fit mx-auto p-8',
-      chat: 'w-3/4 h-3/4 bg-white px-8 pb-4 overflow-auto no-scrollbar',
+      transaction: 'bottom-0 h-fit w-fit p-8',
+      auth: 'bottom-0 relative h-fit w-fit mx-auto p-8',
+      chat: 'bottom-[20%] w-3/4 h-3/4 bg-white px-8 pb-4 overflow-auto no-scrollbar',
     },
   },
   defaultVariants: {
@@ -46,7 +46,7 @@ const headerStyles = cva('flex justify-between items-center py-2 px-4', {
     overlayType: {
       transaction: 'bg-zinc-900',
       auth: 'bg-zinc-900',
-      chat: 'bg-white border-b border-gray-200',
+      chat: 'bg-white border-b border-gray-200 mt-6',
     },
   },
   defaultVariants: {

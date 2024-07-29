@@ -5,7 +5,7 @@
 import { useChat } from "ai/react";
 import { ChatMessage } from "./chat-message";
 import UploadButton from "../../ui/ui-composite/chat/upload-button";
-import { Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
 import { PromptGrid } from "../../ui/ui-composite/chat/prompt-grid";
 import React, {
   ChangeEvent,
@@ -18,6 +18,7 @@ import FileCard from "../../ui/ui-base/file-card";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
 import { Message } from "ai";
+import { Specification } from "@/redux/slices/workspaceSlice";
 
 interface ChatProps {
   workspace: Workspace;
@@ -34,9 +35,22 @@ export const Chat: React.FC<ChatProps> = ({
   fetchFiles,
   handleDeleteFile,
 }) => {
+  const {
+    specifications,
+    selectedSpecificationId,
+  } = useWorkspaceMaterialContext();
+
+  const getCurrentSpecifications = (): Specification | {} => {
+    const specToLoad = selectedSpecificationId
+        ? specifications.find(spec => spec.id === selectedSpecificationId)
+        : specifications[0];
+
+    return specToLoad ? specToLoad : {};
+  }
+
   const { messages, input, handleInputChange, handleSubmit, isLoading } =
     useChat({
-      body: { namespaceId: workspace.id },
+      body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
     });
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
@@ -127,7 +141,7 @@ export const Chat: React.FC<ChatProps> = ({
       </div>
 
       {messages.length === 0 && (
-        <div className="relative flex flex-col items-center justify-start h-full">
+        <div className="relative flex flex-col items-center justify-center h-full">
           {!fetchingFiles &&
             (files.length > 0 ? (
               <PromptGrid
@@ -152,7 +166,7 @@ export const Chat: React.FC<ChatProps> = ({
         onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
           handleSubmit(e)
         }
-        className="fixed bottom-[10%] w-full md:max-w-[73vw] z-50 pb-10 pr-16"
+        className="fixed bottom-0 w-full md:max-w-[73vw] z-50 pb-10 pr-16"
       >
         {/* Prompt area */}
         <div className="flex flex-row items-center h-fit mb-4">

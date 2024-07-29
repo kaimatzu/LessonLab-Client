@@ -97,7 +97,11 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             },
             
             // Directives for Rendering Components           
-            'artifact': Artifact
+            'artifact': (props: any) => {
+              const {name, children} = props;
+              console.log("message", message.content, message.data);
+              return (<Artifact name={name} children={children} message={message.content}/>) 
+            }
 
           } as Components}
         >

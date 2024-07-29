@@ -41,7 +41,7 @@ export const runtime = "edge";
  */
 
 export async function POST(request: Request) {
-  const { messages, namespaceId } = await request.json();
+  const { messages, namespaceId, specifications } = await request.json();
 
   const requestBuilder = new RequestBuilder()
     .setURL(`${process.env.SERVER_URL}/api/context/fetch`)
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
     .setBody(JSON.stringify({
       namespaceId: namespaceId,
       messages: messages,
+      specifications: specifications,
     }));
 
   const response = await fetch(requestBuilder.build());

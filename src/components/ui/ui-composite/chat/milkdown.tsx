@@ -121,6 +121,7 @@ function addBlock(editorState: EditorState, tr: Transaction, schema: any): Trans
 
 const MilkdownEditor: React.FC = () => {
   const { workspaces, removeWorkspace,
+    pagesLoading,
     selectedWorkspace,
     selectedPageId,
     updateLessonPage
@@ -251,7 +252,6 @@ const MilkdownEditor: React.FC = () => {
     const editor = get();
 
     if (selectedWorkspace && selectedWorkspace.pages && selectedPageId && editor) {
-
       const foundPage = selectedWorkspace.pages.find(page => page.id === selectedPageId);
       if (foundPage) {
         console.log("This is getting called for some reason");
@@ -264,7 +264,7 @@ const MilkdownEditor: React.FC = () => {
       console.info("Workspace has no pages.");
       // setLessonPage({ id: '', title: '', content: '' });
     }
-  }, [selectedPageId]);
+  }, [selectedPageId, pagesLoading]);
 
   const printBlocks = () => {
     if (get && selectedWorkspace && selectedPageId) {
