@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './chat/tooltip';
-import '../css/sidenav.css'
+import '../css/custom-scrollbar.css'
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);

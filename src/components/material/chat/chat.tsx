@@ -127,7 +127,7 @@ export const Chat: React.FC<ChatProps> = ({
       </div>
 
       {messages.length === 0 && (
-        <div className="relative flex flex-col items-center justify-center h-full">
+        <div className="relative flex flex-col items-center justify-start h-full">
           {!fetchingFiles &&
             (files.length > 0 ? (
               <PromptGrid
@@ -152,7 +152,7 @@ export const Chat: React.FC<ChatProps> = ({
         onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
           handleSubmit(e)
         }
-        className="fixed bottom-0 w-full max-w-[300px] sm:max-w-[400px] md:max-w-2xl z-50 pb-10"
+        className="fixed bottom-[10%] w-full md:max-w-[73vw] z-50 pb-10 pr-16"
       >
         {/* Prompt area */}
         <div className="flex flex-row items-center h-fit mb-4">

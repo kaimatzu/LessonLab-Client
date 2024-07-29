@@ -13,6 +13,7 @@ import { MilkdownEditorWrapper } from "../ui/ui-composite/chat/milkdown";
 import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
+import Overlay from "../ui/ui-base/overlay";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -80,7 +81,11 @@ export default function Material({ workspace }: { workspace: Workspace }) {
 
   useEffect(() => { loadWorkspace() }, [loadWorkspace]);
 
-  const [viewMode, setViewMode] = useState("markdown"); // 'chat' or 'markdown'
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false); // 'chat' or 'markdown'
+
+  const closeChat = () => {
+    setIsChatOpen(false);
+  };
 
   const handleGenerationDisabledChanged = (newValue: boolean) => {
     setGenerationDisabled(newValue)
@@ -91,21 +96,34 @@ export default function Material({ workspace }: { workspace: Workspace }) {
       <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
         <div className="flex flex-row h-fit w-full items-start justify-start">
           <button
-            onClick={() =>
-              setViewMode(viewMode === "chat" ? "markdown" : "chat")
+            onClick={() => {
+              setIsChatOpen(true);
+            }
             }
             className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
           >
             <div className="flex flex-row items-start justify-start text-foreground">
               <IoIosSwap className="w-6 h-6 mr-2" />
-              {viewMode === "chat"
+              {isChatOpen
                 ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
                 : "Switch to Chat"}
             </div>
           </button>
         </div>
 
-        {viewMode === "chat" ? (
+        {workspace.materialType === "LESSON" ? (
+          <MilkdownEditorWrapper />
+        ) : (
+          <Quiz generationDisabled={generationDisabled} workspace={workspace} />
+        )}
+{/* 
+        {viewMode === "chat" ? (<></>
+        ) : (
+          <>
+          </>
+        )} */}
+
+        <Overlay isOpen={isChatOpen} onClose={closeChat} overlayName={"Chat"} overlayType="chat">
           <Chat
             workspace={workspace}
             fetchingFiles={fetchingFiles}
@@ -113,15 +131,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
             fetchFiles={fetchFiles}
             handleDeleteFile={handleDeleteFile}
           />
-        ) : (
-          <>
-            {workspace.materialType === "LESSON" ? (
-              <MilkdownEditorWrapper />
-            ) : (
-              <Quiz generationDisabled={generationDisabled} workspace={workspace} />
-            )}
-          </>
-        )}
+        </Overlay>
 
       </div>
       <SidenavMaterial

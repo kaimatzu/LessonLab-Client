@@ -37,7 +37,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
   };
 
   return (
-    <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} closable={false}>
+    <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} overlayType="auth">
       <div className="pt-4">
         <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
         {loading && <p>Loading...</p>}

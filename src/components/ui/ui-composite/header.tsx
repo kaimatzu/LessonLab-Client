@@ -73,7 +73,7 @@ const Header: React.FC = () => {
           <Image src={profileIcon} alt="Profile" width={40} height={32} className="cursor-pointer" />
         </div>
 
-        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} closable={true}>
+        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} overlayType="transaction">
           {transactionOngoing && (
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="loader text-white">Transaction Ongoing...</div>

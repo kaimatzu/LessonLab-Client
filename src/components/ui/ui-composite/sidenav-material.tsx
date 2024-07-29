@@ -7,7 +7,7 @@ import {
   useWorkspaceMaterialContext,
   Workspace,
 } from "@/lib/hooks/context-providers/workspace-material-context";
-import "../css/sidenav.css";
+import "../css/custom-scrollbar.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
 import { FetchedFile } from "@/app/api/files/route";

@@ -1,13 +1,14 @@
 import React, { useEffect, ReactNode } from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils'; // Adjust the import path to your actual utils file
+import '../css/custom-scrollbar.css'
 
 interface OverlayProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
   overlayName: string;
-  closable: boolean;
+  overlayType: 'transaction' | 'auth' | 'chat';
 }
 
 const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 cursor-pointer transition-opacity z-[250]', {
@@ -22,66 +23,86 @@ const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 c
   },
 });
 
-const overlayContainerStyles = cva('fixed h-fit w-fit top-0 right-0 bottom-0 left-0 m-auto p-8 bg-zinc-900 rounded-lg z-[260] transition-opacity', {
+const overlayContainerStyles = cva('fixed top-0 right-0 bottom-0 left-0 m-auto bg-zinc-900 rounded-lg z-[260] transition-opacity', {
   variants: {
     hidden: {
       true: 'opacity-0',
       false: 'opacity-100',
     },
-  },
-  defaultVariants: {
-    hidden: false,
-  },
-});
-
-const embeddedOverlayContainerStyles = cva('relative h-fit w-fit mx-auto p-8 bg-zinc-900 rounded-lg transition-opacity', {
-  variants: {
-    hidden: {
-      true: 'opacity-0',
-      false: 'opacity-100',
+    overlayType: {
+      transaction: 'h-fit w-fit p-8',
+      auth: 'relative h-fit w-fit mx-auto p-8',
+      chat: 'w-3/4 h-3/4 bg-white px-8 pb-4 overflow-auto no-scrollbar',
     },
   },
   defaultVariants: {
     hidden: false,
+    overlayType: 'transaction',
   },
 });
 
-export default function Overlay({ isOpen, onClose, children, overlayName, closable }: OverlayProps) {
+const headerStyles = cva('flex justify-between items-center py-2 px-4', {
+  variants: {
+    overlayType: {
+      transaction: 'bg-zinc-900',
+      auth: 'bg-zinc-900',
+      chat: 'bg-white border-b border-gray-200',
+    },
+  },
+  defaultVariants: {
+    overlayType: 'transaction',
+  },
+});
+
+export default function Overlay({ isOpen, onClose, children, overlayName, overlayType }: OverlayProps) {
+  const isClosable = overlayType !== 'auth';
+
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && closable) {
+      if (event.key === 'Escape' && isClosable) {
         onClose();
       }
     };
 
-    if (isOpen && closable) {
+    if (isOpen && isClosable) {
       document.addEventListener('keydown', handleEscapeKey);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [isOpen, onClose, closable]);
+  }, [isOpen, onClose, isClosable]);
 
   return (
     <>
       {isOpen && (
-        <div className={closable ? 'fixed top-0 left-0 z-[999] overlay' : 'relative w-full overlay'}>
-          {closable && (
+        <div className={isClosable ? 'fixed top-0 left-0 z-[999] overlay' : 'relative w-full overlay'}>
+          {isClosable && (
             <div
               className={cn(overlayBackgroundStyles({ hidden: !isOpen }), 'overlay-background')}
               onClick={onClose}
             />
           )}
           <div className={cn(
-            closable ? overlayContainerStyles({ hidden: !isOpen }) : embeddedOverlayContainerStyles({ hidden: !isOpen }),
+            overlayContainerStyles({ hidden: !isOpen, overlayType }),
             'overlay-container'
           )}>
-            <div className="flex justify-between items-center py-1">
-              <h1 className="text-2xl font-semibold text-white">{overlayName}</h1>
-              {closable && (
+            <div className={cn(
+              headerStyles({ overlayType }),
+              overlayType === 'chat' ? 'sticky top-0 z-10' : ''
+            )}>
+              <h1 className={cn(
+                "text-2xl font-semibold",
+                overlayType === 'chat' ? 'text-black' : 'text-white'
+              )}>
+                {overlayName}
+              </h1>
+              {isClosable && (
                 <button
-                  className="border-none bg-transparent text-white text-2xl cursor-pointer hover:bg-yellow-500 rounded-full"
+                  className={cn(
+                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center",
+                    overlayType === 'chat' ? 'text-black' : 'text-white'
+                  )}
                   type="button"
                   onClick={onClose}
                 >
@@ -89,60 +110,12 @@ export default function Overlay({ isOpen, onClose, children, overlayName, closab
                 </button>
               )}
             </div>
-            {children}
+            <div className={overlayType === 'chat' ? 'flex-grow overflow-auto p-4 no-scrollbar' : ''}>
+              {children}
+            </div>
           </div>
         </div>
       )}
     </>
   );
 }
-
-
-// export default function Overlay({ isOpen, onClose, children, overlayName, closable }: OverlayProps) {
-//   useEffect(() => {
-//     const handleEscapeKey = (event: KeyboardEvent) => {
-//       if (event.key === 'Escape' && closable) {
-//         onClose();
-//       }
-//     };
-
-//     if (isOpen) {
-//       document.addEventListener('keydown', handleEscapeKey);
-//     }
-
-//     return () => {
-//       document.removeEventListener('keydown', handleEscapeKey);
-//     };
-//   }, [isOpen, onClose, closable]);
-
-
-//   return (
-//     <>
-//       {isOpen && (
-//         <div className="fixed top-0 left-0 z-[999] overlay">
-//           {closable && (
-//             <div
-//               className={cn(overlayBackgroundStyles({ hidden: !isOpen }), 'overlay-background')}
-//               onClick={onClose}
-//             />
-//           )}
-//           <div className={cn(overlayContainerStyles({ hidden: !isOpen }), 'overlay-container')}>
-//             <div className="flex justify-between items-center py-1">
-//               <h1 className="text-2xl font-semibold text-white">{overlayName}</h1>
-//               {closable && (
-//                 <button
-//                   className="border-none bg-transparent text-white text-2xl cursor-pointer hover:bg-yellow-500 rounded-full"
-//                   type="button"
-//                   onClick={onClose}
-//                 >
-//                   &times;
-//                 </button>
-//               )}
-//             </div>
-//             {children}
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };

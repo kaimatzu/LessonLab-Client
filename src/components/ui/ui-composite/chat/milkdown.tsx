@@ -4,10 +4,12 @@ import {   Editor,
   defaultValueCtx,
   editorViewCtx,
   schemaCtx,
-  editorStateCtx
+  editorStateCtx,
+  parserCtx
 } from '@milkdown/core';
 import { nord } from '@milkdown/theme-nord';
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/react';
+import { Parser } from '@milkdown/transformer';
 import { commonmark } from '@milkdown/preset-commonmark';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
 import {
@@ -30,6 +32,7 @@ import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/contex
 import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
+import { EditorState, Transaction } from 'prosemirror-state';
 
 export const BlockView = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -78,6 +81,43 @@ function getAllBlocks(doc: ProseMirrorNode): ProseMirrorNode[] {
 
   return blocks;
 }
+
+
+// function addBlock(editorState: EditorState, tr: Transaction, schema: any): Transaction {
+//   const { from, to } = editorState.selection;
+//   const textNode = schema.text('test');
+//   console.log("Schema paragraph nodes", schema.nodes.paragraph);
+//   console.log("Create paragraph node", schema.nodes.paragraph.create(null, textNode));
+//   const paragraph = schema.nodes.paragraph.create(null, textNode);
+
+//   console.log("Schema block nodes", schema.nodes.block);
+//   console.log("Create block node", schema.nodes.block.create(null, paragraph));
+//   const newBlock = schema.nodes.block.create(null, paragraph);
+//   return tr.insert(to + 1, newBlock);
+// }
+function markdownToNodes(ctx: Ctx, markdown: string): ProseMirrorNode | null {
+  const parser = ctx.get(parserCtx) as Parser;
+  const doc = parser(markdown);
+  return doc;
+}
+
+function addBlock(editorState: EditorState, tr: Transaction, schema: any): Transaction {
+  const { from, to } = editorState.selection;
+  const textNode = schema.text('test');
+
+  console.log("Schema", schema);
+  console.log("Schema nodes", schema.nodes);
+  
+  console.log("Transaction", tr);
+  console.log("Transaction doc", tr.doc.toJSON());
+
+  const paragraph = schema.nodes.paragraph.create(null, textNode);
+  console.log("Schema paragraph nodes", schema.nodes.paragraph);
+  console.log("Create paragraph node", paragraph);
+
+  return tr.insert(to + 1, paragraph);
+}
+
 
 const MilkdownEditor: React.FC = () => {
   const { workspaces, removeWorkspace,
@@ -208,19 +248,21 @@ const MilkdownEditor: React.FC = () => {
     );
   
   useEffect(() => {
-    if (selectedWorkspace && selectedWorkspace.pages && selectedPageId) {
-      console.log(selectedWorkspace, selectedPageId)
+    const editor = get();
+
+    if (selectedWorkspace && selectedWorkspace.pages && selectedPageId && editor) {
+
       const foundPage = selectedWorkspace.pages.find(page => page.id === selectedPageId);
       if (foundPage) {
-        console.log("This is getting called for some reason")
+        console.log("This is getting called for some reason");
         setLessonPage({ id: foundPage.id, title: foundPage.title, content: foundPage.content });
-        get()?.action(replaceAll(foundPage.content));
+        editor.action(replaceAll(foundPage.content));
       } else {
         console.warn("Page not found.");
       }
     } else {
-      console.log("Workspace has no pages.");
-      setLessonPage({ id: '', title: '', content: '' });
+      console.info("Workspace has no pages.");
+      // setLessonPage({ id: '', title: '', content: '' });
     }
   }, [selectedPageId]);
 
@@ -235,6 +277,29 @@ const MilkdownEditor: React.FC = () => {
           const blocks = getAllBlocks(doc);
           console.log('Blocks:', blocks);
         }
+    }
+  }
+
+  const addNewBlock = () => {
+    if (get) {
+      const editor = get();
+
+      if(editor) {
+        const view = editor.ctx.get(editorViewCtx);
+        const schema = editor.ctx.get(schemaCtx);
+  
+        // const tr = addBlock(view.state, view.state.tr, schema);
+        // view.dispatch(tr);
+        const ctx = editor.ctx;
+
+        const markdown = '# This is a test block\n\nThis is some test content for the new block.';
+        const doc = markdownToNodes(ctx, markdown);
+  
+        if (doc) {
+          const tr = view.state.tr.insert(view.state.selection.to + 1, doc.content);
+          view.dispatch(tr);
+        }
+      }
     }
   }
 
@@ -261,7 +326,8 @@ const MilkdownEditor: React.FC = () => {
 
   return (
     <div>
-      {/* <button onClick={printBlocks}>Print blocks</button> */}
+      <button onClick={printBlocks}>Print blocks</button>
+      <button onClick={addNewBlock}>Add block</button>
       <input
         type="text"
         value={lessonPage.title}
