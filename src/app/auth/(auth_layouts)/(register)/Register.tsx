@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import Overlay from "@/components/ui/ui-base/overlay";
-import RegisterForm from "@/components/ui/ui-composite/register-form";
+import RegisterForm from "@/components/ui/ui-composite/auth/register-form";
 import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 

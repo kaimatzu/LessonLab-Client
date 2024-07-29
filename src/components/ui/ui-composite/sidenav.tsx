@@ -6,7 +6,7 @@ import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
-import { Tooltip } from './tooltip';
+import { Tooltip } from './chat/tooltip';
 import '../css/sidenav.css'
 
 const Sidenav: React.FC = () => {

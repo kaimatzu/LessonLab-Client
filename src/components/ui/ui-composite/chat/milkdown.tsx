@@ -34,7 +34,15 @@ const MilkdownEditor: React.FC = () => {
     updateLessonPage
   } = useWorkspaceMaterialContext();
 
-  const [content, setContent] = useState("");
+  const getInitialContent = () => {
+    if (selectedWorkspace && selectedWorkspace.pages) {
+      const selectedPage = selectedWorkspace.pages.find(page => page.id === selectedPageId);
+      return selectedPage ? selectedPage.content : '';
+    }
+    return '';
+  };
+  
+  const [content, setContent] = useState(getInitialContent);
   
   const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
