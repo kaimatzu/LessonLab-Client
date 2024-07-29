@@ -7,8 +7,8 @@ const POST = async (req: Request) => {
   if (!body) return Response.json({ message: 'Bad request' })
 
   // const count = body.count
-  // const prompt = body.prompt
-  // console.log(prompt)
+  const prompt = body.prompt
+  console.log(prompt)
 
   const result = await streamObject({
     system: 'You are a quiz generator that will generate questions and the answer keys according to the user\'s topic.',
@@ -34,7 +34,7 @@ const POST = async (req: Request) => {
         .array()
       // .length(body.count),
     }),
-    prompt: body.prompt
+    prompt: prompt
   })
 
   return result.toTextStreamResponse()
