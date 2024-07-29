@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 // NOTE(hans): Update Vercel AI SDK to use `useObject` hook
 import { experimental_useObject as useObject } from 'ai/react'
@@ -9,7 +9,7 @@ import { Input } from '../ui/ui-base/input';
 import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
-import { IsGenerationDisabledContext } from './material';
+import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 
 type Choice = {
   content: string | undefined
@@ -76,9 +76,16 @@ const fetchFileUrls = async (workspaceId: string) => {
 
 // Use object for quiz generation
 // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-object
-const Quiz = () => {
 
-  const ctx = useContext(IsGenerationDisabledContext)
+interface QuizProps {
+  generationDisabled: boolean
+  workspace: Workspace
+}
+
+const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
+
+  const { selectedSpecificationId } = useWorkspaceMaterialContext()
+
 
   // const items: ItemType[] = []
   const items: ItemType[] = [
@@ -126,7 +133,12 @@ const Quiz = () => {
 
   return (
     <div className='flex flex-col gap-4 h-full items-center justify-center'>
-      {object?.items?.length === 0 || !object || !object.items ? <Button className='' disabled={ctx?.generationDisabled} onClick={() => { }}>Generate</Button> : object?.items?.map((item, index) => {
+      {object?.items?.length === 0 || !object || !object.items ? <Button disabled={generationDisabled} onClick={() => {
+        workspace.specifications.map(specification => {
+          if (specification.id === selectedSpecificationId)
+            submit({ namespaceId: workspace.id, prompt: specification.topic })
+        })
+      }}>Generate</Button> : object?.items?.map((item, index) => {
         // convert from zod to type
         // check what type
         // assign depending on the type
