@@ -3,7 +3,8 @@ import {   Editor,
   rootCtx,
   defaultValueCtx,
   editorViewCtx,
-  schemaCtx
+  schemaCtx,
+  editorStateCtx
 } from '@milkdown/core';
 import { nord } from '@milkdown/theme-nord';
 import { Milkdown, MilkdownProvider, useEditor, useInstance } from '@milkdown/react';
@@ -16,16 +17,67 @@ import {
   // defaultButtons,
 } from "@milkdown/plugin-tooltip";
 import { prism } from '@milkdown/plugin-prism';
-import { block } from "@milkdown/plugin-block";
+import { block, BlockProvider } from "@milkdown/plugin-block";
+import { history } from '@milkdown/plugin-history';
 import { cursor } from "@milkdown/plugin-cursor";
 import { clipboard } from "@milkdown/plugin-clipboard";
 import '@milkdown/theme-nord/style.css';
 import 'prismjs/themes/prism-okaidia.css';
 import '../../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
+import { ProsemirrorAdapterProvider, usePluginViewFactory } from '@prosemirror-adapter/react';
 import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
+import { Node as ProseMirrorNode } from 'prosemirror-model';
+
+export const BlockView = () => {
+  const ref = useRef<HTMLDivElement>(null)
+  const tooltipProvider = useRef<BlockProvider>()
+
+  const [loading, get] = useInstance()
+
+  useEffect(() => {
+      const div = ref.current
+      if (loading || !div) return;
+
+      const editor = get();
+      if (!editor) return;
+
+      tooltipProvider.current = new BlockProvider({
+          ctx: editor.ctx,
+          content: div,
+      })
+      tooltipProvider.current?.update()
+
+      return () => {
+          tooltipProvider.current?.destroy()
+      }
+  }, [loading])
+
+  return (
+      <div ref={ref} className="absolute w-6 bg-slate-200 rounded hover:bg-slate-300 cursor-grab">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+          </svg>
+      </div>
+  )
+}
+
+function getAllBlocks(doc: ProseMirrorNode): ProseMirrorNode[] {
+  const blocks: ProseMirrorNode[] = [];
+
+  function traverse(node: ProseMirrorNode) {
+      if (node.isBlock) {
+          blocks.push(node);
+      }
+      node.forEach(child => traverse(child));
+  }
+
+  traverse(doc);
+
+  return blocks;
+}
 
 const MilkdownEditor: React.FC = () => {
   const { workspaces, removeWorkspace,
@@ -68,13 +120,18 @@ const MilkdownEditor: React.FC = () => {
     lessonTitleRef.current = lessonPage.title
   }, [lessonPage]);
   
+  const pluginViewFactory = usePluginViewFactory();
+
   const { get } = useEditor((root) =>
     Editor.make()
       .config((ctx) => {
         ctx.set(rootCtx, root);
-        // ctx.set(defaultValueCtx, initialContent);
         ctx.set(defaultValueCtx, content);
-        // ctx.set(headingIdGeneratorCtx, true);
+        ctx.set(block.key, {
+          view: pluginViewFactory({
+            component: BlockView,
+          })
+        });
         ctx
         .get(listenerCtx)
         .beforeMount((ctx) => {
@@ -138,7 +195,7 @@ const MilkdownEditor: React.FC = () => {
         })
         .destroy((ctx) => {
           console.log("destroy");
-        });
+        })
       })
       .config(nord) // Editor Theme
       .use(commonmark)
@@ -147,15 +204,7 @@ const MilkdownEditor: React.FC = () => {
       .use(block)
       .use(cursor)
       .use(clipboard)
-      // .config((ctx) => {
-      //   ctx.get(listenerCtx).markdownUpdated((ctx, markdown) => {
-      //     console.log(markdown); // Handle the editor content change as needed
-      //     setLessonPage(lessonPage => ({
-      //       ...lessonPage,
-      //       content: markdown
-      //     }));
-      //   });
-      // }),
+      .use(history)
     );
   
   useEffect(() => {
@@ -163,6 +212,7 @@ const MilkdownEditor: React.FC = () => {
       console.log(selectedWorkspace, selectedPageId)
       const foundPage = selectedWorkspace.pages.find(page => page.id === selectedPageId);
       if (foundPage) {
+        console.log("This is getting called for some reason")
         setLessonPage({ id: foundPage.id, title: foundPage.title, content: foundPage.content });
         get()?.action(replaceAll(foundPage.content));
       } else {
@@ -172,7 +222,21 @@ const MilkdownEditor: React.FC = () => {
       console.log("Workspace has no pages.");
       setLessonPage({ id: '', title: '', content: '' });
     }
-  }, [selectedPageId, selectedWorkspace]);
+  }, [selectedPageId]);
+
+  const printBlocks = () => {
+    if (get && selectedWorkspace && selectedPageId) {
+        const editor = get();
+
+        if (editor) {
+          const state = editor.ctx.get(editorStateCtx);
+          const doc = state.doc;
+
+          const blocks = getAllBlocks(doc);
+          console.log('Blocks:', blocks);
+        }
+    }
+  }
 
   useEffect(() => {
     if (content) {
@@ -195,14 +259,9 @@ const MilkdownEditor: React.FC = () => {
     };
   }, [content]);
 
-  useEffect(() => {
-    // console.log(selectedWorkspace, selectedPageId);
-    // console.log("Title", lessonPage.title);
-    // console.log("Content", content);
-  }, [content, lessonPage.title]);
-
   return (
     <div>
+      {/* <button onClick={printBlocks}>Print blocks</button> */}
       <input
         type="text"
         value={lessonPage.title}
@@ -232,7 +291,9 @@ const MilkdownEditor: React.FC = () => {
 export const MilkdownEditorWrapper: React.FC = () => {
   return (
     <MilkdownProvider>
-        <MilkdownEditor />
+       <ProsemirrorAdapterProvider>
+          <MilkdownEditor />
+       </ProsemirrorAdapterProvider>
     </MilkdownProvider>
   );
 };
