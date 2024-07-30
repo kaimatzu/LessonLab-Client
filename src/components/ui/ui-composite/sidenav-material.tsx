@@ -69,6 +69,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
 
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
+  const [numItems, setNumItems] = useState(5)
   const [writingLevel, setWritingLevel] = useState('Elementary');
   const [comprehensionLevel, setComprehensionLevel] = useState('Simple');
   const [additionalSpecs, setAdditionalSpecs] = useState<AdditionalSpecification[]>([]);
@@ -452,6 +453,24 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                 ) : (
                   <></>
                 )}
+                {
+                  workspace.materialType === 'QUIZ' ?
+                    <>
+                      <div className="text-sm text-zinc-500">Number of Items</div>
+                      <input
+                        type='number'
+                        className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
+                        value={numItems}
+                        onChange={e => {
+                          const value = parseInt(e.target.value)
+                          if (value < 1)
+                            return
+                          setNumItems(value)
+                        }}
+                      />
+                    </>
+                    : null
+                }
                 <div className="text-sm text-zinc-500">Topic</div>
                 <div
                   className={`${isTopicFocused ? 'border border-primary' : 'border'} border-border p-2 rounded cursor-pointer`}
