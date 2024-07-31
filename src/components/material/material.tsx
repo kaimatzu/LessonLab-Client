@@ -41,6 +41,8 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [generationDisabled, setGenerationDisabled] = useState(true);
+  // const [name, setName] = useState('')
+  // const [topic, setTopic] = useState('')
 
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
@@ -69,6 +71,11 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     setFiles(files);
     setFetchingFiles(false);
   }, [workspace.id]);
+
+  // TODO: update workspace data (specifications)
+  const handleWorkspaceChange = (newWorkspace: Workspace) => {
+    workspace = newWorkspace
+  }
 
   useEffect(() => { fetchFiles() }, [fetchFiles]);
 

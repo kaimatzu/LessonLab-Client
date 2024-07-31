@@ -219,10 +219,19 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     }
     const requestBuilder = new RequestBuilder().setBody(JSON.stringify({ MaterialID: selectedWorkspace.id }));
     const result = await _addNewSpecification(requestBuilder);
-    const newSpec: Specification = {
+
+    const newSpec: Specification = workspace.materialType === 'LESSON' ? {
       id: result.SpecificationID,
       name: '',
       topic: '',
+      writingLevel: 'Elementary',
+      comprehensionLevel: 'Simple',
+      additionalSpecs: [],
+    } : {
+      id: result.SpecificationID,
+      name: '',
+      topic: '',
+      numItems: 10,
       writingLevel: 'Elementary',
       comprehensionLevel: 'Simple',
       additionalSpecs: [],
@@ -446,7 +455,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     type="text"
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
-                    onChange={(e) => { 
+                    onChange={(e) => {
                       setName(e.target.value);
                       if (selectedWorkspace && selectedWorkspace.id && selectedSpecificationId) {
                         updateSpecificationName(selectedWorkspace.id, selectedSpecificationId, e.target.value);
@@ -474,6 +483,15 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                           if (value < 1)
                             return
                           setNumItems(value)
+                          workspace.specifications.map(specification => {
+                            if (specification.id === selectedSpecificationId) {
+                              specification = {
+                                ...specification,
+                                numItems: value,
+                              }
+                            }
+                          })
+
                         }}
                       />
                     </>
