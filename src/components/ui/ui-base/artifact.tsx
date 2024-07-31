@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, memo, useState } from 'react';
 
 interface ArtifactProps {
   name: string;
@@ -6,8 +6,8 @@ interface ArtifactProps {
   message: string;
 }
 
-const Artifact: React.FC<ArtifactProps> = ({ name, children, message }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const Artifact: FC<ArtifactProps> = memo(({ name, children, message }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -49,7 +49,7 @@ const Artifact: React.FC<ArtifactProps> = ({ name, children, message }) => {
       {isExpanded && <div className="mt-2">{children}</div>}
     </div>
   );
-};
+});
 
-export default React.memo(Artifact);
+export default Artifact;
 

@@ -17,9 +17,11 @@ import {
   removeWorkspace,
   addSpecification,
   updateSpecification,
+  updateSpecificationName,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,
+  updateLessonPageTitle,
   fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
   selectPagesForSelectedWorkspace
@@ -75,10 +77,12 @@ export interface WorkspaceMaterialContextValue {
   addWorkspace: (workspace: Workspace) => void;
   removeWorkspace: (workspaceId: string) => void;
   updateSpecification: (workspaceId: string, specification: Specification) => void;
+  updateSpecificationName: (workspaceId: string, specificationId: string, name: string) => void;
   addSpecification: (workspaceId: string, specification: Specification) => void;
   deleteSpecification: (workspaceId: string, specificationId: string) => void;
   addLessonPage: (lessonId: string, page: Page) => void;
   updateLessonPage: (lessonId: string, updatedPage: Page) => void;
+  updateLessonPageTitle: (lessonId: string, pageId: string, title: string) => void;
   selectPage: (pageId: string) => void;
 }
 
@@ -100,10 +104,12 @@ const defaultValue: WorkspaceMaterialContextValue = {
   addWorkspace: () => { },
   removeWorkspace: () => { },
   updateSpecification: () => { },
+  updateSpecificationName: () => { },
   addSpecification: () => { },
   deleteSpecification: () => { },
   addLessonPage: () => Promise.resolve(),
   updateLessonPage: () => { },
+  updateLessonPageTitle: () => { },
   selectPage: () => { },
 };
 
@@ -178,6 +184,10 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     dispatch(updateSpecification({ workspaceId, specification }));
   };
 
+  const updateSpecificationNameHandler = (workspaceId: string, specificationId: string, name: string) => {
+    dispatch(updateSpecificationName({ workspaceId, specificationId, name }))
+  };
+  
   const deleteSpecificationHandler = (workspaceId: string, specificationId: string) => {
     dispatch(deleteSpecification({ workspaceId, specificationId }));
   };
@@ -188,6 +198,10 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
 
   const updateLessonPageHandler = (lessonId: string, updatedPage: Page) => {
     dispatch(updateLessonPage({ lessonId, updatedPage }));
+  };
+
+  const updateLessonPageTitleHandler = (lessonId: string, pageId: string, title: string) => {
+    dispatch(updateLessonPageTitle({ lessonId, pageId, title}))
   };
 
   const selectPage = (pageId: string) => {
@@ -215,9 +229,11 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         removeWorkspace: removeWorkspaceHandler,
         addSpecification: addSpecificationHandler,
         updateSpecification: updateSpecificationHandler,
+        updateSpecificationName: updateSpecificationNameHandler,
         deleteSpecification: deleteSpecificationHandler,
         addLessonPage: addLessonPageHandler,
         updateLessonPage: updateLessonPageHandler,
+        updateLessonPageTitle: updateLessonPageTitleHandler,
         selectPage,
       }}
     >

@@ -13,14 +13,14 @@ import { POST as uploadFile } from "@/app/api/files/route";
 import { FetchedFile } from "@/app/api/files/route";
 import {
   POST as _addNewSpecification, DELETE as _deleteCurrentSpecification,
-  updateSpecificationName,
-  updateSpecificationTopic,
-  updateSpecificationWritingLevel,
-  updateSpecificationComprehensionLevel,
-  fetchAdditionalSpecifications,
-  insertAdditionalSpecification,
-  updateAdditionalSpecification,
-  removeAdditionalSpecification,
+  updateSpecificationName as _updateSpecificationName,
+  updateSpecificationTopic as _updateSpecificationTopic,
+  updateSpecificationWritingLevel as _updateSpecificationWritingLevel,
+  updateSpecificationComprehensionLevel as _updateSpecificationComprehensionLevel,
+  fetchAdditionalSpecifications as _fetchAdditionalSpecifications,
+  insertAdditionalSpecification as _insertAdditionalSpecification,
+  updateAdditionalSpecification as _updateAdditionalSpecification,
+  removeAdditionalSpecification as _removeAdditionalSpecification,
 } from "@/app/api/material/specification/route"
 import { POST as _addLessonPage } from '@/app/api/material/page/route'
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
@@ -55,6 +55,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     selectedSpecificationId,
     pages,
     updateSpecification,
+    updateSpecificationName,
     addSpecification,
     deleteSpecification,
     selectSpecification,
@@ -249,7 +250,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
       setWritingLevel(spec.writingLevel);
       setComprehensionLevel(spec.comprehensionLevel);
 
-      const data = await fetchAdditionalSpecifications(spec.id);
+      const data = await _fetchAdditionalSpecifications(spec.id);
       const additionalSpecifications = data.map((additionalSpec: any) => ({
         id: additionalSpec.AdditionalSpecID,
         content: additionalSpec.SpecificationText,
@@ -289,7 +290,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   };
 
   const addAdditionalSpecField = async () => {
-    const result = await insertAdditionalSpecification(additionalSpecs.length, selectedSpecificationId!, additionalSpecs);
+    const result = await _insertAdditionalSpecification(additionalSpecs.length, selectedSpecificationId!, additionalSpecs);
     if (result) {
       setAdditionalSpecs([...additionalSpecs, { id: result.newSpecId, content: '' }]);
     }
@@ -444,8 +445,15 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     type="text"
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    onBlur={(e) => { updateSpecificationName(selectedSpecificationId!, e.target.value) }}
+                    onChange={(e) => { 
+                      setName(e.target.value);
+                      if (selectedWorkspace && selectedWorkspace.id && selectedSpecificationId) {
+                        updateSpecificationName(selectedWorkspace.id, selectedSpecificationId, e.target.value);
+                      } else {
+                        console.log(selectedWorkspace, selectedSpecificationId)
+                      }
+                    }}
+                    onBlur={(e) => { _updateSpecificationName(selectedSpecificationId!, e.target.value) }}
                     onKeyDown={(e) => handleInputKeyDown(e, () => { })}
                     placeholder="Specification Name"
                   />
@@ -463,7 +471,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                       className="w-full h-20 p-2 bg-background placeholder-zinc"
                       value={topic}
                       onChange={(e) => setTopic(e.target.value)}
-                      onBlur={(e) => updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
+                      onBlur={(e) => _updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
                       onKeyDown={(e) => handleTextareaKeyDown(e, () => { })}
                       placeholder="Provide a topic..."
                     />
@@ -477,7 +485,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   value={writingLevel}
                   onChange={(e) => {
                     setWritingLevel(e.target.value);
-                    updateSpecificationWritingLevel(selectedSpecificationId!, e.target.value);
+                    _updateSpecificationWritingLevel(selectedSpecificationId!, e.target.value);
                   }}
                 >
                   <option>Elementary</option>
@@ -491,7 +499,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   value={comprehensionLevel}
                   onChange={(e) => {
                     setComprehensionLevel(e.target.value);
-                    updateSpecificationComprehensionLevel(selectedSpecificationId!, e.target.value);
+                    _updateSpecificationComprehensionLevel(selectedSpecificationId!, e.target.value);
                   }}
                 >
                   <option className="border-border">Simple</option>
@@ -512,7 +520,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                         value={spec.content}
                         onChange={(e) => handleAdditionalSpecChange(index, e.target.value)}
                         onBlur={(e) => {
-                          e.target.value === '' ? removeAdditionalSpecification(index, additionalSpecs) : updateAdditionalSpecification(index, e.target.value, additionalSpecs);
+                          e.target.value === '' ? _removeAdditionalSpecification(index, additionalSpecs) : _updateAdditionalSpecification(index, e.target.value, additionalSpecs);
                         }}
                         onKeyDown={(e) => handleTextareaKeyDown(e, () => setFocusedAdditionalSpecIndex(null))}
                         placeholder="Additional specifications..."
