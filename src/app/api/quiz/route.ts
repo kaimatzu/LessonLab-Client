@@ -1,3 +1,4 @@
+import RequestBuilder from '@/lib/hooks/builders/request-builder'
 import { openai } from '@ai-sdk/openai'
 import { streamObject } from 'ai'
 import { z } from 'zod'
@@ -6,12 +7,24 @@ const POST = async (req: Request) => {
   const body = await req.json()
   if (!body) return Response.json({ message: 'Bad request' })
 
-  // const count = body.count
+  const namespaceId = body.namespaceId
+  const specifications = body.specifications
+  const count = body.count
   const prompt = body.prompt
   console.log(prompt)
 
+  const requestBuilder = new RequestBuilder()
+    .setURL(`${process.env.SERVER_URL}/api/context/fetch`)
+    .setMethod('POST')
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({
+      namespaceId: namespaceId,
+      // messages: messages,
+      specifications: specifications,
+    }))
+
   const result = await streamObject({
-    system: 'You are a quiz generator that will generate questions and the answer keys according to the user\'s topic.',
+    system: `You are a quiz generator that will generate questions and the answer keys according to the user\'s topic. If it\'s a multiple choices do not include the choices in the question`,
     model: openai('gpt-3.5-turbo'),
     schema: z.object({
       items: z
@@ -32,7 +45,7 @@ const POST = async (req: Request) => {
           }),
         ])
         .array()
-      // .length(body.count),
+        .length(count),
     }),
     prompt: prompt
   })

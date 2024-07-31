@@ -35,6 +35,7 @@ export interface Specification {
   id: string;
   name: string;
   topic: string;
+  numItems?: number // for quiz
   writingLevel: string;
   comprehensionLevel: string;
   additionalSpecs: AdditionalSpecification[];

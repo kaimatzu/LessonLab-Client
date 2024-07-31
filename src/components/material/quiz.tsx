@@ -86,21 +86,52 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
 
   const { selectedSpecificationId } = useWorkspaceMaterialContext()
 
-
   // const items: ItemType[] = []
-  const items: ItemType[] = [
-    { question: 'What faction won in world war 2?', answer: 'Allies' },
-    { question: 'What continent is China in?', answer: 'Asia' },
-    { question: 'What is the tallest mountain?', answer: 'Mount Everest' },
-    {
-      question: 'What number comes after 68?', choices: [
-        { content: '70', correct: false },
-        { content: '69', correct: false },
-        { content: '67', correct: false },
-        { content: '420', correct: false },
-      ]
-    },
-  ];
+  // const items: ItemType[] = [
+  //   { question: 'What faction won in world war 2?', answer: 'Allies' },
+  //   { question: 'What continent is China in?', answer: 'Asia' },
+  //   { question: 'What is the tallest mountain?', answer: 'Mount Everest' },
+  //   {
+  //     question: 'What number comes after 68?', choices: [
+  //       { content: '70', correct: false },
+  //       { content: '69', correct: false },
+  //       { content: '67', correct: false },
+  //       { content: '420', correct: false },
+  //     ]
+  //   },
+  //   {
+  //     question: 'What number comes after 68?', choices: [
+  //       { content: '70', correct: false },
+  //       { content: '69', correct: false },
+  //       { content: '67', correct: false },
+  //       { content: '420', correct: false },
+  //     ]
+  //   },
+  //   {
+  //     question: 'What number comes after 68?', choices: [
+  //       { content: '70', correct: false },
+  //       { content: '69', correct: false },
+  //       { content: '67', correct: false },
+  //       { content: '420', correct: false },
+  //     ]
+  //   },
+  //   {
+  //     question: 'What number comes after 68?', choices: [
+  //       { content: '70', correct: false },
+  //       { content: '69', correct: false },
+  //       { content: '67', correct: false },
+  //       { content: '420', correct: false },
+  //     ]
+  //   },
+  //   {
+  //     question: 'What number comes after 68?', choices: [
+  //       { content: '70', correct: false },
+  //       { content: '69', correct: false },
+  //       { content: '67', correct: false },
+  //       { content: '420', correct: false },
+  //     ]
+  //   },
+  // ];
 
   // `object` is the output object
   // `submit` is the callback function to submit the prompt
@@ -132,11 +163,12 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
   const [fetchingFiles, setFetchingFiles] = useState(true);
 
   return (
-    <div className='flex flex-col gap-4 h-full items-center justify-center'>
+    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON ' ? '' : 'justify-center'} overflow-y-scroll no-scrollbar`}>
       {object?.items?.length === 0 || !object || !object.items ? <Button disabled={generationDisabled} onClick={() => {
         workspace.specifications.map(specification => {
+          // TODO: Make update in the sidenav during topic change, because it only updates during page reload
           if (specification.id === selectedSpecificationId)
-            submit({ namespaceId: workspace.id, prompt: specification.topic })
+            submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.numItems }) // * Send to AI generation
         })
       }}>Generate</Button> : object?.items?.map((item, index) => {
         // convert from zod to type
@@ -165,6 +197,42 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
       {/* {object?.content && <p>{object.content}</p>} */}
     </div>
   )
+  // For testing dummy data
+  // return (
+  //   <div className='flex flex-col gap-4 h-full items-center overflow-y-scroll no-scrollbar'>
+  //     {items.length === 0 ? <Button disabled={generationDisabled} onClick={() => {
+  //       workspace.specifications.map(specification => {
+  //         // TODO: Make update in the sidenav during topic change, because it only updates during page reload
+  //         if (specification.id === selectedSpecificationId)
+  //           submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.numItems }) // * Send to AI generation
+  //       })
+  //     }}>Generate</Button> : items.map((item, index) => {
+  //       // convert from zod to type
+  //       // check what type
+  //       // assign depending on the type
+  //       if (!item)
+  //         return null
+  //       if ('answer' in item) {
+  //         return < Item num={index + 1} item={{ question: item.question, answer: item.answer, }} />
+  //       } else if ('choices' in item) {
+  //         if (!item.choices)
+  //           return null
+  //         return < Item num={index + 1} item={{
+  //           question: item.question, choices: [
+  //             { content: item.choices[0].content, correct: item.choices[0].correct },
+  //             { content: item.choices[1].content, correct: item.choices[1].correct },
+  //             { content: item.choices[2].content, correct: item.choices[2].correct },
+  //             { content: item.choices[3].content, correct: item.choices[3].correct },
+  //           ]
+  //         }} />
+  //       }
+
+  //       return null
+  //     })}
+  //     {/* return < Item num={index + 1} item={{ question: item?.question, answer: item?.answer, }}} />)} */}
+  //     {/* {object?.content && <p>{object.content}</p>} */}
+  //   </div>
+  // )
 }
 
 const Item = ({ num, item }: ItemProps) => {

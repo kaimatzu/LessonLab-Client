@@ -218,10 +218,19 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     }
     const requestBuilder = new RequestBuilder().setBody(JSON.stringify({ MaterialID: selectedWorkspace.id }));
     const result = await _addNewSpecification(requestBuilder);
-    const newSpec: Specification = {
+
+    const newSpec: Specification = workspace.materialType === 'LESSON' ? {
       id: result.SpecificationID,
       name: '',
       topic: '',
+      writingLevel: 'Elementary',
+      comprehensionLevel: 'Simple',
+      additionalSpecs: [],
+    } : {
+      id: result.SpecificationID,
+      name: '',
+      topic: '',
+      numItems: 10,
       writingLevel: 'Elementary',
       comprehensionLevel: 'Simple',
       additionalSpecs: [],
@@ -445,7 +454,16 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     type="text"
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      // TODO: update workspace name
+                      setName(e.target.value)
+                      updateSpecificationName(selectedSpecificationId!, e.target.value) // Updates only in backend
+                      workspace.specifications.map(specification => {
+                        if (specification.id === selectedSpecificationId) {
+                          specification.topic = e.target.value // TODO: Update this to all context
+                        }
+                      })
+                    }}
                     onBlur={(e) => { updateSpecificationName(selectedSpecificationId!, e.target.value) }}
                     onKeyDown={(e) => handleInputKeyDown(e, () => { })}
                     placeholder="Specification Name"
@@ -466,6 +484,15 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                           if (value < 1)
                             return
                           setNumItems(value)
+                          workspace.specifications.map(specification => {
+                            if (specification.id === selectedSpecificationId) {
+                              specification = {
+                                ...specification,
+                                numItems: value,
+                              }
+                            }
+                          })
+
                         }}
                       />
                     </>
@@ -481,7 +508,11 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     <textarea
                       className="w-full h-20 p-2 bg-background placeholder-zinc"
                       value={topic}
-                      onChange={(e) => setTopic(e.target.value)}
+                      onChange={(e) => {
+                        // TODO: Update in frontend
+                        setTopic(e.target.value)
+                        updateSpecificationTopic(selectedSpecificationId!, e.target.value) // Updates only in backend
+                      }}
                       onBlur={(e) => updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
                       onKeyDown={(e) => handleTextareaKeyDown(e, () => { })}
                       placeholder="Provide a topic..."
