@@ -30,7 +30,7 @@ import { Ctx } from '@milkdown/ctx';
 import { ProsemirrorAdapterProvider, usePluginViewFactory } from '@prosemirror-adapter/react';
 import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
-import { updatePageContent, updatePageTitle } from '@/app/api/material/page/route';
+import { updatePageContent as _updatePageContent, updatePageTitle as _updatePageTitle } from '@/app/api/material/page/route';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
 import { EditorState, Transaction } from 'prosemirror-state';
 
@@ -124,7 +124,8 @@ const MilkdownEditor: React.FC = () => {
     pagesLoading,
     selectedWorkspace,
     selectedPageId,
-    updateLessonPage
+    updateLessonPage,
+    updateLessonPageTitle,
   } = useWorkspaceMaterialContext();
 
   const getInitialContent = () => {
@@ -210,7 +211,7 @@ const MilkdownEditor: React.FC = () => {
           const currentLessonTitle = lessonTitleRef.current; 
 
           if (currentWorkspace && currentPageId && currentContent && currentLessonTitle) {
-            updatePageContent(currentPageId, currentWorkspace.id, currentContent);
+            _updatePageContent(currentPageId, currentWorkspace.id, currentContent);
             updateLessonPage(
               currentWorkspace.id,
               {
@@ -312,7 +313,7 @@ const MilkdownEditor: React.FC = () => {
       timeoutRef.current = setTimeout(() => {
         console.log("Inactivity detected. Updating content...");
         if (selectedWorkspace) {
-          updatePageContent(lessonPage.id, selectedWorkspace.id, content);
+          _updatePageContent(lessonPage.id, selectedWorkspace.id, content);
           console.log("Update called")
         }
       }, 2000);  // 2 seconds of inactivity
@@ -326,24 +327,29 @@ const MilkdownEditor: React.FC = () => {
 
   return (
     <div>
-      <button onClick={printBlocks}>Print blocks</button>
-      <button onClick={addNewBlock}>Add block</button>
+      {/* <button onClick={printBlocks}>Print blocks</button>
+      <button onClick={addNewBlock}>Add block</button> */}
       <input
         type="text"
         value={lessonPage.title}
-        onChange={(e) => setLessonPage((prev) => ({ ...prev, title: e.target.value }))}
+        onChange={(e) => {
+          setLessonPage((prev) => ({ ...prev, title: e.target.value }));
+          if (selectedWorkspace && selectedPageId) {
+            updateLessonPageTitle(selectedWorkspace.id, selectedPageId, e.target.value);
+          }
+        }}
         className="w-full font-bold px-4 py-0 text-opacity-75 text-5xl bg-transparent border-black dark:border-zinc-100 
         rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
         placeholder="Untitled"
         onBlur={() => {
           if (selectedWorkspace) {
-            updatePageTitle(lessonPage.id, selectedWorkspace.id, lessonPage.title);
+            _updatePageTitle(lessonPage.id, selectedWorkspace.id, lessonPage.title);
             console.log("About to update", lessonPage, lessonTitleRef.current);
-            updateLessonPage(selectedWorkspace.id, {
-              id: lessonPage.id,
-              title: lessonPage.title,
-              content: lessonPage.content,
-            });
+            // updateLessonPage(selectedWorkspace.id, {
+            //   id: lessonPage.id,
+            //   title: lessonPage.title,
+            //   content: lessonPage.content,
+            // });
           }
         }}
       />

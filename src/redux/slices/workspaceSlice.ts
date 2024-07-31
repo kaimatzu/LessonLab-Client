@@ -186,6 +186,22 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    updateSpecificationName: (state, action: PayloadAction<{ workspaceId: string, specificationId: string, name: string }>) => {
+      const { workspaceId, specificationId, name } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+      if (workspace) {
+        const spec = workspace.specifications.find(spec => spec.id === specificationId);
+        if (spec) {
+          spec.name = name;
+        }
+      }
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const spec = state.selectedWorkspace.specifications.find(spec => spec.id === specificationId);
+        if (spec) {
+          spec.name = name;
+        }
+      }
+    },    
     deleteSpecification: (state, action: PayloadAction<{ workspaceId: string, specificationId: string }>) => {
       const { workspaceId, specificationId } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -222,6 +238,22 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    updateLessonPageTitle: (state, action: PayloadAction<{ lessonId: string, pageId: string, title: string }>) => {
+      const { lessonId, pageId, title } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === lessonId);
+      if (workspace) {
+        const page = workspace.pages.find(page => page.id === pageId);
+        if (page) {
+          page.title = title;
+        }
+      }
+      if (state.selectedWorkspace && state.selectedWorkspace.id === lessonId) {
+        const page = state.selectedWorkspace.pages.find(page => page.id === pageId);
+        if (page) {
+          page.title = title;
+        }
+      }
+    },  
   },
   extraReducers: (builder) => {
     builder
@@ -283,9 +315,11 @@ export const {
   removeWorkspace,
   addSpecification,
   updateSpecification,
+  updateSpecificationName,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,
+  updateLessonPageTitle,
 } = workspaceSlice.actions;
 
 export const selectWorkspaces = (state: RootState) => state.workspace.workspaces;
