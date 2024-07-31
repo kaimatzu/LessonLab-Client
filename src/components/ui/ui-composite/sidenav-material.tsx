@@ -455,12 +455,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
                     onChange={(e) => {
-                      // TODO: update workspace name
+                      // TODO: update specification name
                       setName(e.target.value)
-                      updateSpecificationName(selectedSpecificationId!, e.target.value) // Updates only in backend
+                      updateSpecificationName(selectedSpecificationId!, e.target.value) // Only updates in backend
                       workspace.specifications.map(specification => {
                         if (specification.id === selectedSpecificationId) {
                           specification.topic = e.target.value // TODO: Update this to all context
+                          // Doesn't update in quiz component
                         }
                       })
                     }}
@@ -511,6 +512,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                       onChange={(e) => {
                         // TODO: Update in frontend
                         setTopic(e.target.value)
+                        updateSpecification()
                         updateSpecificationTopic(selectedSpecificationId!, e.target.value) // Updates only in backend
                       }}
                       onBlur={(e) => updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
