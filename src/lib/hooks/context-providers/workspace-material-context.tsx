@@ -18,47 +18,19 @@ import {
   addSpecification,
   updateSpecification,
   updateSpecificationName,
+  updateSpecificationCount,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,
   updateLessonPageTitle,
   fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
-  selectPagesForSelectedWorkspace
+  selectPagesForSelectedWorkspace,
+  Workspace,
+  Specification,
+  Page
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
-
-export interface AdditionalSpecification {
-  id: string;
-  content: string;
-}
-
-export interface Specification {
-  id: string;
-  name: string;
-  topic: string;
-  numItems?: number // for quiz
-  writingLevel: string;
-  comprehensionLevel: string;
-  additionalSpecs: AdditionalSpecification[];
-}
-
-export interface Page {
-  id: string;
-  title: string;
-  content: string;
-}
-
-export interface Workspace {
-  id: string;
-  name: string;
-  fileUrls: string[];
-  createdAt: number;
-  locked?: boolean;
-  materialType: string;
-  specifications: Specification[];
-  pages: Page[];
-}
 
 export interface WorkspaceMaterialContextValue {
   workspaces: Workspace[];
@@ -79,6 +51,7 @@ export interface WorkspaceMaterialContextValue {
   removeWorkspace: (workspaceId: string) => void;
   updateSpecification: (workspaceId: string, specification: Specification) => void;
   updateSpecificationName: (workspaceId: string, specificationId: string, name: string) => void;
+  updateSpecificationCount: (workspaceId: string, specificationId: string, count: number) => void;
   addSpecification: (workspaceId: string, specification: Specification) => void;
   deleteSpecification: (workspaceId: string, specificationId: string) => void;
   addLessonPage: (lessonId: string, page: Page) => void;
@@ -106,6 +79,7 @@ const defaultValue: WorkspaceMaterialContextValue = {
   removeWorkspace: () => { },
   updateSpecification: () => { },
   updateSpecificationName: () => { },
+  updateSpecificationCount: () => { },
   addSpecification: () => { },
   deleteSpecification: () => { },
   addLessonPage: () => Promise.resolve(),
@@ -115,9 +89,10 @@ const defaultValue: WorkspaceMaterialContextValue = {
 };
 
 export const WorkspaceMaterialContext = createContext(defaultValue);
-export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext);
+export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext); // Not a functional component
 
 export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+
   const dispatch = useAppDispatch();
   const workspaces = useAppSelector((state: RootState) => state.workspace.workspaces);
   const workspacesInitialized = useAppSelector((state: RootState) => state.workspace.workspacesInitialized);
@@ -188,7 +163,11 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const updateSpecificationNameHandler = (workspaceId: string, specificationId: string, name: string) => {
     dispatch(updateSpecificationName({ workspaceId, specificationId, name }))
   };
-  
+
+  const updateSpecificationCountHandler = (workspaceId: string, specificationId: string, count: number) => {
+    dispatch(updateSpecificationCount({ workspaceId, specificationId, count }))
+  };
+
   const deleteSpecificationHandler = (workspaceId: string, specificationId: string) => {
     dispatch(deleteSpecification({ workspaceId, specificationId }));
   };
@@ -202,7 +181,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   };
 
   const updateLessonPageTitleHandler = (lessonId: string, pageId: string, title: string) => {
-    dispatch(updateLessonPageTitle({ lessonId, pageId, title}))
+    dispatch(updateLessonPageTitle({ lessonId, pageId, title }))
   };
 
   const selectPage = (pageId: string) => {
@@ -231,6 +210,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         addSpecification: addSpecificationHandler,
         updateSpecification: updateSpecificationHandler,
         updateSpecificationName: updateSpecificationNameHandler,
+        updateSpecificationCount: updateSpecificationCountHandler,
         deleteSpecification: deleteSpecificationHandler,
         addLessonPage: addLessonPageHandler,
         updateLessonPage: updateLessonPageHandler,

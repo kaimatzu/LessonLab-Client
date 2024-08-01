@@ -1,7 +1,7 @@
 // material.tsx where the upload call is made
 
 "use client";
-import { Page, Specification, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
   useCallback,
   useEffect,
@@ -14,6 +14,7 @@ import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
+import { Workspace } from "@/redux/slices/workspaceSlice";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {

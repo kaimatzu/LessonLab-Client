@@ -4,10 +4,11 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
 import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
-import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './chat/tooltip';
 import '../css/custom-scrollbar.css'
+import { Workspace } from '@/redux/slices/workspaceSlice';
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);

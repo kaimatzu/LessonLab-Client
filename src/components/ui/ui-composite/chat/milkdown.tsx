@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {   Editor,
+import {
+  Editor,
   rootCtx,
   defaultValueCtx,
   editorViewCtx,
@@ -28,11 +29,12 @@ import 'prismjs/themes/prism-okaidia.css';
 import '../../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
 import { ProsemirrorAdapterProvider, usePluginViewFactory } from '@prosemirror-adapter/react';
-import { Page, useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent as _updatePageContent, updatePageTitle as _updatePageTitle } from '@/app/api/material/page/route';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
 import { EditorState, Transaction } from 'prosemirror-state';
+import { Page, Workspace } from '@/redux/slices/workspaceSlice';
 
 export const BlockView = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -41,29 +43,29 @@ export const BlockView = () => {
   const [loading, get] = useInstance()
 
   useEffect(() => {
-      const div = ref.current
-      if (loading || !div) return;
+    const div = ref.current
+    if (loading || !div) return;
 
-      const editor = get();
-      if (!editor) return;
+    const editor = get();
+    if (!editor) return;
 
-      tooltipProvider.current = new BlockProvider({
-          ctx: editor.ctx,
-          content: div,
-      })
-      tooltipProvider.current?.update()
+    tooltipProvider.current = new BlockProvider({
+      ctx: editor.ctx,
+      content: div,
+    })
+    tooltipProvider.current?.update()
 
-      return () => {
-          tooltipProvider.current?.destroy()
-      }
+    return () => {
+      tooltipProvider.current?.destroy()
+    }
   }, [loading])
 
   return (
-      <div ref={ref} className="absolute w-6 bg-slate-200 rounded hover:bg-slate-300 cursor-grab">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-          </svg>
-      </div>
+    <div ref={ref} className="absolute w-6 bg-slate-200 rounded hover:bg-slate-300 cursor-grab">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+      </svg>
+    </div>
   )
 }
 
@@ -71,10 +73,10 @@ function getAllBlocks(doc: ProseMirrorNode): ProseMirrorNode[] {
   const blocks: ProseMirrorNode[] = [];
 
   function traverse(node: ProseMirrorNode) {
-      if (node.isBlock) {
-          blocks.push(node);
-      }
-      node.forEach(child => traverse(child));
+    if (node.isBlock) {
+      blocks.push(node);
+    }
+    node.forEach(child => traverse(child));
   }
 
   traverse(doc);
@@ -107,7 +109,7 @@ function addBlock(editorState: EditorState, tr: Transaction, schema: any): Trans
 
   console.log("Schema", schema);
   console.log("Schema nodes", schema.nodes);
-  
+
   console.log("Transaction", tr);
   console.log("Transaction doc", tr.doc.toJSON());
 
@@ -135,12 +137,12 @@ const MilkdownEditor: React.FC = () => {
     }
     return '';
   };
-  
+
   const [content, setContent] = useState(getInitialContent);
-  
-  const [lessonPage, setLessonPage] = useState<Page>({id: '', title: '', content: ''});
+
+  const [lessonPage, setLessonPage] = useState<Page>({ id: '', title: '', content: '' });
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const selectedWorkspaceRef = useRef<Workspace | null>(selectedWorkspace);
   const selectedPageIdRef = useRef<string | null>(selectedPageId);
   const contentRef = useRef<string | null>(content);
@@ -157,11 +159,11 @@ const MilkdownEditor: React.FC = () => {
   useEffect(() => {
     contentRef.current = content;
   }, [content]);
-  
+
   useEffect(() => {
     lessonTitleRef.current = lessonPage.title
   }, [lessonPage]);
-  
+
   const pluginViewFactory = usePluginViewFactory();
 
   const { get } = useEditor((root) =>
@@ -175,69 +177,69 @@ const MilkdownEditor: React.FC = () => {
           })
         });
         ctx
-        .get(listenerCtx)
-        .beforeMount((ctx) => {
-          console.log("beforeMount");
-        })
-        .mounted((ctx) => {
-          console.log("mounted");
-          // insert("# Default Title");
-        })
-        .updated((ctx, doc, prevDoc) => {
-          console.log("updated", doc, prevDoc);
-          console.log("updated JSON", doc.toJSON());
-        })
-        .markdownUpdated((ctx, markdown, prevMarkdown) => {
-          // console.log(
-          //   "markdownUpdated to=",
-          //   markdown,
-          //   "\nprev=",
-          //   prevMarkdown
-          // );
-          setContent(markdown);
-        })
-        .blur((ctx) => {
-          console.log("Editor has lost focus. Updating content immediately...");
+          .get(listenerCtx)
+          .beforeMount((ctx) => {
+            console.log("beforeMount");
+          })
+          .mounted((ctx) => {
+            console.log("mounted");
+            // insert("# Default Title");
+          })
+          .updated((ctx, doc, prevDoc) => {
+            console.log("updated", doc, prevDoc);
+            console.log("updated JSON", doc.toJSON());
+          })
+          .markdownUpdated((ctx, markdown, prevMarkdown) => {
+            // console.log(
+            //   "markdownUpdated to=",
+            //   markdown,
+            //   "\nprev=",
+            //   prevMarkdown
+            // );
+            setContent(markdown);
+          })
+          .blur((ctx) => {
+            console.log("Editor has lost focus. Updating content immediately...");
 
-          // Clear any existing timeout
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null; // Clear the reference to the timeout
-          }
+            // Clear any existing timeout
+            if (timeoutRef.current) {
+              clearTimeout(timeoutRef.current);
+              timeoutRef.current = null; // Clear the reference to the timeout
+            }
 
-          const currentWorkspace = selectedWorkspaceRef.current;
-          const currentPageId = selectedPageIdRef.current;
-          const currentContent = contentRef.current;
-          const currentLessonTitle = lessonTitleRef.current; 
+            const currentWorkspace = selectedWorkspaceRef.current;
+            const currentPageId = selectedPageIdRef.current;
+            const currentContent = contentRef.current;
+            const currentLessonTitle = lessonTitleRef.current;
 
-          if (currentWorkspace && currentPageId && currentContent && currentLessonTitle) {
-            _updatePageContent(currentPageId, currentWorkspace.id, currentContent);
-            updateLessonPage(
-              currentWorkspace.id,
-              {
-                id: currentPageId,
-                content: currentContent,
-                title: currentLessonTitle,
-              }
-            );
-            console.log("Blur",
-              {
-                id: currentPageId,
-                content: currentContent,
-                title: currentLessonTitle,
-              }
-            )
-          } else {
-            console.log("Did not update", currentWorkspace, currentPageId);
-          }
-        })
-        .focus((ctx) => {
-          const view = ctx.get(editorViewCtx);
-          console.log("focus", view);
-        })
-        .destroy((ctx) => {
-          console.log("destroy");
-        })
+            if (currentWorkspace && currentPageId && currentContent && currentLessonTitle) {
+              _updatePageContent(currentPageId, currentWorkspace.id, currentContent);
+              updateLessonPage(
+                currentWorkspace.id,
+                {
+                  id: currentPageId,
+                  content: currentContent,
+                  title: currentLessonTitle,
+                }
+              );
+              console.log("Blur",
+                {
+                  id: currentPageId,
+                  content: currentContent,
+                  title: currentLessonTitle,
+                }
+              )
+            } else {
+              console.log("Did not update", currentWorkspace, currentPageId);
+            }
+          })
+          .focus((ctx) => {
+            const view = ctx.get(editorViewCtx);
+            console.log("focus", view);
+          })
+          .destroy((ctx) => {
+            console.log("destroy");
+          })
       })
       .config(nord) // Editor Theme
       .use(commonmark)
@@ -247,8 +249,8 @@ const MilkdownEditor: React.FC = () => {
       .use(cursor)
       .use(clipboard)
       .use(history)
-    );
-  
+  );
+
   useEffect(() => {
     const editor = get();
 
@@ -269,15 +271,15 @@ const MilkdownEditor: React.FC = () => {
 
   const printBlocks = () => {
     if (get && selectedWorkspace && selectedPageId) {
-        const editor = get();
+      const editor = get();
 
-        if (editor) {
-          const state = editor.ctx.get(editorStateCtx);
-          const doc = state.doc;
+      if (editor) {
+        const state = editor.ctx.get(editorStateCtx);
+        const doc = state.doc;
 
-          const blocks = getAllBlocks(doc);
-          console.log('Blocks:', blocks);
-        }
+        const blocks = getAllBlocks(doc);
+        console.log('Blocks:', blocks);
+      }
     }
   }
 
@@ -285,17 +287,17 @@ const MilkdownEditor: React.FC = () => {
     if (get) {
       const editor = get();
 
-      if(editor) {
+      if (editor) {
         const view = editor.ctx.get(editorViewCtx);
         const schema = editor.ctx.get(schemaCtx);
-  
+
         // const tr = addBlock(view.state, view.state.tr, schema);
         // view.dispatch(tr);
         const ctx = editor.ctx;
 
         const markdown = '# This is a test block\n\nThis is some test content for the new block.';
         const doc = markdownToNodes(ctx, markdown);
-  
+
         if (doc) {
           const tr = view.state.tr.insert(view.state.selection.to + 1, doc.content);
           view.dispatch(tr);
@@ -363,9 +365,9 @@ const MilkdownEditor: React.FC = () => {
 export const MilkdownEditorWrapper: React.FC = () => {
   return (
     <MilkdownProvider>
-       <ProsemirrorAdapterProvider>
-          <MilkdownEditor />
-       </ProsemirrorAdapterProvider>
+      <ProsemirrorAdapterProvider>
+        <MilkdownEditor />
+      </ProsemirrorAdapterProvider>
     </MilkdownProvider>
   );
 };

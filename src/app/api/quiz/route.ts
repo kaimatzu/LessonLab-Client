@@ -3,6 +3,7 @@ import { openai } from '@ai-sdk/openai'
 import { streamObject } from 'ai'
 import { z } from 'zod'
 
+// Called by quiz submit
 const POST = async (req: Request) => {
   const body = await req.json()
   if (!body) return Response.json({ message: 'Bad request' })
@@ -10,47 +11,59 @@ const POST = async (req: Request) => {
   const namespaceId = body.namespaceId
   const specifications = body.specifications
   const count = body.count
+  const items = body.items
   const prompt = body.prompt
-  console.log(prompt)
 
-  const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.SERVER_URL}/api/context/fetch`)
+  const requestBuilder = new RequestBuilder() // Calls backend
+    .setURL(`${process.env.SERVER_URL}/api/context/quiz`)
     .setMethod('POST')
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({
       namespaceId: namespaceId,
-      // messages: messages,
+      // messages: messages, // send quiz objects (idk)
+      items,
       specifications: specifications,
     }))
 
-  const result = await streamObject({
-    system: `You are a quiz generator that will generate questions and the answer keys according to the user\'s topic. If it\'s a multiple choices do not include the choices in the question`,
-    model: openai('gpt-3.5-turbo'),
-    schema: z.object({
-      items: z
-        .union([
-          z.object({
-            question: z.string(),
-            answer: z.string(),
-          }),
-          z.object({
-            question: z.string(),
-            choices: z
-              .object({
-                content: z.string(),
-                correct: z.boolean(),
-              })
-              .array()
-              .length(4),
-          }),
-        ])
-        .array()
-        .length(count),
-    }),
-    prompt: prompt
-  })
+  const response = await fetch(requestBuilder.build());
+  const { context } = await response.json();
 
-  return result.toTextStreamResponse()
+  console.log('-----> Context: ', context) // undefined
+
+  if (context && context.prompt && context.prompt.length > 0) {
+    const systemContent = context.prompt[0].content;
+
+    const result = await streamObject({
+      system: systemContent,
+      model: openai('gpt-4-turbo'),
+      schema: z.object({
+        items: z
+          .union([
+            z.object({
+              question: z.string(),
+              answer: z.string(),
+            }),
+            z.object({
+              question: z.string(),
+              choices: z
+                .object({
+                  content: z.string(),
+                  correct: z.boolean(),
+                })
+                .array()
+                .length(4),
+            }),
+          ])
+          .array()
+          .length(count),
+      }),
+      prompt: prompt
+    })
+
+    return result.toTextStreamResponse()
+  } else {
+    throw new Error('Not enought context') // !!! HERE
+  }
 }
 
 export { POST }
