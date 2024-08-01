@@ -2,10 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
-  AdditionalSpecification,
-  Specification,
   useWorkspaceMaterialContext,
-  Workspace,
 } from "@/lib/hooks/context-providers/workspace-material-context";
 import "../css/custom-scrollbar.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
@@ -25,6 +22,7 @@ import {
 import { POST as _addLessonPage } from '@/app/api/material/page/route'
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
+import { AdditionalSpecification, Specification, Workspace } from "@/redux/slices/workspaceSlice";
 
 interface SidenavMaterialProps {
   workspace: Workspace;
@@ -56,6 +54,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     pages,
     updateSpecification,
     updateSpecificationName,
+    updateSpecificationCount,
     addSpecification,
     deleteSpecification,
     selectSpecification,
@@ -231,7 +230,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
       id: result.SpecificationID,
       name: '',
       topic: '',
-      numItems: 10,
+      count: 10,
       writingLevel: 'Elementary',
       comprehensionLevel: 'Simple',
       additionalSpecs: [],
@@ -483,15 +482,20 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                           if (value < 1)
                             return
                           setNumItems(value)
-                          workspace.specifications.map(specification => {
-                            if (specification.id === selectedSpecificationId) {
-                              specification = {
-                                ...specification,
-                                numItems: value,
-                              }
-                            }
-                          })
 
+                          // TODO: redux here
+                          if (selectedWorkspace && selectedSpecificationId) {
+                            updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
+                          }
+
+                          // workspace.specifications.map(specification => {
+                          //   if (specification.id === selectedSpecificationId) {
+                          //     specification = {
+                          //       ...specification,
+                          //       numItems: value,
+                          //     }
+                          //   }
+                          // })
                         }}
                       />
                     </>

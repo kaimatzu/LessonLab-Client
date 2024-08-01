@@ -1,4 +1,5 @@
-import { useState } from 'react'
+'use client'
+import React, { useState } from 'react'
 
 // NOTE(hans): Update Vercel AI SDK to use `useObject` hook
 import { experimental_useObject as useObject } from 'ai/react'
@@ -9,7 +10,9 @@ import { Input } from '../ui/ui-base/input';
 import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
-import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { Workspace } from '@/redux/slices/workspaceSlice';
+
 
 type Choice = {
   content: string | undefined
@@ -82,9 +85,25 @@ interface QuizProps {
   workspace: Workspace
 }
 
-const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
+const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps) => {
 
-  const { selectedSpecificationId } = useWorkspaceMaterialContext()
+  const {
+    loading,
+    workspaces,
+    selectedWorkspace,
+    specifications,
+    specificationsLoading,
+    selectedSpecificationId,
+    pages,
+    updateSpecification,
+    updateSpecificationName,
+    updateSpecificationCount,
+    addSpecification,
+    deleteSpecification,
+    selectSpecification,
+    addLessonPage,
+    selectPage,
+  } = useWorkspaceMaterialContext();
 
   // const items: ItemType[] = []
   // const items: ItemType[] = [
@@ -165,11 +184,17 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
   return (
     <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON ' ? '' : 'justify-center'} overflow-y-scroll no-scrollbar`}>
       {object?.items?.length === 0 || !object || !object.items ? <Button disabled={generationDisabled} onClick={() => {
-        workspace.specifications.map(specification => {
+        workspace.specifications.map((specification: any) => {
           // TODO: Make update in the sidenav during topic change, because it only updates during page reload
-          if (specification.id === selectedSpecificationId)
-            submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.numItems }) // * Send to AI generation
+          if (specification.id === selectedSpecificationId) {
+            if (selectedWorkspace) {
+              const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
+              if (spec)
+                submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
+            }
+          }
         })
+
       }}>Generate</Button> : object?.items?.map((item, index) => {
         // convert from zod to type
         // check what type
@@ -192,10 +217,11 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
         }
 
         return null
-      })}
+      })
+      }
       {/* return < Item num={index + 1} item={{ question: item?.question, answer: item?.answer, }}} />)} */}
       {/* {object?.content && <p>{object.content}</p>} */}
-    </div>
+    </div >
   )
   // For testing dummy data
   // return (
@@ -235,7 +261,7 @@ const Quiz = ({ generationDisabled, workspace }: QuizProps) => {
   // )
 }
 
-const Item = ({ num, item }: ItemProps) => {
+export const Item = ({ num, item }: ItemProps) => {
 
   return (
     // <Card className='p-4 w-96'>
