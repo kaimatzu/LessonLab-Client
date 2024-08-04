@@ -275,6 +275,14 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // TODO: Implement update of quiz data
+    // TODO: Figure out how to store quiz data
+    updateQuizItems: () => {
+
+    },
+    updateQuizResults: () => {
+
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -342,6 +350,8 @@ export const {
   addLessonPage,
   updateLessonPage,
   updateLessonPageTitle,
+  updateQuizItems,
+  updateQuizResults,
 } = workspaceSlice.actions;
 
 export const selectWorkspaces = (state: RootState) => state.workspace.workspaces;

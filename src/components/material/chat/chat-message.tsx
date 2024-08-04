@@ -16,7 +16,6 @@ import { ChatMessageActions } from '@/components/material/chat/chat-message-acti
 import { Components } from '@/lib/types/artifact-type'
 
 import React from 'react'
-import { Item } from '../quiz'
 
 export interface ChatMessageProps {
   message: Message

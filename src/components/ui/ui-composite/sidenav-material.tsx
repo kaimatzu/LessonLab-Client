@@ -69,7 +69,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
 
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
-  const [numItems, setNumItems] = useState(5)
+  const [numItems, setNumItems] = useState(10)
   const [writingLevel, setWritingLevel] = useState('Elementary');
   const [comprehensionLevel, setComprehensionLevel] = useState('Simple');
   const [additionalSpecs, setAdditionalSpecs] = useState<AdditionalSpecification[]>([]);

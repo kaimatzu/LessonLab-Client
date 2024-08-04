@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 
-// NOTE(hans): Update Vercel AI SDK to use `useObject` hook
 import { experimental_useObject as useObject } from 'ai/react'
 import { z } from 'zod';
 import { FetchedFile } from '@/app/api/files/route';
@@ -12,7 +11,7 @@ import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
 import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { Workspace } from '@/redux/slices/workspaceSlice';
-
+import { FaCheck, FaXmark } from 'react-icons/fa6';
 
 type Choice = {
   content: string | undefined
@@ -50,10 +49,13 @@ type ItemType = Identification | MultipleChoice
 type ItemProps = {
   num: number
   item: ItemType
+  isChecked: boolean
 }
 
 type MultipleChoiceProps = {
   choices: Choice[] | undefined
+  disabled: boolean
+  onChange: (value: string) => void
 }
 
 const fetchFileUrls = async (workspaceId: string) => {
@@ -86,7 +88,6 @@ interface QuizProps {
 }
 
 const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps) => {
-
   const {
     loading,
     workspaces,
@@ -105,15 +106,22 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
     selectPage,
   } = useWorkspaceMaterialContext();
 
+  const [isGenerated, setIsGenerated] = useState<boolean>(false)
+  const [isChecked, setIsChecked] = useState<boolean>(false)
+  // const [files, setFiles] = useState<FetchedFile[]>([])
+  // const [fetchingFiles, setFetchingFiles] = useState(true)
+
   // const items: ItemType[] = []
   // const items: ItemType[] = [
-  //   { question: 'What faction won in world war 2?', answer: 'Allies' },
+  //   { question: 'Which side won in World War II?', answer: 'Allies' },
+  //   { question: 'Which side lost in World War II?', answer: 'Axis' },
   //   { question: 'What continent is China in?', answer: 'Asia' },
-  //   { question: 'What is the tallest mountain?', answer: 'Mount Everest' },
+  //   { question: 'What is the largest ocean?', answer: 'Pacific' },
+  //   { question: 'What is the tallest mountain?', answer: 'Everest' },
   //   {
   //     question: 'What number comes after 68?', choices: [
   //       { content: '70', correct: false },
-  //       { content: '69', correct: false },
+  //       { content: '69', correct: true },
   //       { content: '67', correct: false },
   //       { content: '420', correct: false },
   //     ]
@@ -121,7 +129,7 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   //   {
   //     question: 'What number comes after 68?', choices: [
   //       { content: '70', correct: false },
-  //       { content: '69', correct: false },
+  //       { content: '69', correct: true },
   //       { content: '67', correct: false },
   //       { content: '420', correct: false },
   //     ]
@@ -129,7 +137,7 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   //   {
   //     question: 'What number comes after 68?', choices: [
   //       { content: '70', correct: false },
-  //       { content: '69', correct: false },
+  //       { content: '69', correct: true },
   //       { content: '67', correct: false },
   //       { content: '420', correct: false },
   //     ]
@@ -137,15 +145,7 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   //   {
   //     question: 'What number comes after 68?', choices: [
   //       { content: '70', correct: false },
-  //       { content: '69', correct: false },
-  //       { content: '67', correct: false },
-  //       { content: '420', correct: false },
-  //     ]
-  //   },
-  //   {
-  //     question: 'What number comes after 68?', choices: [
-  //       { content: '70', correct: false },
-  //       { content: '69', correct: false },
+  //       { content: '69', correct: true },
   //       { content: '67', correct: false },
   //       { content: '420', correct: false },
   //     ]
@@ -178,90 +178,62 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
     }),
   })
 
-  const [files, setFiles] = useState<FetchedFile[]>([]);
-  const [fetchingFiles, setFetchingFiles] = useState(true);
-
+  // TODO: Make update in the sidenav during topic change, because it only updates during page reload
   return (
-    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON ' ? '' : 'justify-center'} overflow-y-scroll no-scrollbar`}>
-      {object?.items?.length === 0 || !object || !object.items ? <Button disabled={generationDisabled} onClick={() => {
-        workspace.specifications.map((specification: any) => {
-          // TODO: Make update in the sidenav during topic change, because it only updates during page reload
+    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object ? `justify-start` : `justify-center`}`} overflow-y-scroll no-scrollbar text-black`}>
+      {object?.items?.length === 0 || !object || !object.items ? <Button className='text-black' disabled={generationDisabled} onClick={() => {
+        workspace.specifications.map(specification => {
+          // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
           if (specification.id === selectedSpecificationId) {
             if (selectedWorkspace) {
               const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
               if (spec)
-                submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
+                submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.count }) // * Send to AI generation
             }
           }
         })
-
-      }}>Generate</Button> : object?.items?.map((item, index) => {
-        // convert from zod to type
-        // check what type
-        // assign depending on the type
-        if (!item)
-          return null
-        if ('answer' in item) {
-          return < Item num={index + 1} item={{ question: item?.question, answer: item?.answer, }} />
-        } else if ('choices' in item) {
-          if (!item.choices)
+        setIsGenerated(true)
+      }}>Generate</Button> :
+        <div className='flex flex-col gap-4 h-full items-center overflow-y-scroll no-scrollbar text-black'>
+          {object?.items?.map((item, index) => {
+            if (!item)
+              return null
+            if ('answer' in item) {
+              return < Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
+            } else if ('choices' in item) {
+              if (!item.choices)
+                return null
+              return < Item num={index + 1} isChecked={isChecked} item={{
+                question: item.question, choices: [
+                  { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
+                  { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
+                  { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
+                  { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
+                ]
+              }} />
+            }
             return null
-          return < Item num={index + 1} item={{
-            question: item?.question, choices: [
-              { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
-              { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
-              { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
-              { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
-            ]
-          }} />
-        }
-
-        return null
-      })
+          })}
+          {isChecked ? (null) : (
+            <Button className='mt-10 text-black' onClick={() => {
+              if (!isChecked && isGenerated)
+                setIsChecked(true)
+            }}>Check</Button>
+          )}
+          <div className='pb-40' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
+        </div>
       }
-      {/* return < Item num={index + 1} item={{ question: item?.question, answer: item?.answer, }}} />)} */}
-      {/* {object?.content && <p>{object.content}</p>} */}
     </div >
   )
-  // For testing dummy data
-  // return (
-  //   <div className='flex flex-col gap-4 h-full items-center overflow-y-scroll no-scrollbar'>
-  //     {items.length === 0 ? <Button disabled={generationDisabled} onClick={() => {
-  //       workspace.specifications.map(specification => {
-  //         // TODO: Make update in the sidenav during topic change, because it only updates during page reload
-  //         if (specification.id === selectedSpecificationId)
-  //           submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.numItems }) // * Send to AI generation
-  //       })
-  //     }}>Generate</Button> : items.map((item, index) => {
-  //       // convert from zod to type
-  //       // check what type
-  //       // assign depending on the type
-  //       if (!item)
-  //         return null
-  //       if ('answer' in item) {
-  //         return < Item num={index + 1} item={{ question: item.question, answer: item.answer, }} />
-  //       } else if ('choices' in item) {
-  //         if (!item.choices)
-  //           return null
-  //         return < Item num={index + 1} item={{
-  //           question: item.question, choices: [
-  //             { content: item.choices[0].content, correct: item.choices[0].correct },
-  //             { content: item.choices[1].content, correct: item.choices[1].correct },
-  //             { content: item.choices[2].content, correct: item.choices[2].correct },
-  //             { content: item.choices[3].content, correct: item.choices[3].correct },
-  //           ]
-  //         }} />
-  //       }
-
-  //       return null
-  //     })}
-  //     {/* return < Item num={index + 1} item={{ question: item?.question, answer: item?.answer, }}} />)} */}
-  //     {/* {object?.content && <p>{object.content}</p>} */}
-  //   </div>
-  // )
 }
 
-export const Item = ({ num, item }: ItemProps) => {
+export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
+  const [answer, setAnswer] = useState<string>('')
+
+  const handleInputChange = (value: string) => {
+    console.log('User input: ', value)
+    setAnswer(value)
+  }
 
   return (
     // <Card className='p-4 w-96'>
@@ -273,19 +245,41 @@ export const Item = ({ num, item }: ItemProps) => {
         {item.question}
       </div>
       <div className='p-4'>
-        {'answer' in item ? <Input /> : <MultipleChoiceCard choices={item.choices} />}
+        {'answer' in item ? (
+          <Input
+            disabled={isChecked}
+            onChange={(e) => { handleInputChange(e.currentTarget.value) }}
+          />
+        ) : (<MultipleChoiceCard
+          choices={item.choices}
+          disabled={isChecked}
+          onChange={handleInputChange} />)}
       </div>
+      {isChecked ? (
+        <div className='p-4'>
+          <div className='p-2 border border-border rounded-md inline-block'>
+            {'answer' in item ? (
+              item.answer === answer ? (<FaCheck className='text-green-500' />) : (<FaXmark className='text-red-500' />)
+            ) : (
+              <>{answer === item?.choices?.find((choice) => choice.correct === true)?.content ? (
+                <FaCheck className='text-green-500' />
+              ) : (
+                <FaXmark className='text-red-500' />
+              )}</>
+            )}
+          </div>
+        </div>
+      ) : (null)}
     </Card>
   )
 }
 
-const MultipleChoiceCard = ({ choices }: MultipleChoiceProps) => {
-
+const MultipleChoiceCard: React.FC<MultipleChoiceProps> = ({ choices, disabled, onChange }) => {
   return (
-    <RadioGroup>
+    <RadioGroup onValueChange={onChange}>
       {choices?.map((choice, index) => (
         <div className='flex gap-2' key={index}>
-          <RadioGroupItem value={choice.content ?? ''} id={choice.content} />
+          <RadioGroupItem value={choice.content ?? ''} id={choice.content} disabled={disabled} />
           <Label htmlFor={choice.content}>{choice.content}</Label>
         </div>
       ))}

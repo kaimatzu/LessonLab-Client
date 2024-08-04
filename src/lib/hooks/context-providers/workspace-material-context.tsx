@@ -28,7 +28,9 @@ import {
   selectPagesForSelectedWorkspace,
   Workspace,
   Specification,
-  Page
+  Page,
+  updateQuizItems,
+  updateQuizResults,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
 
@@ -58,6 +60,8 @@ export interface WorkspaceMaterialContextValue {
   updateLessonPage: (lessonId: string, updatedPage: Page) => void;
   updateLessonPageTitle: (lessonId: string, pageId: string, title: string) => void;
   selectPage: (pageId: string) => void;
+  updateQuizItems: () => void;
+  updateQuizResults: () => void;
 }
 
 const defaultValue: WorkspaceMaterialContextValue = {
@@ -86,10 +90,12 @@ const defaultValue: WorkspaceMaterialContextValue = {
   updateLessonPage: () => { },
   updateLessonPageTitle: () => { },
   selectPage: () => { },
+  updateQuizItems: () => { },
+  updateQuizResults: () => { },
 };
 
 export const WorkspaceMaterialContext = createContext(defaultValue);
-export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext); // Not a functional component
+export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext);
 
 export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
@@ -188,6 +194,14 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     dispatch(setSelectedPageId(pageId));
   };
 
+  const updateQuizItemsHandler = () => {
+    dispatch(updateQuizItems())
+  }
+
+  const updateQuizReusltsHandler = () => {
+    dispatch(updateQuizResults())
+  }
+
   return (
     <WorkspaceMaterialContext.Provider
       value={{
@@ -216,6 +230,8 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         updateLessonPage: updateLessonPageHandler,
         updateLessonPageTitle: updateLessonPageTitleHandler,
         selectPage,
+        updateQuizItems: updateQuizItemsHandler,
+        updateQuizResults: updateQuizReusltsHandler,
       }}
     >
       {children}
