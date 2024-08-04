@@ -15,6 +15,7 @@ export interface Specification {
   id: string;
   name: string;
   topic: string;
+  count?: number; // for quiz only
   writingLevel: string;
   comprehensionLevel: string;
   additionalSpecs: AdditionalSpecification[];
@@ -201,7 +202,27 @@ const workspaceSlice = createSlice({
           spec.name = name;
         }
       }
-    },    
+    },
+    updateSpecificationCount: (state, action: PayloadAction<{ workspaceId: string, specificationId: string, count: number }>) => {
+      const { workspaceId, specificationId, count } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+      if (workspace) {
+        if (workspace.materialType === 'LESSON')
+          return
+        const spec = workspace.specifications.find(spec => spec.id === specificationId);
+        if (spec) {
+          spec.count = count;
+        }
+      }
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        if (state.selectedWorkspace.materialType === 'LESSON')
+          return
+        const spec = state.selectedWorkspace.specifications.find(spec => spec.id === specificationId);
+        if (spec) {
+          spec.count = count;
+        }
+      }
+    },
     deleteSpecification: (state, action: PayloadAction<{ workspaceId: string, specificationId: string }>) => {
       const { workspaceId, specificationId } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -253,7 +274,15 @@ const workspaceSlice = createSlice({
           page.title = title;
         }
       }
-    },  
+    },
+    // TODO: Implement update of quiz data
+    // TODO: Figure out how to store quiz data
+    updateQuizItems: () => {
+
+    },
+    updateQuizResults: () => {
+
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -316,10 +345,13 @@ export const {
   addSpecification,
   updateSpecification,
   updateSpecificationName,
+  updateSpecificationCount,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,
   updateLessonPageTitle,
+  updateQuizItems,
+  updateQuizResults,
 } = workspaceSlice.actions;
 
 export const selectWorkspaces = (state: RootState) => state.workspace.workspaces;

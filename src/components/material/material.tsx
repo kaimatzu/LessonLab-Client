@@ -1,7 +1,7 @@
 // material.tsx where the upload call is made
 
 "use client";
-import { Page, Specification, useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
 import React, {
   useCallback,
   useEffect,
@@ -14,6 +14,7 @@ import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
+import { Workspace } from "@/redux/slices/workspaceSlice";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -41,6 +42,8 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [generationDisabled, setGenerationDisabled] = useState(true);
+  // const [name, setName] = useState('')
+  // const [topic, setTopic] = useState('')
 
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
@@ -69,6 +72,11 @@ export default function Material({ workspace }: { workspace: Workspace }) {
     setFiles(files);
     setFetchingFiles(false);
   }, [workspace.id]);
+
+  // TODO: update workspace data (specifications)
+  const handleWorkspaceChange = (newWorkspace: Workspace) => {
+    workspace = newWorkspace
+  }
 
   useEffect(() => { fetchFiles() }, [fetchFiles]);
 

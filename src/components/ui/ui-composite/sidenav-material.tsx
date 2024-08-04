@@ -2,10 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
-  AdditionalSpecification,
-  Specification,
   useWorkspaceMaterialContext,
-  Workspace,
 } from "@/lib/hooks/context-providers/workspace-material-context";
 import "../css/custom-scrollbar.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
@@ -25,6 +22,7 @@ import {
 import { POST as _addLessonPage } from '@/app/api/material/page/route'
 import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
+import { AdditionalSpecification, Specification, Workspace } from "@/redux/slices/workspaceSlice";
 
 interface SidenavMaterialProps {
   workspace: Workspace;
@@ -56,6 +54,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     pages,
     updateSpecification,
     updateSpecificationName,
+    updateSpecificationCount,
     addSpecification,
     deleteSpecification,
     selectSpecification,
@@ -70,6 +69,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
 
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
+  const [numItems, setNumItems] = useState(10)
   const [writingLevel, setWritingLevel] = useState('Elementary');
   const [comprehensionLevel, setComprehensionLevel] = useState('Simple');
   const [additionalSpecs, setAdditionalSpecs] = useState<AdditionalSpecification[]>([]);
@@ -218,10 +218,19 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     }
     const requestBuilder = new RequestBuilder().setBody(JSON.stringify({ MaterialID: selectedWorkspace.id }));
     const result = await _addNewSpecification(requestBuilder);
-    const newSpec: Specification = {
+
+    const newSpec: Specification = workspace.materialType === 'LESSON' ? {
       id: result.SpecificationID,
       name: '',
       topic: '',
+      writingLevel: 'Elementary',
+      comprehensionLevel: 'Simple',
+      additionalSpecs: [],
+    } : {
+      id: result.SpecificationID,
+      name: '',
+      topic: '',
+      count: 10,
       writingLevel: 'Elementary',
       comprehensionLevel: 'Simple',
       additionalSpecs: [],
@@ -445,7 +454,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                     type="text"
                     className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
                     value={name}
-                    onChange={(e) => { 
+                    onChange={(e) => {
                       setName(e.target.value);
                       if (selectedWorkspace && selectedWorkspace.id && selectedSpecificationId) {
                         updateSpecificationName(selectedWorkspace.id, selectedSpecificationId, e.target.value);
@@ -460,6 +469,38 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                 ) : (
                   <></>
                 )}
+                {
+                  workspace.materialType === 'QUIZ' ?
+                    <>
+                      <div className="text-sm text-zinc-500">Number of Items</div>
+                      <input
+                        type='number'
+                        className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
+                        value={numItems}
+                        onChange={e => {
+                          const value = parseInt(e.target.value)
+                          if (value < 1)
+                            return
+                          setNumItems(value)
+
+                          // TODO: redux here
+                          if (selectedWorkspace && selectedSpecificationId) {
+                            updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
+                          }
+
+                          // workspace.specifications.map(specification => {
+                          //   if (specification.id === selectedSpecificationId) {
+                          //     specification = {
+                          //       ...specification,
+                          //       numItems: value,
+                          //     }
+                          //   }
+                          // })
+                        }}
+                      />
+                    </>
+                    : null
+                }
                 <div className="text-sm text-zinc-500">Topic</div>
                 <div
                   className={`${isTopicFocused ? 'border border-primary' : 'border'} border-border p-2 rounded cursor-pointer`}

@@ -5,7 +5,7 @@
 import { useChat } from "ai/react";
 import { ChatMessage } from "./chat-message";
 import UploadButton from "../../ui/ui-composite/chat/upload-button";
-import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
 import { PromptGrid } from "../../ui/ui-composite/chat/prompt-grid";
 import React, {
   ChangeEvent,
@@ -18,7 +18,7 @@ import FileCard from "../../ui/ui-base/file-card";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
 import { Message } from "ai";
-import { Specification } from "@/redux/slices/workspaceSlice";
+import { Specification, Workspace } from "@/redux/slices/workspaceSlice";
 
 interface ChatProps {
   workspace: Workspace;
@@ -42,8 +42,8 @@ export const Chat: React.FC<ChatProps> = ({
 
   const getCurrentSpecifications = (): Specification | {} => {
     const specToLoad = selectedSpecificationId
-        ? specifications.find(spec => spec.id === selectedSpecificationId)
-        : specifications[0];
+      ? specifications.find(spec => spec.id === selectedSpecificationId)
+      : specifications[0];
 
     return specToLoad ? specToLoad : {};
   }
@@ -172,7 +172,7 @@ export const Chat: React.FC<ChatProps> = ({
         <div className="flex flex-row items-center h-fit mb-4">
           <textarea
             className={
-              "p-4 px-5 border-gray-300 bg-white/80 text-black dark:border-zinc-100 dark:bg-zinc-950/80 dark:text-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " +
+              "p-4 px-5 border-gray-300 bg-white/80 text-foreground dark:border-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " +
               (isLoading ? "cursor-not-allowed" : "cursor-text")
             }
             value={input}

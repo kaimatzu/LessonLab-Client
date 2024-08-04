@@ -73,7 +73,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
                   {children}
                 </a>
               )
-            },        
+            },
             code(props: any) {
               const { node, inline, className, children, ...rest } = props;
               const match = /language-(\w+)/.exec(className || '')
@@ -95,13 +95,19 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
                 />
               )
             },
-            
+
             // Directives for Rendering Components           
             'artifact': (props: any) => {
-              const {name, children} = props;
+              const { name, children } = props;
               console.log("message", message.content, message.data);
-              return (<Artifact name={name} children={children} message={message.content}/>) 
-            }
+              return (<Artifact name={name} children={children} message={message.content} />)
+            },
+
+            // 'item': (props: any) => {
+            //   const { num, children } = props;
+            //   console.log("message", message.content, message.data);
+            //   return (<Item children={children} num={num} item={item} />)
+            // }
 
           } as Components}
         >
