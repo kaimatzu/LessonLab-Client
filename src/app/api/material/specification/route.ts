@@ -1,5 +1,5 @@
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
-import { AdditionalSpecification } from "@/lib/hooks/context-providers/workspace-material-context";
+// import { AdditionalSpecification } from "@/lib/hooks/context-providers/workspace-material-context";
 
 /**
  * Retrieves all specifications associated with a workspace.
@@ -8,27 +8,27 @@ import { AdditionalSpecification } from "@/lib/hooks/context-providers/workspace
  * @returns A Promise that resolves to a Response object.
  */
 export async function GET(requestBuilder: RequestBuilder) {
-    requestBuilder
-      // .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
-      .setMethod("GET")
-      .setCredentials("include");
-  
-    try {
-      const response = await fetch(requestBuilder.build());
-  
-      if (response.ok) {
-        const specifications = await response.json();
-        console.log("Specifications retrieved successfully:", specifications);
-        return new Response(JSON.stringify(specifications), { status: 200 });
-      } else {
-        throw new Error("Failed to retrieve specifications, " + response.statusText);
-      }
-    } catch (error) {
-      console.error("Error retrieving specifications:", error);
-      return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-        status: 500,
-      });
+  requestBuilder
+    // .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
+    .setMethod("GET")
+    .setCredentials("include");
+
+  try {
+    const response = await fetch(requestBuilder.build());
+
+    if (response.ok) {
+      const specifications = await response.json();
+      console.log("Specifications retrieved successfully:", specifications);
+      return new Response(JSON.stringify(specifications), { status: 200 });
+    } else {
+      throw new Error("Failed to retrieve specifications, " + response.statusText);
     }
+  } catch (error) {
+    console.error("Error retrieving specifications:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
 }
 
 /**
@@ -50,7 +50,7 @@ export async function POST(requestBuilder: RequestBuilder) {
     console.log(data);
     return data;
   } catch (error) {
-      console.error('Error inserting specification:', error);
+    console.error('Error inserting specification:', error);
   }
 }
 
@@ -70,72 +70,72 @@ export async function DELETE(requestBuilder: RequestBuilder) {
   try {
     const response = await fetch(requestBuilder.build());
     if (response.ok) {
-        return true;
+      return true;
     } else {
-        console.error('Error removing specification:', response.statusText);
-        return false;
+      console.error('Error removing specification:', response.statusText);
+      return false;
     }
   } catch (error) {
-      console.error('Error removing specification:', error);
-      return false;
+    console.error('Error removing specification:', error);
+    return false;
   }
 }
 
 
 export async function updateSpecificationName(selectedSpecificationId: string, name: string) {
   const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/name`)
-      .setMethod("PATCH")
-      .setHeaders({ 'Content-Type': 'application/json' })
-      .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Name: name }))
-      .setCredentials("include")
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/name`)
+    .setMethod("PATCH")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Name: name }))
+    .setCredentials("include")
 
   try {
-      await fetch(requestBuilder.build());
+    await fetch(requestBuilder.build());
   } catch (error) {
-      console.error('Error updating specification name:', error);
+    console.error('Error updating specification name:', error);
   }
 };
 
 export async function updateSpecificationTopic(selectedSpecificationId: string, topic: string) {
   const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/topic`)
-      .setMethod("PATCH")
-      .setHeaders({ 'Content-Type': 'application/json' })
-      .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Topic: topic }))
-      .setCredentials("include")
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/topic`)
+    .setMethod("PATCH")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Topic: topic }))
+    .setCredentials("include")
   try {
-      await fetch(requestBuilder.build());
+    await fetch(requestBuilder.build());
   } catch (error) {
-      console.error('Error updating specification topic:', error);
+    console.error('Error updating specification topic:', error);
   }
 };
 
 export async function updateSpecificationComprehensionLevel(selectedSpecificationId: string, comprehensionLevel: string) {
   const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/comprehensionlevel`)
-      .setMethod("PATCH")
-      .setHeaders({ 'Content-Type': 'application/json' })
-      .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, ComprehensionLevel: comprehensionLevel }))
-      .setCredentials("include")
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/comprehensionlevel`)
+    .setMethod("PATCH")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, ComprehensionLevel: comprehensionLevel }))
+    .setCredentials("include")
   try {
-      await fetch(requestBuilder.build());
+    await fetch(requestBuilder.build());
   } catch (error) {
-      console.error('Error updating specification comprehension level:', error);
+    console.error('Error updating specification comprehension level:', error);
   }
 };
 
 export async function updateSpecificationWritingLevel(selectedSpecificationId: string, writingLevel: string) {
   const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/writinglevel`)
-      .setMethod("PATCH")
-      .setHeaders({ 'Content-Type': 'application/json' })
-      .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, WritingLevel: writingLevel }))
-      .setCredentials("include")
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/writinglevel`)
+    .setMethod("PATCH")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, WritingLevel: writingLevel }))
+    .setCredentials("include")
   try {
-      await fetch(requestBuilder.build());
+    await fetch(requestBuilder.build());
   } catch (error) {
-      console.error('Error updating specification writing level:', error);
+    console.error('Error updating specification writing level:', error);
   }
 };
 
@@ -155,10 +155,10 @@ export async function insertAdditionalSpecification(index: number, selectedSpeci
       .setCredentials("include");
 
     const response = await fetch(requestBuilder.build());
-    
-    if(response.ok) {
-        const result = await response.json();
-        return result;
+
+    if (response.ok) {
+      const result = await response.json();
+      return result;
     } else {
       console.error('Error inserting additional specification:', response.statusText);
     }
@@ -206,10 +206,10 @@ export async function updateAdditionalSpecification(index: number, Specification
       .setCredentials("include");
 
     const response = await fetch(requestBuilder.build());
-    
-    if(response.ok) {
-        const result = await response.json();
-        return result;
+
+    if (response.ok) {
+      const result = await response.json();
+      return result;
     } else {
       console.error('Error updating additional specification:', response.statusText);
     }
@@ -223,20 +223,20 @@ export async function removeAdditionalSpecification(index: number, additionalSpe
   console.log("Delete called")
 
   const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${additionalSpec.id}`)
-      .setMethod("DELETE")
-      .setCredentials("include");
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${additionalSpec.id}`)
+    .setMethod("DELETE")
+    .setCredentials("include");
 
   try {
-      const response = await fetch(requestBuilder.build());
-      if (response.ok) {
-          return true;
-      } else {
-          console.error('Error removing additional specification:', response.statusText);
-          return false;
-      }
-  } catch (error) {
-      console.error('Error removing additional specification:', error);
+    const response = await fetch(requestBuilder.build());
+    if (response.ok) {
+      return true;
+    } else {
+      console.error('Error removing additional specification:', response.statusText);
       return false;
+    }
+  } catch (error) {
+    console.error('Error removing additional specification:', error);
+    return false;
   }
 };
