@@ -10,32 +10,32 @@ import { useSocket } from '@/lib/hooks/useSocket';
 import { useBroadcastChannel } from '@/lib/hooks/useBroadcastChannel';
 
 export interface AuthResponse {
-    user: User;
-    token: string;
+  user: User;
+  token: string;
 }
 
 export interface UserContextValue {
-    user: User | null;
-    setUser: (user: User) => void;
-    clearUser: () => void;
-    connectSocket: (payment_intent_id: string) => void;
-    isTransactionFinished: boolean;
-    setIsTransactionFinished: React.Dispatch<React.SetStateAction<boolean>>;
-    setTransactionStatus:  React.Dispatch<React.SetStateAction<string>>;
-    broadcastChannel: BroadcastChannel | null;
-    transactionStatus: string;
+  user: User | null;
+  setUser: (user: User) => void;
+  clearUser: () => void;
+  connectSocket: (payment_intent_id: string) => void;
+  isTransactionFinished: boolean;
+  setIsTransactionFinished: React.Dispatch<React.SetStateAction<boolean>>;
+  setTransactionStatus: React.Dispatch<React.SetStateAction<string>>;
+  broadcastChannel: BroadcastChannel | null;
+  transactionStatus: string;
 }
 
 const defaultValue: UserContextValue = {
-    user: null,
-    setUser: () => { },
-    clearUser: () => { },
-    connectSocket: () => { },
-    isTransactionFinished: false,
-    setIsTransactionFinished: () => {},
-    setTransactionStatus: () => {},
-    broadcastChannel: null,
-    transactionStatus: '',
+  user: null,
+  setUser: () => { },
+  clearUser: () => { },
+  connectSocket: () => { },
+  isTransactionFinished: false,
+  setIsTransactionFinished: () => { },
+  setTransactionStatus: () => { },
+  broadcastChannel: null,
+  transactionStatus: '',
 };
 
 export const UserContext = createContext<UserContextValue>(defaultValue);
@@ -64,10 +64,10 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   } = useSocket();
 
   useEffect(() => {
-    console.log("Checking for auth"); 
+    // console.log("Checking for auth");
     const checkAuthStatus = async () => {
       const authToken = Cookies.get('autoLoginToken');
-      console.log(authToken)
+      // console.log(authToken)
       const pathname = getCurrentPath();
 
       if (!authToken) {
@@ -143,11 +143,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 // Wrapping the UserProvider with RouteProvider
 export const CombinedProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <WindowActivityProvider>
-        <RouteProvider>
-            <UserProvider>
-            {children}
-            </UserProvider>
-        </RouteProvider>
-    </WindowActivityProvider>
+  <WindowActivityProvider>
+    <RouteProvider>
+      <UserProvider>
+        {children}
+      </UserProvider>
+    </RouteProvider>
+  </WindowActivityProvider>
 );
