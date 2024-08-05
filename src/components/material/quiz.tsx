@@ -28,23 +28,7 @@ type MultipleChoice = {
   choices: Choice[] | undefined
 }
 
-// const Choice = z.object({
-//   content: z.string(),
-//   correct: z.boolean()
-// })
-
-// const Identification = z.object({
-//   question: z.string(),
-//   answer: z.string()
-// })
-
-// const MultipleChoice = z.object({
-//   question: z.string(),
-//   choices: Choice.array().length(4)
-// })
-
 type ItemType = Identification | MultipleChoice
-// const ItemType = z.union([Identification, MultipleChoice])
 
 type ItemProps = {
   num: number
@@ -73,11 +57,6 @@ const fetchFileUrls = async (workspaceId: string) => {
     return [];
   }
 };
-
-// REQUIREMENTS
-// A quiz will be a list of items
-// each item will be contained in a box
-// an item can be multiple choice or identification
 
 // Use object for quiz generation
 // https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-object

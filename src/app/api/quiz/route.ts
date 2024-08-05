@@ -62,13 +62,12 @@ const POST = async (req: Request) => {
 
     return result.toTextStreamResponse()
   } else {
-    throw new Error('Not enough context')
+    return Response.json({ message: 'Failed to get context', status: 500 })
   }
 }
 
 export { POST }
 
-// NOTE: I move ni og lain na file aron di mag libog ang routing unsa na function ang gi refer. 
 /**
  * Embed a piece of text using an embedding model or service.
  * This is a placeholder and needs to be implemented based on your embedding solution.
