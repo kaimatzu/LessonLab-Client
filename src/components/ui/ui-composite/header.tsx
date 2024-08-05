@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
@@ -49,13 +49,17 @@ const Header: React.FC = () => {
     // Add more items as needed
   ];
 
+  const fontFamily = {
+    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif, Inter, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbo'"
+  }
+
   return (
-    <div className="z-[200] mx-0 w-full p-4 shadow-lg" style={{ userSelect: 'none' }}>
+    <div className="z-[200] mx-0 w-full p-4 shadow-lg select-none">
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
             <Image src={icon} alt="icon" width={32} height={32} />
-            <span className="ml-2 text-xl text-zinc-950 dark:text-white tracking-wide">LessonLab</span>
+            <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide" style={fontFamily}>LessonLab</span>
           </Link>
         </div>
 

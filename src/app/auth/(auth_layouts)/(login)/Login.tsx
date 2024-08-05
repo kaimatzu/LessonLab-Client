@@ -6,12 +6,15 @@ import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/auth/login-form';
 import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Toast } from '@/components/ui/ui-base/toast';
+import { useToast } from '@/components/ui/ui-base/use-toast';
 
 interface LoginPageProps {
   switchForm: () => void;
 }
 
 export default function LoginPage({ switchForm }: LoginPageProps) {
+  const { toast } = useToast()
   const dispatch = useAppDispatch();
   const router = useRouter();
   const loading = useAppSelector((state) => state.user.loading);
@@ -33,6 +36,12 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     } else {
       // Handle login error (e.g., display error message to the user)
       console.error("Login failed");
+      const msg = error.message ? error.message : 'Something went wrong.'
+      toast({
+        title: 'Error',
+        description: msg,
+        variant: 'destructive'
+      })
     }
   };
 
@@ -41,7 +50,8 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
       <div className="pt-4">
         <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
         {loading && <p>Loading...</p>}
-        {error && <p>{error}</p>}
+        {/* Make the error message into a toast */}
+        
       </div>
     </Overlay>
   );
