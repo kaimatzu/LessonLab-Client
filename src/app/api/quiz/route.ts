@@ -28,6 +28,7 @@ const POST = async (req: Request) => {
   const response = await fetch(requestBuilder.build());
   const { context } = await response.json();
 
+  console.log('Client: Context value:', context)
 
   if (context && context.prompt && context.prompt.length > 0) {
     const systemContent = context.prompt[0].content;
@@ -61,7 +62,7 @@ const POST = async (req: Request) => {
 
     return result.toTextStreamResponse()
   } else {
-    throw new Error('Not enought context')
+    throw new Error('Not enough context')
   }
 }
 

@@ -117,7 +117,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
             href={href}
             onClick={onClick}
             className={`flex items-center no-underline rounded mb-1 
-            ${isActive ? 'bg-primary text-zinc-900 duration-0'
+              ${isActive ? 'bg-primary text-zinc-900 duration-0'
                 : 'hover:bg-yellow-300/80'
               } duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
           >

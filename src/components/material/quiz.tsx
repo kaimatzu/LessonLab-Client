@@ -188,14 +188,14 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
             if (selectedWorkspace) {
               const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
               if (spec)
-                submit({ namespaceId: workspace.id, prompt: specification.topic, count: specification.count }) // * Send to AI generation
+                submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
             }
           }
         })
         setIsGenerated(true)
       }}>Generate</Button> :
         <div className='flex flex-col gap-4 h-full items-center overflow-y-scroll no-scrollbar text-black'>
-          {object?.items?.map((item, index) => {
+          {object?.items?.map((item: any, index: number) => {
             if (!item)
               return null
             if ('answer' in item) {
@@ -237,7 +237,7 @@ export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
 
   return (
     // <Card className='p-4 w-96'>
-    <Card className='p-4 w-[1000px]'>
+    <Card className='p-4 w-full'>
       <div>
         {num}.
       </div>
@@ -250,10 +250,12 @@ export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
             disabled={isChecked}
             onChange={(e) => { handleInputChange(e.currentTarget.value) }}
           />
-        ) : (<MultipleChoiceCard
-          choices={item.choices}
-          disabled={isChecked}
-          onChange={handleInputChange} />)}
+        ) : (
+          <MultipleChoiceCard
+            choices={item.choices}
+            disabled={isChecked}
+            onChange={handleInputChange} />
+        )}
       </div>
       {isChecked ? (
         <div className='p-4'>
