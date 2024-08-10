@@ -20,7 +20,6 @@ import {
   removeAdditionalSpecification as _removeAdditionalSpecification,
 } from "@/app/api/material/specification/route"
 import { POST as _addLessonPage } from '@/app/api/material/page/route'
-import { Select, SelectItem, SelectContent, SelectGroup, SelectLabel, SelectTrigger, SelectValue } from "../ui-base/select";
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
 import { AdditionalSpecification, Specification, Workspace } from "@/redux/slices/workspaceSlice";
 
@@ -327,6 +326,10 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     }
   }
 
+  // ------------------------------//
+  //  Is generation disabled
+  // ------------------------------//
+
   useEffect(() => {
     if (topic === '' || name === '') {
       onGenerationDisabledChange(true)
@@ -599,13 +602,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   </div>
                 ))}
               </div>
-            ) : null}
+            ) : (null)}
           </>
         ) : (
           <SkeletonLoader />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
