@@ -12,6 +12,11 @@ import { Button } from '../ui/ui-base/button';
 import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { Workspace } from '@/redux/slices/workspaceSlice';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
+import Overlay from '../ui/ui-base/overlay';
+import { ANSWER_FIELD } from '@/lib/globals';
+import { objectListToGiftFormat } from '@/lib/utils';
+import { toast } from '../ui/ui-base/use-toast';
 
 type Choice = {
   content: string | undefined
@@ -28,7 +33,7 @@ type MultipleChoice = {
   choices: Choice[] | undefined
 }
 
-type ItemType = Identification | MultipleChoice
+export type ItemType = Identification | MultipleChoice
 
 type ItemProps = {
   num: number
@@ -87,8 +92,89 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
 
   const [isGenerated, setIsGenerated] = useState<boolean>(false)
   const [isChecked, setIsChecked] = useState<boolean>(false)
+  const [exportQuizFileName, setExportQuizFileName] = useState<string>('')
+  const [isExportOpen, setIsExportOpen] = useState<boolean>(false)
+  const [isEditMode, setIsEditMode] = useState<boolean>(false)
   // const [files, setFiles] = useState<FetchedFile[]>([])
   // const [fetchingFiles, setFetchingFiles] = useState(true)
+
+
+  // Link GIFT format
+  // https://docs.moodle.org/404/en/GIFT_format#General_instructions
+  const handleExportQuiz = async () => {
+    // TODO: Get the object
+    // TODO: Optimize this later
+    // if (!items) {
+    if (!object || !object?.items) {
+      toast({
+        title: 'Null error',
+        description: 'Quiz not generated',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    // For test data
+    // const convertedItems: ItemType[] = items.map(item => {
+    //   return item && ANSWER_FIELD in item ? ({
+    //     question: item.question,
+    //     answer: item.answer
+    //   }) : ({
+    //     question: item.question,
+    //     choices: [
+    //       { content: item.choices && item.choices[0].content, correct: item.choices && item.choices[0].correct },
+    //       { content: item.choices && item.choices[1].content, correct: item.choices && item.choices[1].correct },
+    //       { content: item.choices && item.choices[2].content, correct: item.choices && item.choices[2].correct },
+    //       { content: item.choices && item.choices[3].content, correct: item.choices && item.choices[3].correct },
+    //     ]
+    //   })
+    // })
+    // For actual data
+    const convertedItems: ItemType[] = object?.items?.map((item: any) => {
+      return item && ANSWER_FIELD in item ? ({
+        question: item.question,
+        answer: item.answer
+      }) : ({
+        question: item?.question,
+        choices: [
+          { content: item && item.choices[0].content, correct: item.choices && item.choices[0].correct },
+          { content: item && item.choices[1].content, correct: item.choices && item.choices[1].correct },
+          { content: item && item.choices[2].content, correct: item.choices && item.choices[2].correct },
+          { content: item && item.choices[3].content, correct: item.choices && item.choices[3].correct },
+        ]
+      })
+    })
+    const giftFormat = objectListToGiftFormat(convertedItems)
+
+    const postRequestBuilder = new RequestBuilder()
+      .setURL(`http://localhost:4001/api/exports`)
+      .setMethod('POST')
+      .setHeaders({ 'Content-Type': 'application/json' })
+      .setBody(JSON.stringify({
+        filename: exportQuizFileName,
+        data: giftFormat,
+      }))
+    await fetch(postRequestBuilder.build())
+
+    const aTag = document.createElement("a")
+    aTag.href = `http://localhost:4001/exports/${exportQuizFileName}.gift`
+    aTag.setAttribute("download", exportQuizFileName + '.gift')
+    document.body.appendChild(aTag)
+    aTag.click()
+    aTag.remove()
+    setIsExportOpen(false)
+
+    // TODO: Make a DELETE request to server to delete the export file
+    // const deleteRequestBuilder = new RequestBuilder()
+    //   .setURL(`http://localhost:4001/api/exports`)
+    //   .setMethod('DELETE')
+    //   .setHeaders({ 'Content-Type': 'application/json' })
+    //   .setBody(JSON.stringify({
+    //     filename: exportQuizFileName
+    //   }))
+    // console.log(exportQuizFileName)
+    // await fetch(deleteRequestBuilder.build())
+  }
 
   // const items: ItemType[] = []
   // const items: ItemType[] = [
@@ -106,27 +192,27 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   //     ]
   //   },
   //   {
-  //     question: 'What number comes after 68?', choices: [
-  //       { content: '70', correct: false },
-  //       { content: '69', correct: true },
-  //       { content: '67', correct: false },
-  //       { content: '420', correct: false },
+  //     question: 'Which planet is known as the Red Planet?', choices: [
+  //       { content: 'Earth', correct: false },
+  //       { content: 'Mars', correct: true },
+  //       { content: 'Jupiter', correct: false },
+  //       { content: 'Saturn', correct: false },
   //     ]
   //   },
   //   {
-  //     question: 'What number comes after 68?', choices: [
-  //       { content: '70', correct: false },
-  //       { content: '69', correct: true },
-  //       { content: '67', correct: false },
-  //       { content: '420', correct: false },
+  //     question: 'Who painted the Mona Lisa?', choices: [
+  //       { content: 'Vincent van Gogh', correct: false },
+  //       { content: 'Claude Monet', correct: false },
+  //       { content: 'Leonardo da Vinci', correct: true },
+  //       { content: 'Pablo Picasso', correct: false },
   //     ]
   //   },
   //   {
-  //     question: 'What number comes after 68?', choices: [
-  //       { content: '70', correct: false },
-  //       { content: '69', correct: true },
-  //       { content: '67', correct: false },
-  //       { content: '420', correct: false },
+  //     question: 'What is the powerhouse of the cell?', choices: [
+  //       { content: 'Nucleus', correct: false },
+  //       { content: 'Mitochondrion', correct: true },
+  //       { content: 'Ribosome', correct: false },
+  //       { content: 'Golgi apparatus', correct: false },
   //     ]
   //   },
   // ];
@@ -158,9 +244,79 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   })
 
   // TODO: Make update in the sidenav during topic change, because it only updates during page reload
+  // TODO: Make quiz editable
+  // return (
+  //   <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
+  //     {items?.length === 0 || !items ? <Button disabled={generationDisabled} onClick={() => {
+  //       workspace.specifications.map(specification => {
+  //         // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
+  //         if (specification.id === selectedSpecificationId) {
+  //           if (selectedWorkspace) {
+  //             const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
+  //             if (spec)
+  //               submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
+  //           }
+  //         }
+  //       })
+  //       setIsGenerated(true)
+  //     }}>Generate</Button> :
+  //       <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
+  //         {items?.map((item: any, index: number) => {
+  //           if (!item)
+  //             return null
+  //           if (ANSWER_FIELD in item) {
+  //             return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
+  //           } else if ('choices' in item) {
+  //             if (!item.choices)
+  //               return null
+  //             return <Item num={index + 1} isChecked={isChecked} item={{
+  //               question: item.question, choices: [
+  //                 { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
+  //                 { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
+  //                 { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
+  //                 { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
+  //               ]
+  //             }} />
+  //           }
+  //           return null
+  //         })}
+  //         {isChecked ? (null) : (
+  //           <Button className='mt-10' onClick={() => {
+  //             if (!isChecked && isGenerated)
+  //               setIsChecked(true)
+  //           }}>Check</Button>
+  //         )}
+  //         {isGenerated ? (null) : (
+  //           <Button className='mt-2' onClick={() => {
+  //             setIsExportOpen(true)
+  //           }}>Export</Button>
+  //         )}
+  //         <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
+  //       </div>
+  //     }
+  //     <Overlay
+  //       isOpen={isExportOpen}
+  //       onClose={() => { setIsExportOpen(false) }}
+  //       overlayName='Export Quiz'
+  //       overlayType='quizExport' >
+  //       <div className='p-4'>
+  //         <Label>Filename</Label>
+  //         <Input className='mb-4 w-90' onChange={(e) => {
+  //           setExportQuizFileName(e.currentTarget.value)
+  //         }} />
+  //         <Button
+  //           disabled={exportQuizFileName === ''}
+  //           onClick={() => {
+  //             // TODO: Generate file on server and download it to user's machine
+  //             handleExportQuiz()
+  //           }}>Download</Button>
+  //       </div>
+  //     </Overlay>
+  //   </div >
+  // )
   return (
-    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object ? `justify-start` : `justify-center`}`} overflow-y-scroll no-scrollbar text-black`}>
-      {object?.items?.length === 0 || !object || !object.items ? <Button className='text-black' disabled={generationDisabled} onClick={() => {
+    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object?.items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
+      {object?.items?.length === 0 || !object?.items ? <Button disabled={generationDisabled} onClick={() => {
         workspace.specifications.map(specification => {
           // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
           if (specification.id === selectedSpecificationId) {
@@ -173,16 +329,16 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
         })
         setIsGenerated(true)
       }}>Generate</Button> :
-        <div className='flex flex-col gap-4 h-full items-center overflow-y-scroll no-scrollbar text-black'>
+        <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
           {object?.items?.map((item: any, index: number) => {
             if (!item)
               return null
-            if ('answer' in item) {
-              return < Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
+            if (ANSWER_FIELD in item) {
+              return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
             } else if ('choices' in item) {
               if (!item.choices)
                 return null
-              return < Item num={index + 1} isChecked={isChecked} item={{
+              return <Item num={index + 1} isChecked={isChecked} item={{
                 question: item.question, choices: [
                   { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
                   { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
@@ -194,14 +350,36 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
             return null
           })}
           {isChecked ? (null) : (
-            <Button className='mt-10 text-black' onClick={() => {
+            <Button className='mt-10' onClick={() => {
               if (!isChecked && isGenerated)
                 setIsChecked(true)
             }}>Check</Button>
           )}
-          <div className='pb-40' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
+          {isGenerated ? (
+            <Button className='mt-2' onClick={() => {
+              setIsExportOpen(true)
+            }}>Export</Button>
+          ) : (null)}
+          <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
         </div>
       }
+      <Overlay
+        isOpen={isExportOpen}
+        onClose={() => { setIsExportOpen(false) }}
+        overlayName='Export Quiz'
+        overlayType='quizExport' >
+        <div className='p-4'>
+          <Label>Filename</Label>
+          <Input className='mb-4 w-90' onChange={(e) => {
+            setExportQuizFileName(e.currentTarget.value)
+          }} />
+          <Button
+            disabled={exportQuizFileName === ''}
+            onClick={() => {
+              handleExportQuiz()
+            }}>Download</Button>
+        </div>
+      </Overlay>
     </div >
   )
 }
@@ -224,7 +402,7 @@ export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
         {item.question}
       </div>
       <div className='p-4'>
-        {'answer' in item ? (
+        {ANSWER_FIELD in item ? (
           <Input
             disabled={isChecked}
             onChange={(e) => { handleInputChange(e.currentTarget.value) }}
@@ -239,7 +417,7 @@ export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
       {isChecked ? (
         <div className='p-4'>
           <div className='p-2 border border-border rounded-md inline-block'>
-            {'answer' in item ? (
+            {ANSWER_FIELD in item ? (
               item.answer === answer ? (<FaCheck className='text-green-500' />) : (<FaXmark className='text-red-500' />)
             ) : (
               <>{answer === item?.choices?.find((choice) => choice.correct === true)?.content ? (

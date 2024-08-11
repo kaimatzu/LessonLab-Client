@@ -582,7 +582,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                 </div>
               </div>
             </div>
-            <div className="border-t border-gray-600 my-2"></div>
+            <div className="border-t border-zinc-600 my-2"></div>
 
             {selectedWorkspace && selectedWorkspace.materialType === 'LESSON' ? (
               <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
@@ -594,7 +594,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                 </div>
                 {pages?.map((page) => (
                   <div
-                    className="flex items-center justify-between bg-gray-300 rounded p-3 mb-2 cursor-pointer"
+                    className="flex items-center justify-between bg-zinc-300 rounded p-3 mb-2 cursor-pointer"
                     key={page.id}
                     onClick={() => selectPage(page.id)}
                   >

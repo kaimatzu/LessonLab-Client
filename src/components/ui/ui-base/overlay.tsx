@@ -8,7 +8,7 @@ interface OverlayProps {
   onClose: () => void;
   children: ReactNode;
   overlayName: string;
-  overlayType: 'transaction' | 'auth' | 'chat';
+  overlayType: 'transaction' | 'auth' | 'chat' | 'quizExport';
 }
 
 const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 cursor-pointer transition-opacity z-[250]', {
@@ -33,6 +33,7 @@ const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-backgro
       transaction: 'bottom-0 h-fit w-fit p-8',
       auth: 'bottom-0 relative h-fit w-fit mx-auto p-8',
       chat: 'bottom-[20%] w-3/4 h-3/4 bg-background px-8 pb-4 overflow-auto no-scrollbar',
+      quizExport: 'bottom-0 h-fit w-fit p-4',
     },
   },
   defaultVariants: {
@@ -47,6 +48,7 @@ const headerStyles = cva('flex justify-between items-center py-2 px-4', {
       transaction: 'bg-zinc-900',
       auth: 'bg-zinc-900',
       chat: 'bg-white border-b border-gray-200 mt-6',
+      quizExport: 'bg-zinc-900'
     },
   },
   defaultVariants: {
