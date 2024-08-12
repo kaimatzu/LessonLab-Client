@@ -245,88 +245,15 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
 
   // TODO: Make update in the sidenav during topic change, because it only updates during page reload
   // TODO: Make quiz editable
-  // return (
-  //   <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
-  //     {items?.length === 0 || !items ? <Button disabled={generationDisabled} onClick={() => {
-  //       workspace.specifications.map(specification => {
-  //         // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
-  //         if (specification.id === selectedSpecificationId) {
-  //           if (selectedWorkspace) {
-  //             const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
-  //             if (spec)
-  //               submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
-  //           }
-  //         }
-  //       })
-  //       setIsGenerated(true)
-  //     }}>Generate</Button> :
-  //       <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
-  //         {items?.map((item: any, index: number) => {
-  //           if (!item)
-  //             return null
-  //           if (ANSWER_FIELD in item) {
-  //             return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
-  //           } else if ('choices' in item) {
-  //             if (!item.choices)
-  //               return null
-  //             return <Item num={index + 1} isChecked={isChecked} item={{
-  //               question: item.question, choices: [
-  //                 { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
-  //                 { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
-  //                 { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
-  //                 { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
-  //               ]
-  //             }} />
-  //           }
-  //           return null
-  //         })}
-  //         {isChecked ? (null) : (
-  //           <Button className='mt-10' onClick={() => {
-  //             if (!isChecked && isGenerated)
-  //               setIsChecked(true)
-  //           }}>Check</Button>
-  //         )}
-  //         {isGenerated ? (null) : (
-  //           <Button className='mt-2' onClick={() => {
-  //             setIsExportOpen(true)
-  //           }}>Export</Button>
-  //         )}
-  //         <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
-  //       </div>
-  //     }
-  //     <Overlay
-  //       isOpen={isExportOpen}
-  //       onClose={() => { setIsExportOpen(false) }}
-  //       overlayName='Export Quiz'
-  //       overlayType='quizExport' >
-  //       <div className='p-4'>
-  //         <Label>Filename</Label>
-  //         <Input className='mb-4 w-90' onChange={(e) => {
-  //           setExportQuizFileName(e.currentTarget.value)
-  //         }} />
-  //         <Button
-  //           disabled={exportQuizFileName === ''}
-  //           onClick={() => {
-  //             // TODO: Generate file on server and download it to user's machine
-  //             handleExportQuiz()
-  //           }}>Download</Button>
-  //       </div>
-  //     </Overlay>
-  //   </div >
-  // )
   return (
     <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object?.items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
       {object?.items?.length === 0 || !object?.items ? <Button disabled={generationDisabled} onClick={() => {
-        workspace.specifications.map(specification => {
-          // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
-          if (specification.id === selectedSpecificationId) {
-            if (selectedWorkspace) {
-              const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
-              if (spec)
-                submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
-            }
+        if (selectedWorkspace) {
+          const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
+          if (spec) {
+            submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, spec }) // * Send to AI generation (Calls Client api)
           }
-        })
+        }
         setIsGenerated(true)
       }}>Generate</Button> :
         <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
@@ -356,9 +283,14 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
             }}>Check</Button>
           )}
           {isGenerated ? (
-            <Button className='mt-2' onClick={() => {
-              setIsExportOpen(true)
-            }}>Export</Button>
+            <>
+              <Button className='mt-2' onClick={() => {
+                setIsExportOpen(true)
+              }}>Export</Button>
+              <Button className='mt-2' onClick={() => {
+                setIsEditMode(true)
+              }}>Edit</Button>
+            </>
           ) : (null)}
           <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
         </div>
@@ -382,6 +314,80 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
       </Overlay>
     </div >
   )
+  // return (
+  //   <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
+  //     {items.length === 0 || !items ? <Button disabled={generationDisabled} onClick={() => {
+  //       workspace.specifications.map(specification => {
+  //         // TODO: Make update in the sidenav-material during topic change, because it only updates during page reload
+  //         if (specification.id === selectedSpecificationId) {
+  //           if (selectedWorkspace) {
+  //             const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
+  //             if (spec) {
+  //               submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, specifications }) // * Send to AI generation (Calls NextJS backend)
+  //             }
+  //           }
+  //         }
+  //       })
+  //       setIsGenerated(true)
+  //     }}>Generate</Button> :
+  //       <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
+  //         {items.map((item: any, index: number) => {
+  //           if (!item)
+  //             return null
+  //           if (ANSWER_FIELD in item) {
+  //             return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
+  //           } else if ('choices' in item) {
+  //             if (!item.choices)
+  //               return null
+  //             return <Item num={index + 1} isChecked={isChecked} item={{
+  //               question: item.question, choices: [
+  //                 { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
+  //                 { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
+  //                 { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
+  //                 { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
+  //               ]
+  //             }} />
+  //           }
+  //           return null
+  //         })}
+  //         {isChecked ? (null) : (
+  //           <Button className='mt-10' onClick={() => {
+  //             if (!isChecked && isGenerated)
+  //               setIsChecked(true)
+  //           }}>Check</Button>
+  //         )}
+  //         {isGenerated ? (
+  //           <>
+  //             <Button className='mt-2' onClick={() => {
+  //               setIsExportOpen(true)
+  //             }}>Export</Button>
+  //             <Button className='mt-2' onClick={() => {
+  //               setIsEditMode(true)
+  //             }}>Edit</Button>
+  //           </>
+  //         ) : (null)}
+  //         <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
+  //       </div>
+  //     }
+  //     <Overlay
+  //       isOpen={isExportOpen}
+  //       onClose={() => { setIsExportOpen(false) }}
+  //       overlayName='Export Quiz'
+  //       overlayType='quizExport' >
+  //       <div className='p-4'>
+  //         <Label>Filename</Label>
+  //         <Input className='mb-4 w-90' onChange={(e) => {
+  //           setExportQuizFileName(e.currentTarget.value)
+  //         }} />
+  //         <Button
+  //           disabled={exportQuizFileName === ''}
+  //           onClick={() => {
+  //             handleExportQuiz()
+  //           }}>Download</Button>
+  //       </div>
+  //     </Overlay>
+  //   </div >
+  // )
 }
 
 export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {

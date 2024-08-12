@@ -28,7 +28,7 @@ const POST = async (req: Request) => {
   const response = await fetch(requestBuilder.build());
   const { context } = await response.json();
 
-  console.log('Client: Context value:', context)
+  // console.log('Client: Context value:', context)
 
   if (context && context.prompt && context.prompt.length > 0) {
     const systemContent = context.prompt[0].content;
@@ -57,7 +57,7 @@ const POST = async (req: Request) => {
           .array()
           .length(count),
       }),
-      prompt: prompt
+      prompt: "Generate a quiz according to the context"
     })
 
     return result.toTextStreamResponse()

@@ -99,6 +99,7 @@ export const fetchSpecifications = createAsyncThunk(
         id: spec.SpecificationID,
         name: spec.Name,
         topic: spec.Topic,
+        count: 10,
         writingLevel: spec.WritingLevel,
         comprehensionLevel: spec.ComprehensionLevel,
         additionalSpecs: spec.AdditionalSpecs || [],
@@ -207,16 +208,18 @@ const workspaceSlice = createSlice({
       const { workspaceId, specificationId, count } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
       if (workspace) {
-        if (workspace.materialType === 'LESSON')
+        if (workspace.materialType === 'LESSON') {
           return
+        }
         const spec = workspace.specifications.find(spec => spec.id === specificationId);
         if (spec) {
           spec.count = count;
         }
       }
       if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
-        if (state.selectedWorkspace.materialType === 'LESSON')
+        if (state.selectedWorkspace.materialType === 'LESSON') {
           return
+        }
         const spec = state.selectedWorkspace.specifications.find(spec => spec.id === specificationId);
         if (spec) {
           spec.count = count;

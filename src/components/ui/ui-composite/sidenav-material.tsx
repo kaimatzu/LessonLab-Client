@@ -76,6 +76,20 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   const selectSpecificationRef = useRef<HTMLSelectElement>(null);
   const [isTopicFocused, setIsTopicFocused] = useState(false);
 
+  // const updateSpecCount = (value: number) => {
+  //   console.log('------> updateSpecCount')
+  //   if (!selectedSpecificationId) {
+  //     return
+  //   }
+  //   setNumItems(value)
+  //   if (!selectedWorkspace?.specifications) {
+  //     return
+  //   }
+  //   console.log('------> Pass null checks')
+  //   setNumItems(value)
+  //   updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
+  // }
+
   ////////////////////////////////////
   ////////////File Handling///////////
   ////////////////////////////////////
@@ -278,6 +292,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
       } else {
         selectSpecification(specifications[0].id);
         initializeSpecification(specifications[0]);
+        // updateSpecCount(10)
       }
     }
   }, [specificationsLoading, specifications, selectedSpecificationId]);
@@ -482,8 +497,9 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                         value={numItems}
                         onChange={e => {
                           const value = parseInt(e.target.value)
-                          if (value < 1)
+                          if (value < 1) {
                             return
+                          }
                           setNumItems(value)
 
                           // TODO: redux here
@@ -510,6 +526,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   onClick={() => setIsTopicFocused(true)}
                   onBlur={() => setIsTopicFocused(false)}
                 >
+                  {/* TODO: Update the redux state for topic */}
                   {isTopicFocused ? (
                     <textarea
                       className="w-full h-20 p-2 bg-background placeholder-zinc"
