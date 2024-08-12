@@ -18,35 +18,6 @@ import { ANSWER_FIELD } from '@/lib/globals';
 import { objectListToGiftFormat } from '@/lib/utils';
 import { toast } from '../ui/ui-base/use-toast';
 
-type Choice = {
-  content: string | undefined
-  correct: boolean | undefined
-}
-
-type Identification = {
-  question: string | undefined
-  answer: string | undefined
-}
-
-type MultipleChoice = {
-  question: string | undefined
-  choices: Choice[] | undefined
-}
-
-export type ItemType = Identification | MultipleChoice
-
-type ItemProps = {
-  num: number
-  item: ItemType
-  isChecked: boolean
-}
-
-type MultipleChoiceProps = {
-  choices: Choice[] | undefined
-  disabled: boolean
-  onChange: (value: string) => void
-}
-
 const fetchFileUrls = async (workspaceId: string) => {
   try {
     const response = await fetch(`/api/files/?namespaceId=${workspaceId}`);
@@ -95,8 +66,6 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   const [exportQuizFileName, setExportQuizFileName] = useState<string>('')
   const [isExportOpen, setIsExportOpen] = useState<boolean>(false)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
-  // const [files, setFiles] = useState<FetchedFile[]>([])
-  // const [fetchingFiles, setFetchingFiles] = useState(true)
 
 
   // Link GIFT format
@@ -261,7 +230,7 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
             if (!item)
               return null
             if (ANSWER_FIELD in item) {
-              return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} />
+              return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} isEditMode={isEditMode} />
             } else if ('choices' in item) {
               if (!item.choices)
                 return null
@@ -272,7 +241,7 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
                   { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
                   { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
                 ]
-              }} />
+              }} isEditMode={isEditMode} />
             }
             return null
           })}
@@ -390,6 +359,13 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
   // )
 }
 
+type ItemProps = {
+  isEditMode: boolean;
+  num: number
+  item: ItemType
+  isChecked: boolean
+}
+
 export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
   const [answer, setAnswer] = useState<string>('')
 
@@ -437,6 +413,12 @@ export const Item: React.FC<ItemProps> = ({ num, item, isChecked }) => {
       ) : (null)}
     </Card>
   )
+}
+
+type MultipleChoiceProps = {
+  choices: Choice[] | undefined
+  disabled: boolean
+  onChange: (value: string) => void
 }
 
 const MultipleChoiceCard: React.FC<MultipleChoiceProps> = ({ choices, disabled, onChange }) => {

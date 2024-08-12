@@ -31,3 +31,20 @@ interface Conversation {
   temperature: number;
   folderId: string | null;
 }
+
+type Choice = {
+  content: string | undefined
+  correct: boolean | undefined
+}
+
+type Identification = {
+  question: string | undefined
+  answer: string | undefined
+}
+
+type MultipleChoice = {
+  question: string | undefined
+  choices: Choice[] | undefined
+}
+
+type ItemType = Identification | MultipleChoice

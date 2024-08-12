@@ -1,9 +1,8 @@
-import { ItemType } from '@/components/material/quiz'
 import { toast } from '@/components/ui/ui-base/use-toast'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ANSWER_FIELD } from './globals'
-
+import { FetchedFile } from '@/app/api/files/route'
 
 // type Choice = {
 //   content: string | undefined
@@ -59,3 +58,19 @@ export function jsonToGiftFormat(json: string): string | undefined {
     return undefined
   }
 }
+
+export const fetchFileUrls = async (workspaceId: string) => {
+  try {
+    const response = await fetch(`/api/files/?namespaceId=${workspaceId}`);
+    if (!response.ok) {
+      alert('Failed to fetch files response not ok')
+      throw new Error('Failed to fetch file URLs');
+    }
+    const files: FetchedFile[] = await response.json();
+    return files;
+  } catch (error) {
+    alert('Failed to fetch files error')
+    console.error('Error fetching file URLs:', error);
+    return [];
+  }
+};
