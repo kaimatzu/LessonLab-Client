@@ -35,7 +35,7 @@ export function objectToGiftFormat(item: ItemType) {
   }
 }
 
-export function objectListToGiftFormat(items: ItemType[]): string {
+export function objectArrayToGiftFormat(items: ItemType[]): string {
   let giftFormat = ''
   items.map(item => {
     giftFormat += (objectToGiftFormat(item) + '\n\n')
@@ -44,14 +44,14 @@ export function objectListToGiftFormat(items: ItemType[]): string {
 }
 
 export function jsonToGiftFormat(json: string): string | undefined {
-  // Can only be
   try {
-    JSON.parse(json)
+    const object = JSON.parse(json)
+    objectToGiftFormat(object)
     return 'jsonToGiftFormat Unimplemented'
   } catch (error) {
     console.log(error)
     toast({
-      title: 'JSON error',
+      title: 'JSON parsing error',
       descriptin: 'Invalid JSON',
       variant: 'destructive',
     })
