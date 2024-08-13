@@ -9,6 +9,7 @@ import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
 import ThemeSwitcher from '../ui-base/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
+import { Button } from '../ui-base/button';
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -44,22 +45,18 @@ const Header: React.FC = () => {
     // Add more items as needed
   ];
 
-  const fontFamily = {
-    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif, Inter, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbo'"
-  }
-
   return (
     <div className="z-[200] mx-0 w-full p-4 shadow-lg select-none">
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
             <Image src={icon} alt="icon" width={32} height={32} />
-            <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide" style={fontFamily}>LessonLab</span>
+            <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide font-sans">LessonLab</span>
           </Link>
         </div>
 
         <div className="ml-auto flex space-x-4 justify-center align-center">
-          <ThemeSwitcher className={'hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} />
+          <ThemeSwitcher className={'hover:bg-zinc-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} />
           <div className="relative">
             <Image
               src={profileIcon}
@@ -70,21 +67,23 @@ const Header: React.FC = () => {
               onClick={toggleDropdown} // Toggle dropdown on click
             />
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md py-2 z-[300]"> {/* z-index added here */}
+              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
                 {user && (
                   <>
-                    <button
+                    <Button
+                      variant={'ghost'}
                       onClick={closeShop}
-                      className="block text-left px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 mx-auto w-[90%] rounded"
+                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-yellow-200 dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
                       Shop
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant={'ghost'}
                       onClick={handleLogout}
-                      className="block text-left px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 mx-auto w-[90%] rounded"
+                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-yellow-200 dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
                       Logout
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
