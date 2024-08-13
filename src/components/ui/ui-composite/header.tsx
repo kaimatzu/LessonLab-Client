@@ -14,19 +14,10 @@ const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [transactionOngoing, setTransactionOngoing] = useState(false);
   const [checkoutWindow, setCheckoutWindow] = useState<Window>();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown toggle
 
   const { user, clearUser } = useUserContext();
   const { getWindowPath } = useRouteContext();
-
-  // useEffect(() => {
-  //   if (checkoutWindow) {
-  //     console.log("Opened window path:", getWindowPath(checkoutWindow));
-  //   }
-  // }, [checkoutWindow?.location])
-
-  // useEffect(() => {
-  //   console.log("Room id:", roomId);
-  // }, [roomId])
 
   const closeShop = () => {
     setIsShopOpen(!isShopOpen);
@@ -37,6 +28,10 @@ const Header: React.FC = () => {
     if (success) {
       clearUser();
     }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   // TENTATIVE ITEMS, SHOULD BE REAL ITEMS DATA
@@ -64,17 +59,37 @@ const Header: React.FC = () => {
         </div>
 
         <div className="ml-auto flex space-x-4 justify-center align-center">
-          {/* <div className='hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'> */}
           <ThemeSwitcher className={'hover:bg-gray-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} />
-          {/* </div> */}
-          {user ? <button className="relative px-4 py-2 bg-[#f1c41b] text-zinc-950 rounded-md hover:bg-yellow-500" onClick={handleLogout}>
-            Logout
-          </button>
-            : null}
-          <button className="relative px-4 py-2 bg-[#f1c41b] text-zinc-950 rounded-md hover:bg-yellow-500" onClick={closeShop}>
-            Shop
-          </button>
-          <Image src={profileIcon} alt="Profile" width={40} height={32} className="cursor-pointer" />
+          <div className="relative">
+            <Image
+              src={profileIcon}
+              alt="Profile"
+              width={40}
+              height={32}
+              className="cursor-pointer"
+              onClick={toggleDropdown} // Toggle dropdown on click
+            />
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md py-2 z-[300]"> {/* z-index added here */}
+                {user && (
+                  <>
+                    <button
+                      onClick={closeShop}
+                      className="block text-left px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 mx-auto w-[90%] rounded"
+                    >
+                      Shop
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block text-left px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 mx-auto w-[90%] rounded"
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} overlayType="transaction">
