@@ -14,7 +14,7 @@ import SidenavMaterial from "../ui/ui-composite/sidenav-material";
 import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
-import { Workspace } from "@/redux/slices/workspaceSlice";
+import { Workspace } from "@/lib/types/workspace-types";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {

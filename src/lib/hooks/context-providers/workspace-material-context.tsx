@@ -1,8 +1,8 @@
 // client/src/lib/hooks/workspace-material-context.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { GET as getMaterials } from '@/app/api/material/route';
-import { GET as _getSpecifications } from "@/app/api/material/specification/route";
-import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/material/page/route";
+import { GET as getMaterials } from '@/app/api/workspace/route';
+import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
+import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -26,13 +26,11 @@ import {
   fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
   selectPagesForSelectedWorkspace,
-  Workspace,
-  Specification,
-  Page,
   updateQuizItems,
   updateQuizResults,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
+import { Page, Specification, Workspace } from '@/lib/types/workspace-types';
 
 export interface WorkspaceMaterialContextValue {
   workspaces: Workspace[];

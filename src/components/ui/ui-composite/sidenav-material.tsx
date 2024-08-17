@@ -18,10 +18,10 @@ import {
   insertAdditionalSpecification as _insertAdditionalSpecification,
   updateAdditionalSpecification as _updateAdditionalSpecification,
   removeAdditionalSpecification as _removeAdditionalSpecification,
-} from "@/app/api/material/specification/route"
-import { POST as _addLessonPage } from '@/app/api/material/page/route'
+} from "@/app/api/workspace/specification/route"
+import { POST as _addLessonPage } from '@/app/api/workspace/page/route'
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
-import { AdditionalSpecification, Specification, Workspace } from "@/redux/slices/workspaceSlice";
+import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/workspace-types";
 
 interface SidenavMaterialProps {
   workspace: Workspace;

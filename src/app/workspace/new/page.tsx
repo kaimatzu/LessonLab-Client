@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useWorkspaceMaterialContext, Workspace } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
+// import { Workspace } from "@/redux/slices/workspaceSlice";
 import Spinner from "@/components/ui/ui-base/spinner";
-import { POST as createMaterial } from "@/app/api/material/route";
+import { POST as createMaterial } from "@/app/api/workspace/route";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
+import { Workspace } from "@/lib/types/workspace-types";
 
 const validFileTypes = ["application/pdf"];
 

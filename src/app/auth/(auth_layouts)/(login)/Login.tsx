@@ -36,7 +36,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     } else {
       // Handle login error (e.g., display error message to the user)
       console.error("Login failed");
-      const msg = error && error.message ? error.message : 'Something went wrong.'
+      const msg = error ? error : 'Something went wrong.'
       toast({
         title: 'Error',
         description: msg,

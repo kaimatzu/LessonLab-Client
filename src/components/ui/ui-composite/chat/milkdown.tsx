@@ -31,10 +31,10 @@ import { Ctx } from '@milkdown/ctx';
 import { ProsemirrorAdapterProvider, usePluginViewFactory } from '@prosemirror-adapter/react';
 import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
 import { insert, replaceAll } from "@milkdown/utils";
-import { updatePageContent as _updatePageContent, updatePageTitle as _updatePageTitle } from '@/app/api/material/page/route';
+import { updatePageContent as _updatePageContent, updatePageTitle as _updatePageTitle } from '@/app/api/workspace/page/route';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
 import { EditorState, Transaction } from 'prosemirror-state';
-import { Page, Workspace } from '@/redux/slices/workspaceSlice';
+import { Page, Workspace } from '@/lib/types/workspace-types';
 
 export const BlockView = () => {
   const ref = useRef<HTMLDivElement>(null)

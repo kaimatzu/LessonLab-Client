@@ -5,22 +5,7 @@ import { POST as login } from '@/app/api/auth/login/route';
 import { POST as register } from '@/app/api/auth/register/route';
 import Cookies from 'js-cookie';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
-
-export interface User {
-  userId: string;
-  userType: 'STUDENT' | 'TEACHER';
-  name: string;
-  email: string;
-  tokens: number;
-}
-
-export interface UserState {
-  user: User | null;
-  error: string | null;
-  loading: boolean;
-  isTransactionFinished: boolean;
-  transactionStatus: string;
-}
+import { UserState, User } from '@/lib/types/user-types';
 
 const initialState: UserState = {
   user: null,
