@@ -10,13 +10,13 @@ import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
 import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
-import { Workspace } from '@/redux/slices/workspaceSlice';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import Overlay from '../ui/ui-base/overlay';
 import { ANSWER_FIELD } from '@/lib/globals';
 import { objectArrayToGiftFormat } from '@/lib/utils';
 import { toast } from '../ui/ui-base/use-toast';
+import { Workspace } from '@/lib/types/workspace-types';
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
