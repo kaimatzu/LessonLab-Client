@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ANSWER_FIELD } from './globals'
 import { FetchedFile } from '@/app/api/files/route'
+import { z } from 'zod'
 
 // type Choice = {
 //   content: string | undefined
@@ -20,6 +21,27 @@ import { FetchedFile } from '@/app/api/files/route'
 // }
 
 // export type ItemType = Identification | MultipleChoice
+
+export const GeneratedQuizSchema = z.object({
+  items: z.union([
+    z.object({
+      question: z.string(),
+      answer: z.string(),
+    }),
+    z.object({
+      question: z.string(),
+      choices: z.object({
+        content: z.string(),
+        correct: z.boolean(),
+      })
+        .array()
+        .length(4),
+    }),
+  ])
+    .array(),
+})
+
+export type GeneratedQuiz = z.infer<typeof GeneratedQuizSchema>
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -73,4 +95,46 @@ export const fetchFileUrls = async (workspaceId: string) => {
     console.error('Error fetching file URLs:', error);
     return [];
   }
-};
+}
+
+// TODO: Use automapper if needed
+// https://automapperts.netlify.app
+export const mapGeneratedQuizToItemType = (generatedQuiz: any): ItemType[] => {
+
+  if (generatedQuiz && generatedQuiz.items) {
+    return generatedQuiz?.items?.map((item: any) => {
+      //   if (!item) {
+      //     console.log('--> item is null')
+      //     return null
+      //   }
+
+      //   if (!item.choices) {
+      //     console.log('--> item.choices is null')
+      //     return null
+      //   }
+
+      //   if (!item.choices[0] || !item.choices[1] || !item.choices[2] || !item.choices[3]) {
+      //     console.log('--> item.choice[n] is null')
+      //     return null
+      //   }
+
+      return 'answer' in item ?
+        {
+          question: item?.question ?? '',
+          answer: item?.answer ?? '',
+        } as ItemType
+        :
+        {
+          question: item?.question ?? '',
+          choices: [
+            { content: item?.choices?.[0]?.content ?? '', correct: item?.choices?.[0]?.correct ?? false },
+            { content: item?.choices?.[1]?.content ?? '', correct: item?.choices?.[1]?.correct ?? false },
+            { content: item?.choices?.[2]?.content ?? '', correct: item?.choices?.[2]?.correct ?? false },
+            { content: item?.choices?.[3]?.content ?? '', correct: item?.choices?.[3]?.correct ?? false },
+          ],
+        } as ItemType
+    })
+  }
+
+  return []
+}
