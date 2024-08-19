@@ -1,7 +1,7 @@
 // redux/workspaceSlice.ts
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { GET as getMaterials } from '@/app/api/workspace/route';
+import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
 import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
@@ -29,23 +29,23 @@ const initialState: WorkspaceState = {
   pagesLoading: false,
 };
 
-export const fetchMaterials = createAsyncThunk(
-  'workspace/fetchMaterials',
+export const fetchWorkspaces = createAsyncThunk(
+  'workspace/fetchWorkspaces',
   async () => {
     const requestBuilder = new RequestBuilder();
-    const response = await getMaterials(requestBuilder).catch(error => {
-      console.error("Error fetching user's materials:", error);
+    const response = await getWorkspaces(requestBuilder).catch(error => {
+      console.error("Error fetching user's workspaces:", error);
       return null;
     });
 
     if (response && response.ok) {
       const data = await response.json();
-      const fetchedWorkspaces = data.map((material: any) => ({
-        id: material.MaterialID,
-        name: material.MaterialName,
-        createdAt: material.CreatedAt,
+      const fetchedWorkspaces = data.map((workspace: any) => ({
+        id: workspace.WorkspaceID,
+        name: workspace.WorkspaceName,
+        createdAt: workspace.CreatedAt,
         locked: false,
-        materialType: material.MaterialType,
+        // workspaceType: workspace.WorkspaceType,
       }));
       return fetchedWorkspaces;
     }
@@ -56,7 +56,7 @@ export const fetchMaterials = createAsyncThunk(
 export const fetchSpecifications = createAsyncThunk(
   'workspace/fetchSpecifications',
   async (workspaceId: string) => {
-    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${workspaceId}`);
+    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/${workspaceId}`);
     const response = await _getSpecifications(requestBuilder).catch(error => {
       console.error("Error fetching specifications:", error);
       return null;
@@ -82,7 +82,7 @@ export const fetchSpecifications = createAsyncThunk(
 export const fetchLessonPages = createAsyncThunk(
   'workspace/fetchLessonPages',
   async (lessonId: string) => {
-    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/lessons/pages/${lessonId}`);
+    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/lessons/pages/${lessonId}`);
     const response = await _getLessonPages(requestBuilder).catch(error => {
       console.error("Error fetching lesson pages:", error);
       return null;
@@ -173,28 +173,28 @@ const workspaceSlice = createSlice({
         }
       }
     },
-    updateSpecificationCount: (state, action: PayloadAction<{ workspaceId: string, specificationId: string, count: number }>) => {
-      const { workspaceId, specificationId, count } = action.payload;
-      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
-      if (workspace) {
-        if (workspace.materialType === 'LESSON') {
-          return
-        }
-        const spec = workspace.specifications.find(spec => spec.id === specificationId);
-        if (spec) {
-          spec.count = count;
-        }
-      }
-      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
-        if (state.selectedWorkspace.materialType === 'LESSON') {
-          return
-        }
-        const spec = state.selectedWorkspace.specifications.find(spec => spec.id === specificationId);
-        if (spec) {
-          spec.count = count;
-        }
-      }
-    },
+    // updateSpecificationCount: (state, action: PayloadAction<{ workspaceId: string, specificationId: string, count: number }>) => {
+    //   const { workspaceId, specificationId, count } = action.payload;
+    //   const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+    //   if (workspace) {
+    //     if (workspace.workspaceType === 'LESSON') {
+    //       return
+    //     }
+    //     const spec = workspace.specifications.find(spec => spec.id === specificationId);
+    //     if (spec) {
+    //       spec.count = count;
+    //     }
+    //   }
+    //   if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+    //     if (state.selectedWorkspace.workspaceType === 'LESSON') {
+    //       return
+    //     }
+    //     const spec = state.selectedWorkspace.specifications.find(spec => spec.id === specificationId);
+    //     if (spec) {
+    //       spec.count = count;
+    //     }
+    //   }
+    // },
     deleteSpecification: (state, action: PayloadAction<{ workspaceId: string, specificationId: string }>) => {
       const { workspaceId, specificationId } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -258,15 +258,15 @@ const workspaceSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchMaterials.pending, (state) => {
+      .addCase(fetchWorkspaces.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchMaterials.fulfilled, (state, action: PayloadAction<Workspace[]>) => {
+      .addCase(fetchWorkspaces.fulfilled, (state, action: PayloadAction<Workspace[]>) => {
         state.loading = false;
         state.workspaces = action.payload;
         state.workspacesInitialized = true;
       })
-      .addCase(fetchMaterials.rejected, (state) => {
+      .addCase(fetchWorkspaces.rejected, (state) => {
         state.loading = false;
         state.workspacesInitialized = true;
       })
@@ -317,7 +317,7 @@ export const {
   addSpecification,
   updateSpecification,
   updateSpecificationName,
-  updateSpecificationCount,
+  // updateSpecificationCount,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,

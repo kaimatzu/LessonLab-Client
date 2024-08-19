@@ -1,13 +1,13 @@
-// client/src/lib/hooks/workspace-material-context.tsx
+// client/src/lib/hooks/workspace-context.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { GET as getMaterials } from '@/app/api/workspace/route';
+import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
 import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
-  fetchMaterials,
+  fetchWorkspaces,
   fetchSpecifications,
   setSelectedWorkspace,
   setSelectedSpecificationId,
@@ -18,7 +18,7 @@ import {
   addSpecification,
   updateSpecification,
   updateSpecificationName,
-  updateSpecificationCount,
+  // updateSpecificationCount,
   deleteSpecification,
   addLessonPage,
   updateLessonPage,
@@ -32,7 +32,7 @@ import {
 import { RootState } from '@/redux/store';
 import { Page, Specification, Workspace } from '@/lib/types/workspace-types';
 
-export interface WorkspaceMaterialContextValue {
+export interface WorkspaceContextValue {
   workspaces: Workspace[];
   workspacesInitialized: boolean;
   selectedWorkspace: Workspace | null;
@@ -51,7 +51,7 @@ export interface WorkspaceMaterialContextValue {
   removeWorkspace: (workspaceId: string) => void;
   updateSpecification: (workspaceId: string, specification: Specification) => void;
   updateSpecificationName: (workspaceId: string, specificationId: string, name: string) => void;
-  updateSpecificationCount: (workspaceId: string, specificationId: string, count: number) => void;
+  // updateSpecificationCount: (workspaceId: string, specificationId: string, count: number) => void;
   addSpecification: (workspaceId: string, specification: Specification) => void;
   deleteSpecification: (workspaceId: string, specificationId: string) => void;
   addLessonPage: (lessonId: string, page: Page) => void;
@@ -62,7 +62,7 @@ export interface WorkspaceMaterialContextValue {
   updateQuizResults: () => void;
 }
 
-const defaultValue: WorkspaceMaterialContextValue = {
+const defaultValue: WorkspaceContextValue = {
   workspaces: [],
   workspacesInitialized: false,
   selectedWorkspace: null,
@@ -81,7 +81,7 @@ const defaultValue: WorkspaceMaterialContextValue = {
   removeWorkspace: () => { },
   updateSpecification: () => { },
   updateSpecificationName: () => { },
-  updateSpecificationCount: () => { },
+  // updateSpecificationCount: () => { },
   addSpecification: () => { },
   deleteSpecification: () => { },
   addLessonPage: () => Promise.resolve(),
@@ -92,10 +92,10 @@ const defaultValue: WorkspaceMaterialContextValue = {
   updateQuizResults: () => { },
 };
 
-export const WorkspaceMaterialContext = createContext(defaultValue);
-export const useWorkspaceMaterialContext = () => useContext(WorkspaceMaterialContext);
+export const WorkspaceContext = createContext(defaultValue);
+export const useWorkspaceContext = () => useContext(WorkspaceContext);
 
-export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const dispatch = useAppDispatch();
   const workspaces = useAppSelector((state: RootState) => state.workspace.workspaces);
@@ -110,7 +110,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   const pagesLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
 
   useEffect(() => {
-    dispatch(fetchMaterials());
+    dispatch(fetchWorkspaces());
   }, [dispatch]);
 
   const loadWorkspaceData = (workspaceId: string) => {
@@ -168,9 +168,9 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
     dispatch(updateSpecificationName({ workspaceId, specificationId, name }))
   };
 
-  const updateSpecificationCountHandler = (workspaceId: string, specificationId: string, count: number) => {
-    dispatch(updateSpecificationCount({ workspaceId, specificationId, count }))
-  };
+  // const updateSpecificationCountHandler = (workspaceId: string, specificationId: string, count: number) => {
+  //   dispatch(updateSpecificationCount({ workspaceId, specificationId, count }))
+  // };
 
   const deleteSpecificationHandler = (workspaceId: string, specificationId: string) => {
     dispatch(deleteSpecification({ workspaceId, specificationId }));
@@ -201,7 +201,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
   }
 
   return (
-    <WorkspaceMaterialContext.Provider
+    <WorkspaceContext.Provider
       value={{
         workspaces,
         workspacesInitialized,
@@ -222,7 +222,7 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
         addSpecification: addSpecificationHandler,
         updateSpecification: updateSpecificationHandler,
         updateSpecificationName: updateSpecificationNameHandler,
-        updateSpecificationCount: updateSpecificationCountHandler,
+        // updateSpecificationCount: updateSpecificationCountHandler,
         deleteSpecification: deleteSpecificationHandler,
         addLessonPage: addLessonPageHandler,
         updateLessonPage: updateLessonPageHandler,
@@ -233,6 +233,6 @@ export const WorkspaceMaterialProvider: React.FC<{ children: React.ReactNode }> 
       }}
     >
       {children}
-    </WorkspaceMaterialContext.Provider>
+    </WorkspaceContext.Provider>
   );
 };

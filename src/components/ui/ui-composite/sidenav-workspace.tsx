@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { RiDeleteBinLine, RiAddFill } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import {
-  useWorkspaceMaterialContext,
-} from "@/lib/hooks/context-providers/workspace-material-context";
+  useWorkspaceContext,
+} from "@/lib/hooks/context-providers/workspace-context";
 import "../css/custom-scrollbar.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
@@ -23,7 +23,7 @@ import { POST as _addLessonPage } from '@/app/api/workspace/page/route'
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
 import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/workspace-types";
 
-interface SidenavMaterialProps {
+interface SidenavWorkspaceProps {
   workspace: Workspace;
   files: FetchedFile[];
   fetchingFiles: boolean;
@@ -32,7 +32,7 @@ interface SidenavMaterialProps {
   onGenerationDisabledChange: (newValue: boolean) => void
 }
 
-const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
+const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   workspace,
   files,
   fetchingFiles,
@@ -53,13 +53,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     pages,
     updateSpecification,
     updateSpecificationName,
-    updateSpecificationCount,
+    // updateSpecificationCount,
     addSpecification,
     deleteSpecification,
     selectSpecification,
     addLessonPage,
     selectPage,
-  } = useWorkspaceMaterialContext();
+  } = useWorkspaceContext();
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showAddFile, setShowAddFile] = useState(false);
@@ -204,7 +204,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   }, []);
 
   ////////////////////////////////////
-  ///////Material Specifications//////
+  ///////Workspace Specifications//////
   ////////////////////////////////////
 
   const handleSpecificationSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -229,21 +229,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
     if (!selectedWorkspace) {
       return;
     }
-    const requestBuilder = new RequestBuilder().setBody(JSON.stringify({ MaterialID: selectedWorkspace.id }));
+    const requestBuilder = new RequestBuilder().setBody(JSON.stringify({ WorkspaceID: selectedWorkspace.id }));
     const result = await _addNewSpecification(requestBuilder);
 
-    const newSpec: Specification = workspace.materialType === 'LESSON' ? {
+    const newSpec: Specification =  {
       id: result.SpecificationID,
       name: '',
       topic: '',
-      writingLevel: 'Elementary',
-      comprehensionLevel: 'Simple',
-      additionalSpecs: [],
-    } : {
-      id: result.SpecificationID,
-      name: '',
-      topic: '',
-      count: 10,
       writingLevel: 'Elementary',
       comprehensionLevel: 'Simple',
       additionalSpecs: [],
@@ -254,13 +246,13 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   const deleteCurrentSpecification = async () => {
     if (selectedWorkspace && selectedSpecificationId && selectSpecificationRef.current) {
       if (selectedWorkspace.specifications.length > 1) {
-        const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/${selectedWorkspace.id}/${selectSpecificationRef.current.value}`);
+        const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/${selectedWorkspace.id}/${selectSpecificationRef.current.value}`);
         const response = await _deleteCurrentSpecification(requestBuilder);
         if (response) {
           deleteSpecification(selectedWorkspace.id, selectSpecificationRef.current.value);
         }
       } else {
-        alert('A material must have at least one specification.');
+        alert('A workspace must have at least one specification.');
       }
     }
   };
@@ -324,7 +316,9 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   ////////////////////////////////////
 
   const createLessonPage = async () => {
-    if (selectedWorkspace && selectedWorkspace.materialType === 'LESSON') {
+    if (selectedWorkspace
+      // && selectedWorkspace.workspaceType === 'LESSON'
+    ) {
       const requestBuilder = new RequestBuilder()
         .setBody(JSON.stringify({
           LessonID: selectedWorkspace.id,
@@ -488,37 +482,37 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   <></>
                 )}
                 {
-                  workspace.materialType === 'QUIZ' ?
-                    <>
-                      <div className="text-sm text-zinc-500">Number of Items</div>
-                      <input
-                        type='number'
-                        className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
-                        value={numItems}
-                        onChange={e => {
-                          const value = parseInt(e.target.value)
-                          if (value < 1) {
-                            return
-                          }
-                          setNumItems(value)
+                  // workspace.workspaceType === 'QUIZ' ?
+                  //   <>
+                  //     <div className="text-sm text-zinc-500">Number of Items</div>
+                  //     <input
+                  //       type='number'
+                  //       className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
+                  //       value={numItems}
+                  //       onChange={e => {
+                  //         const value = parseInt(e.target.value)
+                  //         if (value < 1) {
+                  //           return
+                  //         }
+                  //         setNumItems(value)
 
-                          // TODO: redux here
-                          if (selectedWorkspace && selectedSpecificationId) {
-                            updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
-                          }
+                  //         // TODO: redux here
+                  //         if (selectedWorkspace && selectedSpecificationId) {
+                  //           updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
+                  //         }
 
-                          // workspace.specifications.map(specification => {
-                          //   if (specification.id === selectedSpecificationId) {
-                          //     specification = {
-                          //       ...specification,
-                          //       numItems: value,
-                          //     }
-                          //   }
-                          // })
-                        }}
-                      />
-                    </>
-                    : null
+                  //         // workspace.specifications.map(specification => {
+                  //         //   if (specification.id === selectedSpecificationId) {
+                  //         //     specification = {
+                  //         //       ...specification,
+                  //         //       numItems: value,
+                  //         //     }
+                  //         //   }
+                  //         // })
+                  //       }}
+                  //     />
+                  //   </>
+                  //   : null
                 }
                 <div className="text-sm text-zinc-500">Topic</div>
                 <div
@@ -601,7 +595,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
             </div>
             <div className="border-t border-zinc-600 my-2"></div>
 
-            {selectedWorkspace && selectedWorkspace.materialType === 'LESSON' ? (
+            {selectedWorkspace ? (
               <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
                 <div className="flex flex-row justify-between items-center">
                   <h1 className="text-lg font-normal">Pages</h1>
@@ -629,4 +623,4 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   );
 };
 
-export default SidenavMaterial;
+export default SidenavWorkspace;

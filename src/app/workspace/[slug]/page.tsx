@@ -1,7 +1,7 @@
-import MaterialPage from './(material)/Material';
+import WorkspacePage from './(workspace)/Workspace';
 
 export default function Page() {
     return (
-       <MaterialPage/>
+       <WorkspacePage/>
     );
 };

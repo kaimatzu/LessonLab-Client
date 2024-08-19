@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Material from '@/components/material/material';
-import { useWorkspaceMaterialContext, Workspace } from '@/lib/hooks/context-providers/workspace-material-context';
+import WorkspaceComponent from '@/components/workspace/workspace';
+import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { usePathname, useRouter } from 'next/navigation';
+import { Workspace } from '@/lib/types/workspace-types';
 
-export default function MaterialPage() {
-  const { workspaces, removeWorkspace, selectWorkspace } = useWorkspaceMaterialContext();
+export default function WorkspacePage() {
+  const { workspaces, removeWorkspace, selectWorkspace } = useWorkspaceContext();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -89,7 +90,7 @@ export default function MaterialPage() {
                 </button>}
             </div>
           </div> */}
-          <Material workspace={currentWorkspace} />
+          <WorkspaceComponent workspace={currentWorkspace} />
         </>
       )}
     </div>

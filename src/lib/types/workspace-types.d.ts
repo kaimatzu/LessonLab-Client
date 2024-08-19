@@ -8,7 +8,7 @@ export interface Specification {
   id: string;
   name: string;
   topic: string;
-  count?: number; // for quiz only
+  // count?: number; // for quiz only
   writingLevel: string;
   comprehensionLevel: string;
   additionalSpecs: AdditionalSpecification[];
@@ -26,7 +26,6 @@ export interface Workspace {
   fileUrls: string[];
   createdAt: number;
   locked?: boolean;
-  materialType: string;
   specifications: Specification[];
   pages: Page[];
 }

@@ -1,11 +1,11 @@
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 /**
- * @param requestBuilder - The RequestBuilder instance used to construct the create material request.
+ * @param requestBuilder - The RequestBuilder instance used to construct the create workspace request.
  * @returns A Promise that resolves to a Response object.
  */
 export async function POST(requestBuilder: RequestBuilder) {
-  requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/lessons/pages`)
+  requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/lessons/pages`)
     .setMethod("POST")
     .setCredentials("include")
     .setHeaders({ 'Content-Type': 'application/json' });
@@ -36,7 +36,7 @@ export async function POST(requestBuilder: RequestBuilder) {
 
 
 /**
- * @param requestBuilder - The RequestBuilder instance used to construct the get materials request.
+ * @param requestBuilder - The RequestBuilder instance used to construct the get workspaces request.
  * @returns A Promise that resolves to a Response object.
  */
 export async function GET(requestBuilder: RequestBuilder) {
@@ -66,7 +66,7 @@ export async function GET(requestBuilder: RequestBuilder) {
 
 export async function updatePageContent(selectedPageId: string, lessonId: string, content: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/lessons/pages/update/content`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/lessons/pages/update/content`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ pageId: selectedPageId, lessonId: lessonId, newContent: content }))
@@ -81,7 +81,7 @@ export async function updatePageContent(selectedPageId: string, lessonId: string
 
 export async function updatePageTitle(selectedPageId: string, lessonId: string, title: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/lessons/pages/update/title`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/lessons/pages/update/title`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ pageId: selectedPageId, lessonId: lessonId, newTitle: title }))

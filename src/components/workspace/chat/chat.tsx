@@ -1,11 +1,11 @@
-// material.tsx where the upload call is made
+// workspace.tsx where the upload call is made
 
 "use client";
 
 import { useChat } from "ai/react";
 import { ChatMessage } from "./chat-message";
 import UploadButton from "../../ui/ui-composite/chat/upload-button";
-import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
 import { PromptGrid } from "../../ui/ui-composite/chat/prompt-grid";
 import React, {
   ChangeEvent,
@@ -18,7 +18,8 @@ import FileCard from "../../ui/ui-base/file-card";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
 import { Message } from "ai";
-import { Specification, Workspace } from "@/redux/slices/workspaceSlice";
+import { Specification, Workspace } from "@/lib/types/workspace-types";
+
 
 interface ChatProps {
   workspace: Workspace;
@@ -38,7 +39,7 @@ export const Chat: React.FC<ChatProps> = ({
   const {
     specifications,
     selectedSpecificationId,
-  } = useWorkspaceMaterialContext();
+  } = useWorkspaceContext();
 
   const getCurrentSpecifications = (): Specification | {} => {
     const specToLoad = selectedSpecificationId
