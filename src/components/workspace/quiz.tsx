@@ -9,7 +9,7 @@ import { Input } from '../ui/ui-base/input';
 import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
 import { Label } from '../ui/ui-base/label';
 import { Button } from '../ui/ui-base/button';
-import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import Overlay from '../ui/ui-base/overlay';
@@ -52,13 +52,13 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
     pages,
     updateSpecification,
     updateSpecificationName,
-    updateSpecificationCount,
+    // updateSpecificationCount,
     addSpecification,
     deleteSpecification,
     selectSpecification,
     addLessonPage,
     selectPage,
-  } = useWorkspaceMaterialContext();
+  } = useWorkspaceContext();
 
   const [isGenerated, setIsGenerated] = useState<boolean>(false)
   const [isChecked, setIsChecked] = useState<boolean>(false)
@@ -211,84 +211,13 @@ const Quiz: React.FC<QuizProps> = ({ generationDisabled, workspace }: QuizProps)
     }),
   })
 
-  // TODO: Make update in the sidenav during topic change, because it only updates during page reload
-  // TODO: Make quiz editable
-  // return (
-  //   <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object?.items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
-  //     {object?.items?.length === 0 || !object?.items ? <Button disabled={generationDisabled} onClick={() => {
-  //       if (selectedWorkspace) {
-  //         const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
-  //         if (spec) {
-  //           submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, spec }) // * Send to AI generation (Calls Client api)
-  //         }
-  //       }
-  //       setIsGenerated(true)
-  //     }}>Generate</Button> :
-  //       <div className='flex flex-col gap-4 h-full w-full items-center overflow-y-scroll no-scrollbar text-black'>
-  //         {object?.items?.map((item: any, index: number) => {
-  //           if (!item)
-  //             return null
-  //           if (ANSWER_FIELD in item) {
-  //             return <Item num={index + 1} isChecked={isChecked} item={{ question: item.question, answer: item.answer, }} isEditMode={isEditMode} />
-  //           } else if ('choices' in item) {
-  //             if (!item.choices)
-  //               return null
-  //             return <Item num={index + 1} isChecked={isChecked} item={{
-  //               question: item.question, choices: [
-  //                 { content: item?.choices[0]?.content, correct: item?.choices[0]?.correct },
-  //                 { content: item?.choices[1]?.content, correct: item?.choices[1]?.correct },
-  //                 { content: item?.choices[2]?.content, correct: item?.choices[2]?.correct },
-  //                 { content: item?.choices[3]?.content, correct: item?.choices[3]?.correct },
-  //               ]
-  //             }} isEditMode={isEditMode} />
-  //           }
-  //           return null
-  //         })}
-  //         {isChecked ? (null) : (
-  //           <Button className='mt-10' onClick={() => {
-  //             if (!isChecked && isGenerated)
-  //               setIsChecked(true)
-  //           }}>Check</Button>
-  //         )}
-  //         {isGenerated ? (
-  //           <>
-  //             <Button className='mt-2' onClick={() => {
-  //               setIsExportOpen(true)
-  //             }}>Export</Button>
-  //             <Button className='mt-2' onClick={() => {
-  //               setIsEditMode(true)
-  //             }}>Edit</Button>
-  //           </>
-  //         ) : (null)}
-  //         <div className='mb-60' /> {/* For bottom margin so that when scrolling down to the end the last item goes up to the middle */}
-  //       </div>
-  //     }
-  //     <Overlay
-  //       isOpen={isExportOpen}
-  //       onClose={() => { setIsExportOpen(false) }}
-  //       overlayName='Export Quiz'
-  //       overlayType='quizExport' >
-  //       <div className='p-4'>
-  //         <Label>Filename</Label>
-  //         <Input className='mb-4 w-90' onChange={(e) => {
-  //           setExportQuizFileName(e.currentTarget.value)
-  //         }} />
-  //         <Button
-  //           disabled={exportQuizFileName === ''}
-  //           onClick={() => {
-  //             handleExportQuiz()
-  //           }}>Download</Button>
-  //       </div>
-  //     </Overlay>
-  //   </div >
-  // )
   return (
-    <div className={`flex flex-col gap-4 h-full items-center ${workspace.materialType === 'LESSON' ? '' : `${object?.items ? `justify-start w-full px-20` : `justify-center`}`} overflow-y-scroll no-scrollbar`}>
+    <div className={`flex flex-col gap-4 h-full items-center ${object?.items ? `justify-start w-full px-20` : `justify-center`} overflow-y-scroll no-scrollbar`}>
       {object?.items?.length === 0 || !object?.items ? <Button disabled={generationDisabled} onClick={() => {
         if (selectedWorkspace) {
           const spec = selectedWorkspace.specifications.find(spec => spec.id === selectedSpecificationId)
           if (spec) {
-            submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, spec }) // * Send to AI generation (Calls Client api)
+            // submit({ namespaceId: workspace.id, prompt: spec.topic, count: spec.count, spec }) // * Send to AI generation (Calls Client api)
           }
         }
         setIsGenerated(true)

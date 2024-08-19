@@ -1,19 +1,19 @@
-  import { useState } from 'react';
-  import Link from 'next/link';
-  import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-  import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
-  import { FaPlus, FaLock } from 'react-icons/fa';
-  import { usePathname } from 'next/navigation';
-  import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
-  import { SkeletonLoader } from '../ui-base/skeleton-loader';
-  import { Tooltip } from './chat/tooltip';
-  import '../css/custom-scrollbar.css'
-  import { Workspace } from '@/redux/slices/workspaceSlice';
+import { useState } from 'react';
+import Link from 'next/link';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
+import { FaPlus, FaLock } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
+import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
+import { SkeletonLoader } from '../ui-base/skeleton-loader';
+import { Tooltip } from './chat/tooltip';
+import '../css/custom-scrollbar.css'
+import { Workspace } from '@/lib/types/workspace-types';
 
-  const Sidenav: React.FC = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const pathname = usePathname();
-    const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceMaterialContext();
+const Sidenav: React.FC = () => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const pathname = usePathname();
+  const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceContext();
 
     const toggleSidebar = () => {
       setIsCollapsed(!isCollapsed);
@@ -26,7 +26,7 @@
 
     const isActive = (path: string) => pathname === path;
 
-    const sortedChats = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+  const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
     return (
       <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
@@ -47,32 +47,32 @@
             // overflow-y-scroll`}
           >
 
-            <ul className="!overflow-hidden">
-              {!workspacesInitialized ? (
-                <SkeletonLoader />
-              ) : workspaces.length === 0 ? (
-                <></>
-              ) : (
-                <>
-                  {sortedChats.map((workspace: Workspace) => {
-                    if (!workspace) return null;
-                    return (
-                      <SidenavItem
-                        key={workspace.id}
-                        title={workspace.name}
-                        href={`/workspace/${workspace.id}`}
-                        isActive={isActive(`/workspace/${workspace.id}`)}
-                        onClick={() => handleWorkspaceClick(workspace.id)}
-                        icon={workspace.materialType === "LESSON" ? (<TbBook />) : (<TbPencil />)}
-                        isCollapsed={isCollapsed}
-                        locked={workspace.locked}
-                      />
-                    );
-                  })}
-                </>
-              )}
-            </ul>
-          </div>
+          <ul className="!overflow-hidden">
+            {!workspacesInitialized ? (
+              <SkeletonLoader />
+            ) : workspaces.length === 0 ? (
+              <></>
+            ) : (
+              <>
+                {sortedWorkspaces.map((workspace: Workspace) => {
+                  if (!workspace) return null;
+                  return (
+                    <SidenavItem
+                      key={workspace.id}
+                      title={workspace.name}
+                      href={`/workspace/${workspace.id}`}
+                      isActive={isActive(`/workspace/${workspace.id}`)}
+                      onClick={() => handleWorkspaceClick(workspace.id)}
+                      icon={<TbBook />}
+                      isCollapsed={isCollapsed}
+                      locked={workspace.locked}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </ul>
+        </div>
 
           <div className='list-none'>
             <SidenavItem

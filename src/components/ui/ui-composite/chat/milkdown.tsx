@@ -29,7 +29,7 @@ import 'prismjs/themes/prism-okaidia.css';
 import '../../css/milkdown.css'
 import { Ctx } from '@milkdown/ctx';
 import { ProsemirrorAdapterProvider, usePluginViewFactory } from '@prosemirror-adapter/react';
-import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { insert, replaceAll } from "@milkdown/utils";
 import { updatePageContent as _updatePageContent, updatePageTitle as _updatePageTitle } from '@/app/api/workspace/page/route';
 import { Node as ProseMirrorNode } from 'prosemirror-model';
@@ -128,7 +128,7 @@ const MilkdownEditor: React.FC = () => {
     selectedPageId,
     updateLessonPage,
     updateLessonPageTitle,
-  } = useWorkspaceMaterialContext();
+  } = useWorkspaceContext();
 
   const getInitialContent = () => {
     if (selectedWorkspace && selectedWorkspace.pages) {

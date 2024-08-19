@@ -1,6 +1,5 @@
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
-import { AdditionalSpecification } from "@/redux/slices/workspaceSlice";
-// import { AdditionalSpecification } from "@/lib/hooks/context-providers/workspace-material-context";
+import { AdditionalSpecification } from "@/lib/types/workspace-types";
 
 /**
  * Retrieves all specifications associated with a workspace.
@@ -10,7 +9,7 @@ import { AdditionalSpecification } from "@/redux/slices/workspaceSlice";
  */
 export async function GET(requestBuilder: RequestBuilder) {
   requestBuilder
-    // .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
+    // .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications`)
     .setMethod("GET")
     .setCredentials("include");
 
@@ -40,7 +39,7 @@ export async function GET(requestBuilder: RequestBuilder) {
  */
 export async function POST(requestBuilder: RequestBuilder) {
   requestBuilder
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications`)
     .setMethod("POST")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setCredentials("include");
@@ -85,7 +84,7 @@ export async function DELETE(requestBuilder: RequestBuilder) {
 
 export async function updateSpecificationName(selectedSpecificationId: string, name: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/name`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/update/name`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Name: name }))
@@ -100,7 +99,7 @@ export async function updateSpecificationName(selectedSpecificationId: string, n
 
 export async function updateSpecificationTopic(selectedSpecificationId: string, topic: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/topic`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/update/topic`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, Topic: topic }))
@@ -114,7 +113,7 @@ export async function updateSpecificationTopic(selectedSpecificationId: string, 
 
 export async function updateSpecificationComprehensionLevel(selectedSpecificationId: string, comprehensionLevel: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/comprehensionlevel`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/update/comprehensionlevel`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, ComprehensionLevel: comprehensionLevel }))
@@ -128,7 +127,7 @@ export async function updateSpecificationComprehensionLevel(selectedSpecificatio
 
 export async function updateSpecificationWritingLevel(selectedSpecificationId: string, writingLevel: string) {
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/update/writinglevel`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/update/writinglevel`)
     .setMethod("PATCH")
     .setHeaders({ 'Content-Type': 'application/json' })
     .setBody(JSON.stringify({ SpecificationID: selectedSpecificationId, WritingLevel: writingLevel }))
@@ -149,7 +148,7 @@ export async function insertAdditionalSpecification(index: number, selectedSpeci
     };
 
     const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications`)
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/additionalspecifications`)
       .setMethod("POST")
       .setHeaders({ 'Content-Type': 'application/json' })
       .setBody(JSON.stringify(requestBody))
@@ -171,7 +170,7 @@ export async function insertAdditionalSpecification(index: number, selectedSpeci
 export async function fetchAdditionalSpecifications(selectedSpecificationId: string) {
   try {
     const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${selectedSpecificationId}`)
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/additionalspecifications/${selectedSpecificationId}`)
       .setMethod("GET")
       .setCredentials("include");
 
@@ -200,7 +199,7 @@ export async function updateAdditionalSpecification(index: number, Specification
     };
 
     const requestBuilder = new RequestBuilder()
-      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications`)
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/additionalspecifications`)
       .setMethod("PATCH")
       .setHeaders({ 'Content-Type': 'application/json' })
       .setBody(JSON.stringify(requestBody))
@@ -224,7 +223,7 @@ export async function removeAdditionalSpecification(index: number, additionalSpe
   console.log("Delete called")
 
   const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/materials/specifications/additionalspecifications/${additionalSpec.id}`)
+    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/specifications/additionalspecifications/${additionalSpec.id}`)
     .setMethod("DELETE")
     .setCredentials("include");
 

@@ -52,7 +52,7 @@ export function jsonToGiftFormat(json: string): string | undefined {
     console.log(error)
     toast({
       title: 'JSON parsing error',
-      descriptin: 'Invalid JSON',
+      description: 'Invalid JSON',
       variant: 'destructive',
     })
     return undefined

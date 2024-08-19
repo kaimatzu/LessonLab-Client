@@ -12,8 +12,8 @@ import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/ui-composite/chat/codeblock'
 import { MemoizedReactMarkdown } from '@/components/ui/ui-base/markdown'
 import { IconPinecone, IconUser } from '@/components/ui/ui-base/icons'
-import { ChatMessageActions } from '@/components/material/chat/chat-message-actions'
-import { Components } from '@/lib/types/artifact-type'
+import { ChatMessageActions } from '@/components/workspace/chat/chat-message-actions'
+import { Components } from '@/lib/types/artifact-types'
 
 import React from 'react'
 

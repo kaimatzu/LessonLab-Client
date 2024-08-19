@@ -1,7 +1,7 @@
-// material.tsx where the upload call is made
+// workspace.tsx where the upload call is made
 
 "use client";
-import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
 import React, {
   useCallback,
   useEffect,
@@ -10,7 +10,7 @@ import React, {
 import { IoIosSwap } from "react-icons/io";
 import { FetchedFile } from "@/app/api/files/route";
 import { MilkdownEditorWrapper } from "../ui/ui-composite/chat/milkdown";
-import SidenavMaterial from "../ui/ui-composite/sidenav-material";
+import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
 import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
@@ -33,12 +33,12 @@ const fetchFileUrls = async (workspaceId: string) => {
   }
 };
 
-export default function Material({ workspace }: { workspace: Workspace }) {
+export default function WorkspaceComponent({ workspace }: { workspace: Workspace }) {
   const {
     selectWorkspace,
     loadWorkspaceData,
     selectedWorkspace,
-  } = useWorkspaceMaterialContext();
+  } = useWorkspaceContext();
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [generationDisabled, setGenerationDisabled] = useState(true);
@@ -128,17 +128,12 @@ export default function Material({ workspace }: { workspace: Workspace }) {
             <div className="flex flex-row items-start justify-start text-foreground">
               <IoIosSwap className="w-6 h-6 mr-2" />
               {isChatOpen
-                ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
-                : "Switch to Chat"}
+                ? "Switch to Markdown" : "Switch to Chat"}
             </div>
           </button> */}
         </div>
 
-        {workspace.materialType === "LESSON" ? (
-          <MilkdownEditorWrapper />
-        ) : (
-          <Quiz generationDisabled={generationDisabled} workspace={workspace} />
-        )}
+        <MilkdownEditorWrapper />
 
         <Overlay isOpen={isChatOpen} onClose={closeChat} overlayName={"Chat"} overlayType="chat">
           <Chat
@@ -150,7 +145,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
         </Overlay>
 
       </div>
-      <SidenavMaterial
+      <SidenavWorkspace
         workspace={workspace}
         files={files}
         fetchingFiles={fetchingFiles}

@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useWorkspaceMaterialContext } from "@/lib/hooks/context-providers/workspace-material-context";
+import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
 // import { Workspace } from "@/redux/slices/workspaceSlice";
 import Spinner from "@/components/ui/ui-base/spinner";
-import { POST as createMaterial } from "@/app/api/workspace/route";
+import { POST as createWorkspace } from "@/app/api/workspace/route";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { Workspace } from "@/lib/types/workspace-types";
 
 const validFileTypes = ["application/pdf"];
 
 export default function NewPage() {
-  const { addWorkspace } = useWorkspaceMaterialContext();
+  const { addWorkspace } = useWorkspaceContext();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -43,9 +43,9 @@ export default function NewPage() {
     // }
 
     const formSubmitter = (e.nativeEvent as SubmitEvent).submitter;
-    const materialType = formSubmitter?.getAttribute("value");
+    const workspaceType = formSubmitter?.getAttribute("value");
 
-    console.log("Creating:", materialType);
+    console.log("Creating:", workspaceType);
 
     setIsLoading(true);
 
@@ -58,25 +58,25 @@ export default function NewPage() {
     const requestBuilder = new RequestBuilder()
       .setBody(
         JSON.stringify({
-          materialName: title,
-          materialType: materialType
+          workspaceName: title,
+          workspaceType: workspaceType
         })
       );
 
     try {
-      const response = await createMaterial(requestBuilder).catch(error => {
-        console.error("Error creating material:", error);
+      const response = await createWorkspace(requestBuilder).catch(error => {
+        console.error("Error creating workspace:", error);
         return null;
       });
 
       if (response && response.ok) {
         const data = await response.json();
-        console.log("Created material successfully:", data);
+        console.log("Created workspace successfully:", data);
 
         const newWorkspace: Workspace = {
-          id: data.MaterialID,
-          name: data.MaterialName,
-          materialType: data.MaterialType,
+          id: data.WorkspaceID,
+          name: data.WorkspaceName,
+          // workspaceType: data.WorkspaceType,
           createdAt: Date.now(),
           fileUrls: [],
           specifications: [{
@@ -91,11 +91,11 @@ export default function NewPage() {
         };
         addWorkspace(newWorkspace);
 
-        router.push(`/workspace/${data.MaterialID}`);
+        router.push(`/workspace/${data.WorkspaceID}`);
       }
     } catch (error) {
-      console.error("Error creating material:", error);
-      alert(`Failed to create material. Please try again. ${error}`);
+      console.error("Error creating workspace:", error);
+      alert(`Failed to create workspace. Please try again. ${error}`);
     } finally {
       setIsLoading(false);
     }
