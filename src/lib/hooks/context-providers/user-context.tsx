@@ -21,6 +21,8 @@ export interface UserContextValue {
   clearUser: () => void;
   connectSocket: (payment_intent_id: string) => void;
   isTransactionFinished: boolean;
+  createTransaction: (payment_intent_id: string) => void;
+  cancelTransaction: (payment_intent_id: string) => void;
   setIsTransactionFinished: React.Dispatch<React.SetStateAction<boolean>>;
   setTransactionStatus: React.Dispatch<React.SetStateAction<string>>;
   broadcastChannel: BroadcastChannel | null;
@@ -33,6 +35,8 @@ const defaultValue: UserContextValue = {
   clearUser: () => { },
   connectSocket: () => { },
   isTransactionFinished: false,
+  createTransaction: () => { },
+  cancelTransaction: () => { },
   setIsTransactionFinished: () => { },
   setTransactionStatus: () => { },
   broadcastChannel: null,
@@ -61,8 +65,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     connectSocket,
     transactionData,
     setTransactionData,
+    createTransaction,
+    cancelTransaction,
     socketConnected,
   } = useSocket();
+
 
   useEffect(() => {
     // console.log("Checking for auth");
@@ -83,6 +90,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const resultAction = await dispatch(checkAuth());
 
         if (checkAuth.fulfilled.match(resultAction)) {
+          connectSocket();
           if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction')) {
             push('/workspace'); // Redirect to /workspace if authenticated
           }
@@ -97,7 +105,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus();
   }, [dispatch, push, getCurrentPath]);
 
-  // This still needs to be called somewhere. 
+  // TODO: This still needs to be called somewhere. 
   const saveUser = (user: User) => {
     dispatch(setUser(user));
     localStorage.setItem('user', JSON.stringify(user));
@@ -131,6 +139,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         clearUser: clearUserData,
         connectSocket,
         isTransactionFinished,
+        createTransaction,
+        cancelTransaction,
         setIsTransactionFinished,
         setTransactionStatus,
         broadcastChannel,

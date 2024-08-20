@@ -33,35 +33,53 @@ export const useSocket = () => {
     };
   }, [socket]);
 
-  const connectSocket = (payment_intent_id: string) => {
+  const connectSocket = () => {
     socket.connect();
-    console.log(payment_intent_id);
-    setTransactionRoomId(payment_intent_id);
   };
 
-  useEffect(() => {
-    const retrieveData = async (roomId: string): Promise<void> => {
-      console.log("Transaction room id:", transactionRoomId);
+  const disconnectSocket = () => {
+    socket.disconnect();
+  }
 
-      if (socket.connected) {
-        console.log("Connecting to room:", roomId);
-        socket.emit("room", roomId);
-      } else {
-        console.error("Socket not connected");
-      }
-    };
+  const createTransaction = (payment_intent_id: string) => {
+    console.log(payment_intent_id);
 
-    if (transactionRoomId !== '' && socketConnected) {
-      console.log("Socket status:", socket.connected);
-      retrieveData(transactionRoomId);
+    if (socket.connected) {
+      console.log("Connecting to room:", payment_intent_id);
+      socket.emit("join-room", payment_intent_id);
+    } else {
+      console.error("Socket not connected");
     }
-  }, [transactionRoomId, socketConnected]);
+  };
+
+  const cancelTransaction = (payment_intent_id: string) => {
+    console.log(payment_intent_id);
+
+    if (socket.connected) {
+      console.log("Connecting to room:", payment_intent_id);
+      socket.emit("leave-room", payment_intent_id);
+    } else {
+      console.error("Socket not connected");
+    }
+  }
+  // useEffect(() => {
+  //   const retrieveData = async (roomId: string): Promise<void> => {
+  //     console.log("Transaction room id:", transactionRoomId);
+
+
+  //   if (transactionRoomId !== '' && socketConnected) {
+  //     console.log("Socket status:", socket.connected);
+  //     retrieveData(transactionRoomId);
+  //   }
+  // }, [transactionRoomId, socketConnected]);
 
   return {
     socket,
     connectSocket,
     transactionData,
     setTransactionData,
+    createTransaction,
+    cancelTransaction,
     socketConnected,
   };
 };

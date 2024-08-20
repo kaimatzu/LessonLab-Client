@@ -8,6 +8,7 @@ import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Toast } from '@/components/ui/ui-base/toast';
 import { useToast } from '@/components/ui/ui-base/use-toast';
+import { useSocket } from '@/lib/hooks/useSocket';
 
 interface LoginPageProps {
   switchForm: () => void;
@@ -19,6 +20,9 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
   const router = useRouter();
   const loading = useAppSelector((state) => state.user.loading);
   const error = useAppSelector((state) => state.user.error);
+  const {
+    connectSocket,
+  } = useSocket();
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -32,6 +36,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
 
     const resultAction = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(resultAction)) {
+      connectSocket();
       router.push('/workspace');
     } else {
       // Handle login error (e.g., display error message to the user)
