@@ -5,9 +5,10 @@ import WindowActivityProvider from '@/lib/hooks/context-providers/window-activit
 import Cookies from 'js-cookie';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { checkAuth, clearUser, setUser, User } from '@/redux/slices/userSlice';
+import { checkAuth, clearUser, setUser } from '@/redux/slices/userSlice';
 import { useSocket } from '@/lib/hooks/useSocket';
 import { useBroadcastChannel } from '@/lib/hooks/useBroadcastChannel';
+import { User } from "@/lib/types/user-types";
 
 export interface AuthResponse {
   user: User;
