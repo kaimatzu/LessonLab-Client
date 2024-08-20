@@ -48,11 +48,16 @@ export const Chat: React.FC<ChatProps> = ({
 
     return specToLoad ? specToLoad : {};
   }
-
-  const { messages, input, handleInputChange, handleSubmit, isLoading } =
-    useChat({
-      body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
-    });
+  // TODO: convert this to use websockets, call the LLM directly from the server
+  const { 
+    messages, 
+    input, 
+    handleInputChange, 
+    handleSubmit, 
+    isLoading 
+  } = useChat({
+    body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
+  });
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
   const [prompts, setPrompts] = useState<Prompt[]>([
