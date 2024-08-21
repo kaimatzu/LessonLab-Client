@@ -19,6 +19,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
 import { Message } from "ai";
 import { Specification, Workspace } from "@/lib/types/workspace-types";
+import { useSocket } from "@/lib/hooks/useSocket";
 
 
 interface ChatProps {
@@ -36,10 +37,14 @@ export const Chat: React.FC<ChatProps> = ({
   fetchFiles,
   handleDeleteFile,
 }) => {
+  const [input, setInput] = useState<string>("");
+
   const {
     specifications,
     selectedSpecificationId,
   } = useWorkspaceContext();
+
+  const { sendMessageToAssistant } = useSocket();
 
   const getCurrentSpecifications = (): Specification | {} => {
     const specToLoad = selectedSpecificationId
@@ -48,16 +53,32 @@ export const Chat: React.FC<ChatProps> = ({
 
     return specToLoad ? specToLoad : {};
   }
-  // TODO: convert this to use websockets, call the LLM directly from the server
+
   const { 
     messages, 
-    input, 
-    handleInputChange, 
-    handleSubmit, 
+    // input, 
+    // handleInputChange, 
+    // handleSubmit, 
     isLoading 
   } = useChat({
     body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
   });
+
+  useEffect(() => {
+    console.log("Chat messages:", messages);
+  }, [messages])
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+  }
+
+  const handleChatSubmit = (event?: {
+    preventDefault?: () => void;
+  }) => {
+    console.log("Submit prompt to server: ", input);
+    sendMessageToAssistant(input);
+    setInput("");
+  }
 
   // setPrompts is unused in this example, but imagine generating prompts based on the workspace content... :-)
   const [prompts, setPrompts] = useState<Prompt[]>([
@@ -170,7 +191,8 @@ export const Chat: React.FC<ChatProps> = ({
       )}
       <form
         onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-          handleSubmit(e)
+          // handleSubmit(e)
+          handleChatSubmit(e)
         }
         className="fixed bottom-0 w-full md:max-w-[73vw] z-50 pb-10 pr-16"
       >
@@ -193,7 +215,8 @@ export const Chat: React.FC<ChatProps> = ({
               if (e.key === "Enter" && !e.shiftKey) {
                 // If user doesn't press shift key while pressing enter
                 e.preventDefault(); // prevents from going to new line
-                handleSubmit(e); // instead submit the prompt
+                // handleSubmit(e); // instead submit the prompt
+                handleChatSubmit(e);
               }
             }}
             rows={1}

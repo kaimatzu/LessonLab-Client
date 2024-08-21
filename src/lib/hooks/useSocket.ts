@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import io, { Socket } from 'socket.io-client';
 
+const socket = io('http://localhost:4001', { autoConnect: false });
+
 export const useSocket = () => {
-  const [socket, setSocket] = useState<Socket>(io('http://localhost:4001', { autoConnect: false }));
+  // const [socket, setSocket] = useState<Socket>(io('http://localhost:4001', { autoConnect: false }));
   const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const [transactionRoomId, setTransactionRoomId] = useState<string>('');
   const [transactionData, setTransactionData] = useState({ status: '', id: '' });
@@ -22,6 +24,10 @@ export const useSocket = () => {
       setSocketConnected(false);
     });
       
+    socket.on('content', (content) => {
+      console.log("content chunk:", content);
+    });
+
     socket.on('disconnect', () => {
       console.log('Disconnected from server');
     });
@@ -41,7 +47,7 @@ export const useSocket = () => {
     socket.disconnect();
   }
 
-  const createTransaction = (payment_intent_id: string) => {
+  const joinTransactionRoom = (payment_intent_id: string) => {
     console.log(payment_intent_id);
 
     if (socket.connected) {
@@ -52,16 +58,41 @@ export const useSocket = () => {
     }
   };
 
-  const cancelTransaction = (payment_intent_id: string) => {
+  const leaveTransactionRoom = (payment_intent_id: string) => {
     console.log(payment_intent_id);
 
     if (socket.connected) {
-      console.log("Connecting to room:", payment_intent_id);
+      console.log("Leaving room:", payment_intent_id);
       socket.emit("leave-room", payment_intent_id);
     } else {
       console.error("Socket not connected");
     }
   }
+
+  const joinWorkspaceRoom = (workspace_id: string) => {
+    console.log(workspace_id);
+
+    if (socket.connected) {
+      console.log("Connecting to room:", workspace_id);
+      socket.emit("join-room", workspace_id);
+    } else {
+      console.error("Socket not connected");
+    }
+  }
+
+  const leaveWorkspaceRooms = () => {
+    if (socket.connected) {
+      console.log("Leaving all workspace rooms...");
+      socket.emit("leave-all-rooms");
+    } else {
+      console.error("Socket not connected");
+    }
+  } 
+
+  const sendMessageToAssistant = (message: string) => {
+    socket.emit('new-message', message);
+  }
+
   // useEffect(() => {
   //   const retrieveData = async (roomId: string): Promise<void> => {
   //     console.log("Transaction room id:", transactionRoomId);
@@ -78,8 +109,11 @@ export const useSocket = () => {
     connectSocket,
     transactionData,
     setTransactionData,
-    createTransaction,
-    cancelTransaction,
+    createTransaction: joinTransactionRoom,
+    cancelTransaction: leaveTransactionRoom,
+    joinWorkspaceRoom,
+    leaveWorkspaceRooms,
+    sendMessageToAssistant,
     socketConnected,
   };
 };

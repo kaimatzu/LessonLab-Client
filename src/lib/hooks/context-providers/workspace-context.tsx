@@ -31,6 +31,7 @@ import {
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
 import { Page, Specification, Workspace } from '@/lib/types/workspace-types';
+import { useSocket } from '../useSocket';
 
 export interface WorkspaceContextValue {
   workspaces: Workspace[];
@@ -60,6 +61,8 @@ export interface WorkspaceContextValue {
   selectPage: (pageId: string) => void;
   updateQuizItems: () => void;
   updateQuizResults: () => void;
+  joinWorkspaceRoom: (workspaceId: string) => void;
+  leaveWorkspaceRooms: () => void;
 }
 
 const defaultValue: WorkspaceContextValue = {
@@ -90,6 +93,8 @@ const defaultValue: WorkspaceContextValue = {
   selectPage: () => { },
   updateQuizItems: () => { },
   updateQuizResults: () => { },
+  joinWorkspaceRoom: () => { },
+  leaveWorkspaceRooms: () => { }, 
 };
 
 export const WorkspaceContext = createContext(defaultValue);
@@ -108,6 +113,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const specificationsLoading = useAppSelector((state: RootState) => state.workspace.specificationsLoading);
   const pages = useAppSelector(selectPagesForSelectedWorkspace);
   const pagesLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
+
+  const { socket, joinWorkspaceRoom, leaveWorkspaceRooms } = useSocket();
 
   useEffect(() => {
     dispatch(fetchWorkspaces());
@@ -230,6 +237,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         selectPage,
         updateQuizItems: updateQuizItemsHandler,
         updateQuizResults: updateQuizReusltsHandler,
+        joinWorkspaceRoom,
+        leaveWorkspaceRooms
       }}
     >
       {children}
