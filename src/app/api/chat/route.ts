@@ -74,3 +74,27 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function GET (requestBuilder: RequestBuilder) {
+  requestBuilder
+    .setMethod("GET")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setCredentials("include");
+
+  try {
+    const response = await fetch(requestBuilder.build());
+
+    if (response.ok) {
+      const chatHistory = await response.json();
+      console.log("Chat history retrieved successfully:", chatHistory);
+      return new Response(JSON.stringify(chatHistory), { status: 200 });
+    } else {
+      throw new Error("Failed to retrieve chat history, " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error retrieving chatHistory:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}

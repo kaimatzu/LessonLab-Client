@@ -4,8 +4,9 @@ import { RootState } from '../store';
 import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
 import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
+import { GET as _getChatHistory } from "@/app/api/chat/route"
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
-import { Page, Specification, Workspace } from '@/lib/types/workspace-types';
+import { MessageType, Page, Specification, Workspace, Message } from '@/lib/types/workspace-types';
 
 interface WorkspaceState {
   workspaces: Workspace[];
@@ -16,6 +17,8 @@ interface WorkspaceState {
   loading: boolean;
   specificationsLoading: boolean;
   pagesLoading: boolean;
+  chatHistoryLoading: boolean,
+  chatLoading: boolean;
 }
 
 const initialState: WorkspaceState = {
@@ -27,6 +30,8 @@ const initialState: WorkspaceState = {
   loading: false,
   specificationsLoading: false,
   pagesLoading: false,
+  chatHistoryLoading: false,
+  chatLoading: false,
 };
 
 export const fetchWorkspaces = createAsyncThunk(
@@ -44,6 +49,7 @@ export const fetchWorkspaces = createAsyncThunk(
         id: workspace.WorkspaceID,
         name: workspace.WorkspaceName,
         createdAt: workspace.CreatedAt,
+        chatHistory: [],
         locked: false,
         // workspaceType: workspace.WorkspaceType,
       }));
@@ -98,6 +104,28 @@ export const fetchLessonPages = createAsyncThunk(
       return { lessonId, pages };
     }
     return { lessonId, pages: [] };
+  }
+);
+
+export const fetchWorkspaceChatHistory = createAsyncThunk(
+  'workspace/fetchWorkspaceChatHistory',
+  async (workspaceId: string) => {
+    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/assistant/${workspaceId}`);
+    const response = await _getChatHistory(requestBuilder).catch(error => {
+      console.error("Error fetching chat history:", error);
+      return null;
+    });
+
+    if (response && response.ok) {
+      const data = await response.json();
+      const chatHistory = data.map((message: any) => ({
+        id: message.MessageID,
+        role: message.Role,
+        content: message.Content,
+      }));
+      return { workspaceId, chatHistory };
+    }
+    return { workspaceId, chatHistory: [] };
   }
 );
 
@@ -247,6 +275,31 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    updateChatLoadingStatus: (state, action: PayloadAction<boolean>) => {
+      state.chatLoading = action.payload;
+    },
+    addChatHistory: (state, action: PayloadAction<{ workspaceId: string, id: string, role: MessageType, content: string }>) => {
+      const { workspaceId, id, role, content } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+      if (workspace) {
+        workspace.chatHistory.push({ id, role, content });
+      }
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        state.selectedWorkspace.chatHistory.push({ id, role, content });
+      }
+    },
+    updateChatMessage: (state, action: PayloadAction<{ workspaceId: string, id: string, content: string }>) => {
+      const { workspaceId, id, content } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+      if (workspace) {
+        const message = workspace.chatHistory.find(ch => ch.id === id);
+        if (message) message.content = content;
+      }
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const message = state.selectedWorkspace.chatHistory.find(ch => ch.id === id);
+        if (message) message.content = content;
+      }
+    },
     // TODO: Implement update of quiz data
     // TODO: Figure out how to store quiz data
     updateQuizItems: () => {
@@ -303,6 +356,24 @@ const workspaceSlice = createSlice({
       })
       .addCase(fetchLessonPages.rejected, (state) => {
         state.pagesLoading = false;
+      })
+      .addCase(fetchWorkspaceChatHistory.pending, (state) => {
+        state.chatHistoryLoading = true;
+      })
+      .addCase(fetchWorkspaceChatHistory.fulfilled, (state, action: PayloadAction<{ workspaceId: string, chatHistory: Message[] }>) => {
+        state.chatHistoryLoading = false;
+        const { workspaceId, chatHistory } = action.payload;
+        const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+        console.log("Chat history: ", chatHistory);
+        if (workspace) {
+          workspace.chatHistory = chatHistory;
+        }
+        if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+          state.selectedWorkspace.chatHistory = chatHistory;
+        }
+      })
+      .addCase(fetchWorkspaceChatHistory.rejected, (state) => {
+        state.chatHistoryLoading = false;
       });
   },
 });
@@ -322,6 +393,9 @@ export const {
   addLessonPage,
   updateLessonPage,
   updateLessonPageTitle,
+  updateChatLoadingStatus,
+  addChatHistory,
+  updateChatMessage,
   updateQuizItems,
   updateQuizResults,
 } = workspaceSlice.actions;
@@ -334,9 +408,11 @@ export const selectSelectedPageId = (state: RootState) => state.workspace.select
 export const selectLoading = (state: RootState) => state.workspace.loading;
 export const selectSpecificationsLoading = (state: RootState) => state.workspace.specificationsLoading;
 export const selectPagesLoading = (state: RootState) => state.workspace.pagesLoading;
+export const selectChatHistoryLoading = (state: RootState) => state.workspace.chatHistoryLoading;
 export const selectSpecificationsForSelectedWorkspace = (state: RootState) => state.workspace.selectedWorkspace?.specifications || [];
 export const selectPagesForSelectedWorkspace = (state: RootState) => state.workspace.selectedWorkspace?.pages || [];
 export const selectCurrentSpecification = (state: RootState) => state.workspace.selectedWorkspace?.specifications.find(spec => spec.id === state.workspace.selectedSpecificationId) || null;
 export const selectCurrentPage = (state: RootState) => state.workspace.selectedWorkspace?.pages.find(page => page.id === state.workspace.selectedPageId) || null;
+export const selectChatHistoryForSelectedWorkspace = (state: RootState) => state.workspace.selectedWorkspace?.chatHistory || [];
 
 export default workspaceSlice.reducer;

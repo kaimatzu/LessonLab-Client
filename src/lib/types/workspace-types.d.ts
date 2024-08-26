@@ -20,6 +20,17 @@ export interface Page {
   content: string;
 }
 
+export enum MessageType {
+  User = "user",
+  Assistant = "assistant"
+}
+
+export interface Message {
+  id: string;
+  role: MessageType;
+  content: string;
+}
+
 export interface Workspace {
   id: string;
   name: string;
@@ -28,4 +39,5 @@ export interface Workspace {
   locked?: boolean;
   specifications: Specification[];
   pages: Page[];
+  chatHistory: Message[];
 }

@@ -8,7 +8,7 @@ import { Workspace } from '@/lib/types/workspace-types';
 import { useSocket } from '@/lib/hooks/useSocket';
 
 export default function WorkspacePage() {
-  const { workspaces, removeWorkspace, selectWorkspace, joinWorkspaceRoom, leaveWorkspaceRooms } = useWorkspaceContext();
+  const { workspaces, workspacesInitialized, removeWorkspace, selectWorkspace } = useWorkspaceContext();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);  
@@ -19,21 +19,8 @@ export default function WorkspacePage() {
   let currentWorkspace = workspaces.find((workspace: Workspace) => workspace.id === currentWorkspaceId);
   let currentChat = workspaces.find((chat: Workspace) => chat.id === currentWorkspaceId);
 
-  
   const router = useRouter();
   
-  useEffect(() => {
-    joinWorkspaceRoom(currentWorkspaceId);
-  }, [socketConnected]);
-
-  useEffect(() => {
-    return () => {
-      leaveWorkspaceRooms();
-      console.log("workspace unmount");
-    };
-  }, []);
-
-
   // Get the current workspace and chat based on the URL slug
   useEffect(() => {
     if (!currentWorkspace || !currentChat) {

@@ -87,7 +87,8 @@ export default function NewPage() {
             comprehensionLevel: "Simple",
             additionalSpecs: []
           }],
-          pages: []
+          pages: [],
+          chatHistory: []
         };
         addWorkspace(newWorkspace);
 
