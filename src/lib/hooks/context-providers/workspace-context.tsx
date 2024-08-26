@@ -26,11 +26,14 @@ import {
   fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
   selectPagesForSelectedWorkspace,
+  updateChatLoadingStatus,
   updateQuizItems,
   updateQuizResults,
+  selectChatHistoryForSelectedWorkspace,
+  fetchWorkspaceChatHistory,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
-import { Page, Specification, Workspace } from '@/lib/types/workspace-types';
+import { Message, Page, Specification, Workspace } from '@/lib/types/workspace-types';
 import { useSocket } from '../useSocket';
 
 export interface WorkspaceContextValue {
@@ -44,6 +47,8 @@ export interface WorkspaceContextValue {
   loading: boolean;
   specificationsLoading: boolean;
   pagesLoading: boolean;
+  chatLoading: boolean;
+  chatHistory: Message[];
   loadWorkspaceData: (workspaceId: string, currentSelectedWorkspace: Workspace | null) => void;
   selectWorkspace: (workspaceId: string | null) => void;
   selectSpecification: (specificationId: string) => void;
@@ -58,11 +63,10 @@ export interface WorkspaceContextValue {
   addLessonPage: (lessonId: string, page: Page) => void;
   updateLessonPage: (lessonId: string, updatedPage: Page) => void;
   updateLessonPageTitle: (lessonId: string, pageId: string, title: string) => void;
+  updateChatStatus: (value: boolean) => void;
   selectPage: (pageId: string) => void;
   updateQuizItems: () => void;
   updateQuizResults: () => void;
-  joinWorkspaceRoom: (workspaceId: string) => void;
-  leaveWorkspaceRooms: () => void;
 }
 
 const defaultValue: WorkspaceContextValue = {
@@ -76,6 +80,8 @@ const defaultValue: WorkspaceContextValue = {
   loading: false,
   specificationsLoading: false,
   pagesLoading: false,
+  chatLoading: false,
+  chatHistory: [],
   loadWorkspaceData: () => { },
   selectWorkspace: () => { },
   selectSpecification: () => { },
@@ -91,10 +97,9 @@ const defaultValue: WorkspaceContextValue = {
   updateLessonPage: () => { },
   updateLessonPageTitle: () => { },
   selectPage: () => { },
+  updateChatStatus: () => { },
   updateQuizItems: () => { },
   updateQuizResults: () => { },
-  joinWorkspaceRoom: () => { },
-  leaveWorkspaceRooms: () => { }, 
 };
 
 export const WorkspaceContext = createContext(defaultValue);
@@ -113,8 +118,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const specificationsLoading = useAppSelector((state: RootState) => state.workspace.specificationsLoading);
   const pages = useAppSelector(selectPagesForSelectedWorkspace);
   const pagesLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
+  const chatLoading = useAppSelector((state: RootState) => state.workspace.chatLoading);
+  const chatHistory = useAppSelector(selectChatHistoryForSelectedWorkspace);
 
-  const { socket, joinWorkspaceRoom, leaveWorkspaceRooms } = useSocket();
+  const { socket } = useSocket();
 
   useEffect(() => {
     dispatch(fetchWorkspaces());
@@ -141,6 +148,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
     });
+    dispatch(fetchWorkspaceChatHistory(workspaceId));
   };
 
   const selectWorkspace = (workspaceId: string | null) => {
@@ -199,6 +207,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dispatch(setSelectedPageId(pageId));
   };
 
+  const updateChatLoadingStatusHandler = (value: boolean) => {
+    dispatch(updateChatLoadingStatus(value));
+  }
+  
   const updateQuizItemsHandler = () => {
     dispatch(updateQuizItems())
   }
@@ -220,6 +232,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         loading,
         specificationsLoading,
         pagesLoading,
+        chatLoading,
+        chatHistory,
         loadWorkspaceData,
         selectWorkspace,
         selectSpecification,
@@ -237,8 +251,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         selectPage,
         updateQuizItems: updateQuizItemsHandler,
         updateQuizResults: updateQuizReusltsHandler,
-        joinWorkspaceRoom,
-        leaveWorkspaceRooms
+        updateChatStatus: updateChatLoadingStatusHandler,
       }}
     >
       {children}

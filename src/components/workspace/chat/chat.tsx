@@ -17,10 +17,10 @@ import { Tooltip } from "../../ui/ui-composite/chat/tooltip";
 import FileCard from "../../ui/ui-base/file-card";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
-import { Message } from "ai";
+// import { Message } from "ai";
 import { Specification, Workspace } from "@/lib/types/workspace-types";
 import { useSocket } from "@/lib/hooks/useSocket";
-
+import { Message } from '@/lib/types/workspace-types';
 
 interface ChatProps {
   workspace: Workspace;
@@ -38,10 +38,14 @@ export const Chat: React.FC<ChatProps> = ({
   handleDeleteFile,
 }) => {
   const [input, setInput] = useState<string>("");
-
+  
   const {
     specifications,
     selectedSpecificationId,
+    selectedWorkspace,
+    chatLoading,
+    chatHistory,
+    updateChatStatus,
   } = useWorkspaceContext();
 
   const { sendMessageToAssistant } = useSocket();
@@ -55,18 +59,14 @@ export const Chat: React.FC<ChatProps> = ({
   }
 
   const { 
-    messages, 
+    // messages, 
     // input, 
     // handleInputChange, 
     // handleSubmit, 
-    isLoading 
+    // isLoading 
   } = useChat({
     body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
   });
-
-  useEffect(() => {
-    console.log("Chat messages:", messages);
-  }, [messages])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -76,7 +76,12 @@ export const Chat: React.FC<ChatProps> = ({
     preventDefault?: () => void;
   }) => {
     console.log("Submit prompt to server: ", input);
-    sendMessageToAssistant(input);
+    updateChatStatus(true);
+    if (selectedWorkspace) {
+      sendMessageToAssistant(input, selectedWorkspace.id, selectedWorkspace.chatHistory);
+    } else {
+      console.error("Not connected to workspace!");
+    }
     setInput("");
   }
 
@@ -152,8 +157,8 @@ export const Chat: React.FC<ChatProps> = ({
 
   return (
     <>
-      <div className={messages.length > 0 ? "h-full w-full" : "w-full"}>
-        {messages.map((m: Message) => (
+      <div className={chatHistory.length > 0 ? "h-full w-full" : "w-full"}>
+        {chatHistory.map((m: Message) => (
           <div
             key={m.id}
             className="whitespace-pre-wrap w-full"
@@ -161,13 +166,13 @@ export const Chat: React.FC<ChatProps> = ({
             <ChatMessage key={m.id} message={m} />
           </div>
         ))}
-        {isLoading && (
+        {chatLoading && (
           <div className="animate-pulse bg-gray-500 dark:bg-zinc-500 h-4 w-4 rotate-45 rounded-sm"></div>
         )}
         <div className={documentTrayIsOpen ? "h-[70%]" : "h-1/3"}></div>
       </div>
 
-      {messages.length === 0 && (
+      {chatHistory.length === 0 && (
         <div className="relative flex flex-col items-center justify-center h-full">
           {!fetchingFiles &&
             (files.length > 0 ? (
@@ -201,15 +206,15 @@ export const Chat: React.FC<ChatProps> = ({
           <textarea
             className={
               "p-4 px-5 border-gray-300 bg-white/80 text-foreground dark:border-zinc-100 rounded flex-grow mr-4 backdrop-blur-lg shadow-md overflow-y-auto resize-none " +
-              (isLoading ? "cursor-not-allowed" : "cursor-text")
+              (chatLoading ? "cursor-not-allowed" : "cursor-text")
             }
             value={input}
             placeholder={
-              isLoading
+              chatLoading
                 ? "Responding..."
                 : "Chat with this workspace..."
             }
-            disabled={isLoading}
+            disabled={chatLoading}
             onChange={handleInputChange}
             onKeyDown={(e: any) => {
               if (e.key === "Enter" && !e.shiftKey) {
