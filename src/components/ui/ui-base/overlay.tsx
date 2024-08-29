@@ -9,6 +9,7 @@ interface OverlayProps {
   children: ReactNode;
   overlayName: string;
   overlayType: 'transaction' | 'auth' | 'chat' | 'quizExport';
+  className?: string
 }
 
 const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 cursor-pointer transition-opacity z-[250]', {
@@ -56,7 +57,7 @@ const headerStyles = cva('flex justify-between items-center py-2 px-4', {
   },
 });
 
-export default function Overlay({ isOpen, onClose, children, overlayName, overlayType }: OverlayProps) {
+export default function Overlay({ isOpen, onClose, children, overlayName, overlayType, className }: OverlayProps) {
   const isClosable = overlayType !== 'auth';
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
   return (
     <>
       {isOpen && (
-        <div className={isClosable ? 'fixed top-0 left-0 z-[999] overlay' : 'relative w-full overlay'}>
+        <div className={cn(isClosable ? 'fixed top-0 left-0 z-[999] overlay' : 'relative w-full overlay', className)}>
           {isClosable && (
             <div
               className={cn(overlayBackgroundStyles({ hidden: !isOpen }), 'overlay-background')}

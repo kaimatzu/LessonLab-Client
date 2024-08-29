@@ -1,6 +1,6 @@
 "use client"
 
-// import { metadata } from './metadata';
+// import { Metadata } from './metadata';
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CombinedProvider } from '@/lib/hooks/context-providers/user-context';

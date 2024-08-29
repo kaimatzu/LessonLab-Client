@@ -115,6 +115,7 @@ const userSlice = createSlice({
       .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        // state.error = action.payload;
       })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
