@@ -12,7 +12,7 @@ export default function AuthLayout() {
   };
 
   return (
-    <div className='bg-zinc-50 rounded-lg shadow-2xl overflow-visible'>
+    <div className='bg-gradient-to-l from-slate-900 to-indigo-600 rounded-lg shadow-indigo-600 shadow-2xl overflow-visible'>
       {isLoginForm ? <LoginPage switchForm={switchForm} /> : <RegisterPage switchForm={switchForm} />}
     </div>
   );

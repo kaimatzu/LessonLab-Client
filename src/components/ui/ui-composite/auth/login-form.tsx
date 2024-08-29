@@ -1,8 +1,7 @@
 // components/LoginForm.tsx
 import React, { useState } from 'react';
 import Image from 'next/image';
-import icon from '@/assets/icon.png';
-import { cn } from '@/lib/utils';
+import login from '@/assets/login.jpg'
 import { Input } from '../../ui-base/input';
 import { Button } from '../../ui-base/button';
 import { Label } from '../../ui-base/label';
@@ -25,14 +24,15 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
     setPassword(e.target.value);
   };
 
+  // TODO: Add logo in `Image`
   return (
     <form onSubmit={handleSubmit}>
-      <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+      <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] text-zinc-950">
         <div className="flex items-center justify-center py-12">
           <div className="mx-auto grid w-[350px] gap-6">
             <div className="grid gap-2 text-center">
-              <h1 className="text-3xl font-bold">Login</h1>
-              <p className="text-balance text-muted-foreground">
+              <h1 className="text-3xl font-bold text-zinc-50">Login</h1>
+              <p className="text-balance text-white/70">
                 Enter your username or email below to login to your account
               </p>
             </div>
@@ -59,7 +59,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
                 </div>
                 <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-gradient-to-r from-amber-400 to-amber-300">
                 Login
               </Button>
               <Button type='button' variant="outline" className="w-full">
@@ -76,7 +76,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
         </div>
         <div className="hidden bg-muted lg:block rounded-lg">
           <Image
-            src="/placeholder.svg"
+            src={login}
             alt="Logo"
             width="1920"
             height="1080"
