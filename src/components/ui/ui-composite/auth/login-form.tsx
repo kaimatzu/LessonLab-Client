@@ -27,7 +27,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
   // TODO: Add logo in `Image`
   return (
     <form onSubmit={handleSubmit}>
-      <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] text-zinc-950">
+      <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px] text-zinc-50">
         <div className="flex items-center justify-center py-12">
           <div className="mx-auto grid w-[350px] gap-6">
             <div className="grid gap-2 text-center">
@@ -59,15 +59,15 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
                 </div>
                 <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
               </div>
-              <Button type="submit" className="w-full bg-gradient-to-r from-amber-400 to-amber-300">
+              <Button type="submit" className="w-full bg-blue-500 text-zinc-50">
                 Login
               </Button>
-              <Button type='button' variant="outline" className="w-full">
+              <Button type='button' variant="secondary" className="w-full">
                 Login with Google
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
+              Don't have an account?{' '}
               <Link href="#" className="underline">
                 Sign up
               </Link>
