@@ -31,6 +31,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
         <div className="flex items-center justify-center py-12">
           <div className="mx-auto grid w-[350px] gap-6">
             <div className="grid gap-2 text-center">
+              <text className="text-6xl font-bold text-zinc-50 mb-10">HyperText</text>
               <h1 className="text-3xl font-bold text-zinc-50">Login</h1>
               <p className="text-balance text-white/70">
                 Enter your username or email below to login to your account
@@ -53,7 +54,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
                   <Label htmlFor="password">Password</Label>
                   <Link
                     href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline"
+                    className="ml-auto inline-block text-sm underline text-sky-50"
                   >
                     Forgot your password?
                   </Link>
@@ -69,7 +70,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
             </div>
             <div className="mt-4 text-center text-sm">
               Don't have an account?{' '}
-              <Link href="#" className="underline">
+              <Link href="#" className="underline text-sky-50">
                 Sign up
               </Link>
             </div>
