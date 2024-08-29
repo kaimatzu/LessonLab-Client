@@ -40,6 +40,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
               <div className="grid gap-2">
                 <Label htmlFor="email">Username/Email</Label>
                 <Input
+                  className='text-zinc-950'
                   id="identifier"
                   type="text"
                   required
@@ -57,7 +58,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" required value={password} onChange={handlePasswordChange} />
+                <Input className='text-zinc-950' id="password" type="password" required value={password} onChange={handlePasswordChange} />
               </div>
               <Button type="submit" className="w-full bg-blue-500 text-zinc-50">
                 Login
