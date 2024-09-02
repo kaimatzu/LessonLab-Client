@@ -29,17 +29,17 @@ const Sidenav: React.FC = () => {
   const sortedChats = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
   return (
-    <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 shadow-lg">
+    <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-500 ease-in-out ${isCollapsed ? 'w-16 max-w-[0px]' : 'max-w-[370px] w-[250px] '}`}>
-        <div className={`text-black mb-2 mt-2 dark:text-zinc-100`}>
+        <div className={`text-black mb-1 mt-1 dark:text-zinc-100 text-sm border-b border-gray-300`}>
           <div className={`flex align-middle p-3 rounded`}>
-            <div className={`mr-2`}></div>
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Materials</span>
+            {/* <div className={`mr-1`}></div> */}
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Workspaces</span>
           </div>
         </div>
 
         <div
-          className={` bg-transparent dark:bg-zinc-900 !overflow-x-visible 
+          className={`text-sm p-0 bg-transparent dark:bg-zinc-900 !overflow-x-visible 
           ${isCollapsed ? 'scrollbar-hidden no-scrollbar' : 'px-3 custom-scrollbar'} 
           overflow-y-scroll`}
         >
@@ -71,9 +71,9 @@ const Sidenav: React.FC = () => {
           </ul>
         </div>
 
-        <div className='list-none p-4'>
+        <div className='list-none p-1 ml-2'>
           <SidenavItem
-            title="Create Workspace"
+            title="Create new"
             href="/workspace/new"
             isActive={isActive('/workspace/new')}
             onClick={() => handleWorkspaceClick(null)}
@@ -118,8 +118,8 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
             onClick={onClick}
             className={`flex items-center no-underline rounded mb-1 
               ${isActive ? 'bg-primary text-zinc-900 duration-0'
-                : 'hover:bg-yellow-300/80'
-              } duration-100 justify-center py-4 ${animatedBorder ? 'border-glow' : ''}`}
+                : 'hover:bg-gray-300'
+              } duration-100 justify-center py-1 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -131,10 +131,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Link
           href={href}
           onClick={onClick}
-          className={`flex items-center no-underline rounded mb-1 
+          className={`flex items-center no-underline rounded mb-2
           ${isActive ? 'bg-primary text-zinc-900 duration-0'
-              : 'hover:bg-yellow-300/80'
-            } duration-100 justify-start p-3 ${animatedBorder ? 'border-glow' : ''}`}
+              : 'hover:bg-gray-300'
+            } duration-100 justify-start pt-3 ${animatedBorder ? 'border-glow' : ''} text-sm text-center`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>

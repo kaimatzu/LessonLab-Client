@@ -47,7 +47,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
       <div className="pt-4">
         <RegisterForm onSwitchToLogin={switchForm} handleSubmit={handleSubmit} />
         {loading && <p>Loading...</p>}
-        {error && <p>{error}</p>}
+        {/*error && <p>{error}</p>*/}
       </div>
     </Overlay>
   );
