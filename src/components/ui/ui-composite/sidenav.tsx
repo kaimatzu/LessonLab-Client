@@ -131,10 +131,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Link
           href={href}
           onClick={onClick}
-          className={`flex items-center no-underline rounded mb-2
+          className={`flex items-center no-underline rounded
           ${isActive ? 'bg-primary text-zinc-900 duration-0'
-              : 'hover:bg-gray-300'
-            } duration-100 justify-start pt-3 ${animatedBorder ? 'border-glow' : ''} text-sm text-center`}
+              : 'hover:bg-[#E2E4EA]'
+            } duration-100 justify-start p-2 ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center`}
         >
           {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>
