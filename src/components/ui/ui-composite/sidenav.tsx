@@ -26,7 +26,7 @@ const Sidenav: React.FC = () => {
 
     const isActive = (path: string) => pathname === path;
 
-  const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+    const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
     return (
       <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
