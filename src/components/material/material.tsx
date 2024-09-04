@@ -15,6 +15,7 @@ import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
 import { Workspace } from "@/redux/slices/workspaceSlice";
+import WorkspaceHeader from "../ui/ui-composite/workspace-header";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -100,14 +101,14 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   }
 
   return (
+    <div className="flex flex-col h-full w-full"><WorkspaceHeader title={workspace.name} />
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
       <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
         <div className="flex flex-row h-fit w-full items-start justify-start">
           <button
             onClick={() => {
               setIsChatOpen(true);
-            }
-            }
+            } }
             className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
           >
             <div className="flex flex-row items-start justify-start text-foreground">
@@ -131,8 +132,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
             fetchingFiles={fetchingFiles}
             files={files}
             fetchFiles={fetchFiles}
-            handleDeleteFile={handleDeleteFile}
-          />
+            handleDeleteFile={handleDeleteFile} />
         </Overlay>
 
       </div>
@@ -144,8 +144,8 @@ export default function Material({ workspace }: { workspace: Workspace }) {
         // specifications={specifications}
         // fetchingSpecifications={fetchingSpecifications}
         handleDeleteFile={handleDeleteFile}
-        onGenerationDisabledChange={handleGenerationDisabledChanged}
-      />
+        onGenerationDisabledChange={handleGenerationDisabledChanged} />
+    </div>
     </div>
   );
 }
