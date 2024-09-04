@@ -3,6 +3,8 @@
 import Sidenav from '@/components/ui/ui-composite/sidenav';
 import Header from '@/components/ui/ui-composite/header'
 import { WorkspaceProvider } from '@/lib/hooks/context-providers/workspace-context';
+import { Button } from '@/components/ui/ui-base/button';
+import Link from 'next/link';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
