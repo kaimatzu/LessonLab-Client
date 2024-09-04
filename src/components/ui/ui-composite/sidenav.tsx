@@ -120,7 +120,7 @@
               href={href}
               onClick={onClick}
               className={`flex items-center no-underline rounded mb-1
-                ${isActive ? 'bg-primary text-zinc-900 duration-0'
+                ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                   : 'hover:bg-gray-300'
                 } duration-100 justify-start p-2  mt-1 ${animatedBorder ? 'border-glow' : ''}`}
             >
@@ -135,7 +135,7 @@
             href={href}
             onClick={onClick}
             className={`flex items-center no-underline rounded
-            ${isActive ? 'bg-primary text-zinc-900 duration-0'
+            ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-[#E2E4EA]'
               } duration-100 justify-start p-2 ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
           >

@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='flex flex-col items-center justify-center h-full rounded-2xl bg-cover text-black dark:bg-zinc-900 dark:text-zinc-100'>
+    <div className='flex flex-col items-center justify-start mt-20 h-full rounded-2xl bg-cover text-black dark:bg-zinc-900 dark:text-zinc-100'>
       {/* <div className="backdrop-blur-sm bg-white/30 dark:bg-zinc-800 border-dotted rounded-lg border-2 border-gray-300 dark:border-zinc-600 p-1 sm:p-5 md:p-12 md:max-w-[90%]"> */}
       <div className="backdrop-blur-sm bg-transparent dark:bg-zinc-800 dark:border-zinc-600 p-1 sm:p-5 md:p-12 md:max-w-[90%]">
         <h4 className="text-2xl text-center text-[#BFBFBF]">Select a workspace<br/>to get started</h4>

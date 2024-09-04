@@ -354,18 +354,19 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   }, [topic, name])
 
   return (
-    <div className="flex flex-row !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
+    <div className="flex flex-col !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
+      {/* <div className={`text-black mt-1 dark:text-zinc-100`}>
+            <div className={`flex align-middle p-3 rounded text-sm`}>
+              <div className="mr-2 ml-2">O</div>
+              <span className={`flex flex-row`}>
+                {workspace.name}
+              </span>
+            </div>
+      </div> */}
       <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[380px] w-[320px] "}`}>
-        <div className={`text-black mt-2 dark:text-zinc-100`}>
-          <div className={`flex align-middle p-3 rounded`}>
-            <div className="mr-2"></div>
-            <span className={`${isCollapsed ? "hidden" : "inline font-medium"}`}>
-              {workspace.name}
-            </span>
-          </div>
-        </div>
+        
 
-        <div className="border-t border-border my-2"></div>
+        <div className="border-t border-border"></div>
 
         <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
           <div className="flex flex-row justify-between items-center">
@@ -432,7 +433,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
         </div>
 
         <div className="border-t border-border my-2"></div>
-
+{/* 
         {!specificationsLoading ? (
           <>
             <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
@@ -527,7 +528,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   onBlur={() => setIsTopicFocused(false)}
                 >
                   {/* TODO: Update the redux state for topic */}
-                  {isTopicFocused ? (
+                  {/* {isTopicFocused ? (
                     <textarea
                       className="w-full h-20 p-2 bg-background placeholder-zinc"
                       value={topic}
@@ -622,8 +623,8 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
             ) : (null)}
           </>
         ) : (
-          <SkeletonLoader />
-        )}
+          <SkeletonLoader /> */}
+        {/*)} */}
       </div>
     </div >
   );
