@@ -354,7 +354,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
   }, [topic, name])
 
   return (
-    <div className="flex flex-col !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
+    <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
       {/* <div className={`text-black mt-1 dark:text-zinc-100`}>
             <div className={`flex align-middle p-3 rounded text-sm`}>
               <div className="mr-2 ml-2">O</div>
@@ -366,7 +366,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
       <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[380px] w-[320px] "}`}>
         
 
-        <div className="border-t border-border"></div>
+        {/* <div className="border-t border-border"></div> */}
 
         <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
           <div className="flex flex-row justify-between items-center">
@@ -384,7 +384,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
             </div>
           </div>
           <div
-            className={`border-2 border-dashed border-zinc-400 p-4 flex flex-col gap-2 justify-center items-center text-center`}
+            className={`flex flex-col justify-center items-center text-start`}
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
@@ -409,17 +409,18 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                   </div>
                 ) : (
                   files.length > 0 && (
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col w-full text-sm">
                       {files.map((file) => (
                         <div
                           key={file.name}
-                          className="flex items-center justify-between bg-zinc-700 text-white rounded p-3 mb-2"
+                          className="flex items-center justify-between rounded hover:bg-gray-300"
                         >
-                          <span className="truncate w-4/5 text-left">
+                          <a>O</a>
+                          <span className="cursor-pointer truncate w-4/5 p-2">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="text-red-500 cursor-pointer"
+                            className="cursor-pointer mr-2"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -432,7 +433,7 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
           </div>
         </div>
 
-        <div className="border-t border-border my-2"></div>
+        {/* <div className="border-t border-border my-2"></div> */}
 {/* 
         {!specificationsLoading ? (
           <>

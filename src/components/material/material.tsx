@@ -101,11 +101,12 @@ export default function Material({ workspace }: { workspace: Workspace }) {
   }
 
   return (
-    <div className="flex flex-col h-full w-full"><WorkspaceHeader title={workspace.name} />
+    <div className="flex flex-col h-full w-full">
+      <WorkspaceHeader title={workspace.name}/>
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
       <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
         <div className="flex flex-row h-fit w-full items-start justify-start">
-          <button
+          {/* <button
             onClick={() => {
               setIsChatOpen(true);
             } }
@@ -117,7 +118,7 @@ export default function Material({ workspace }: { workspace: Workspace }) {
                 ? (workspace.materialType === 'LESSON' ? "Switch to Markdown" : "Switch to Quiz")
                 : "Switch to Chat"}
             </div>
-          </button>
+          </button> */}
         </div>
 
         {workspace.materialType === "LESSON" ? (

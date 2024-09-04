@@ -1,9 +1,15 @@
+import { useState } from "react";
 import { Button } from "../ui-base/button";
 
 interface WorkspaceHeaderProps{
     title: string;
-    type: string;
 }
+
+// const [isChatOpen, setIsChatOpen] = useState<boolean>(false); // 'chat' or 'markdown'
+
+// const closeChat = () => {
+// setIsChatOpen(false);
+// };
 
 const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({title}) => {
     return(
@@ -14,7 +20,9 @@ const WorkspaceHeader: React.FC<WorkspaceHeaderProps> = ({title}) => {
                     <span>{title}</span>
                 <button className="ml-8">...</button>
                 </div>
-                <Button className="text-white text-sm h-8 bg-gradient-to-r from-secondary to-primary rounded-sm hover:opacity-65 focus:outline-none">AI Assist</Button>
+                <Button className="text-white text-sm h-8 bg-gradient-to-r from-secondary to-primary rounded-sm hover:opacity-65 focus:outline-none"
+
+                >AI Assist</Button>
             </div>
         </div>
     )

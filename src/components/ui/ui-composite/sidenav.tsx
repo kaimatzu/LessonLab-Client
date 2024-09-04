@@ -81,7 +81,7 @@
               isActive={isActive('/workspace/new')}
               onClick={() => handleWorkspaceClick(null)}
               isCollapsed={isCollapsed}
-              icon={<FaPlus className={`${isActive('/workspace/new') ? 'text-zinc-900 hover:text-white' : 'text-zinc-900 hover:text-white'}`} />}
+              icon={<FaPlus className={`${isActive('/workspace/new') ? 'text-zinc-900' : 'text-zinc-900'}`} />}
               animatedBorder
             />
           </div>
