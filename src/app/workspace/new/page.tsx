@@ -88,6 +88,7 @@ export default function NewPage() {
             additionalSpecs: []
           }],
           pages: [],
+          modules: [],
           chatHistory: []
         };
         addWorkspace(newWorkspace);
