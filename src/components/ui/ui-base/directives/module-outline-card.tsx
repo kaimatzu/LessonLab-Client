@@ -10,6 +10,8 @@ import { useSocket } from '@/lib/hooks/useServerEvents';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import store from '@/redux/store';
 import { replaceChatMessage } from '@/redux/slices/workspaceSlice';
+import { PATCH as _updateChatMessage } from '@/app/api/chat/route';
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 interface ModuleOutlineCardProps {
   moduleId: string;
@@ -79,7 +81,12 @@ const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistan
             const newContent = replaceDirectiveWithContent(targetMessage.content, moduleOutlineData);
   
             console.log("New content:", newContent);
-  
+            
+            const requestBuilder = new RequestBuilder()
+              .setBody(JSON.stringify({ messageId: assistantMessageId, newContent: newContent}));
+
+            _updateChatMessage(requestBuilder);
+
             store.dispatch(
               replaceChatMessage({ 
                 workspaceId: selectedWorkspace?.id!, 
@@ -139,12 +146,12 @@ const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistan
 
   const handleDiscard = () => {
     console.log("Discard clicked");
-    socket.emit('confirm-module-outline-response', "cancel", selectedWorkspace?.id);
+    socket.emit('confirm-module-outline-response', "cancel", selectedWorkspace?.id, moduleId, null, subject, context_instructions);
   };
 
   const handleSubmit = () => {
     console.log("Submit clicked");
-    socket.emit('confirm-module-outline-response', "submit", selectedWorkspace?.id);
+    socket.emit('confirm-module-outline-response', "submit", selectedWorkspace?.id, moduleId, treeFormat, subject, context_instructions);
   };
 
   return (
