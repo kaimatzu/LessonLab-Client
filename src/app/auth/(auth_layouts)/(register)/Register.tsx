@@ -6,7 +6,7 @@ import Overlay from "@/components/ui/ui-base/overlay";
 import RegisterForm from "@/components/ui/ui-composite/auth/register-form";
 import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useSocket } from '@/lib/hooks/useSocket';
+import { useSocket } from '@/lib/hooks/useServerEvents';
 
 interface RegisterPageProps {
   switchForm: () => void;
@@ -39,7 +39,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
 
     const resultAction = await dispatch(registerUser(formData));
     if (registerUser.fulfilled.match(resultAction)) {
-      connectSocket();
+      connectSocket(resultAction.payload.userId);
       router.push('/workspace');
     } else {
       // Handle registration error (e.g., display error message to the user)

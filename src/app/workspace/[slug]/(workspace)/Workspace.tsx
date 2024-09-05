@@ -5,7 +5,7 @@ import WorkspaceComponent from '@/components/workspace/workspace';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { usePathname, useRouter } from 'next/navigation';
 import { Workspace } from '@/lib/types/workspace-types';
-import { useSocket } from '@/lib/hooks/useSocket';
+import { useSocket } from '@/lib/hooks/useServerEvents';
 
 export default function WorkspacePage() {
   const { workspaces, workspacesInitialized, removeWorkspace, selectWorkspace } = useWorkspaceContext();

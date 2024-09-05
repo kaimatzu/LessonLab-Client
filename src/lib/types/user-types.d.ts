@@ -1,6 +1,5 @@
 export interface User {
   userId: string;
-  userType: 'STUDENT' | 'TEACHER';
   name: string;
   email: string;
   tokens: number;

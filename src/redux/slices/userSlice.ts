@@ -42,7 +42,14 @@ export const loginUser = createAsyncThunk<User, FormData, { rejectValue: string 
         return rejectWithValue(errorData);
       }
       const responseData = await response.json();
-      return responseData.user;
+      const data = {
+        userId: responseData.user.UserID,
+        name: responseData.user.Name,
+        email: responseData.user.Email,
+        tokens: responseData.user.Tokens,
+      }
+      console.log("Data",data);
+      return data;
     } catch (error: any) {
       return rejectWithValue(error.toString());
     }

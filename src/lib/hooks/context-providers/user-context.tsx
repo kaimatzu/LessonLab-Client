@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { checkAuth, clearUser, setUser } from '@/redux/slices/userSlice';
-import { useSocket } from '@/lib/hooks/useSocket';
+import { useSocket } from '@/lib/hooks/useServerEvents';
 import { useBroadcastChannel } from '@/lib/hooks/useBroadcastChannel';
 import { User } from "@/lib/types/user-types";
 
@@ -19,7 +19,6 @@ export interface UserContextValue {
   user: User | null;
   setUser: (user: User) => void;
   clearUser: () => void;
-  connectSocket: (payment_intent_id: string) => void;
   isTransactionFinished: boolean;
   createTransaction: (payment_intent_id: string) => void;
   cancelTransaction: (payment_intent_id: string) => void;
@@ -33,7 +32,6 @@ const defaultValue: UserContextValue = {
   user: null,
   setUser: () => { },
   clearUser: () => { },
-  connectSocket: () => { },
   isTransactionFinished: false,
   createTransaction: () => { },
   cancelTransaction: () => { },
@@ -90,7 +88,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const resultAction = await dispatch(checkAuth());
 
         if (checkAuth.fulfilled.match(resultAction)) {
-          connectSocket();
+          connectSocket(resultAction.payload.userId);
+          console.log("Path name", pathname);
           if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction')) {
             push('/workspace'); // Redirect to /workspace if authenticated
           }
@@ -137,7 +136,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         setUser: saveUser,
         clearUser: clearUserData,
-        connectSocket,
         isTransactionFinished,
         createTransaction,
         cancelTransaction,

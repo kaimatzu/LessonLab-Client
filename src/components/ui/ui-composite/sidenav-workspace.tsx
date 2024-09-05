@@ -29,7 +29,6 @@ interface SidenavWorkspaceProps {
   fetchingFiles: boolean;
   uploadFileCompletionCallback: () => void;
   handleDeleteFile: (documentId: string) => Promise<void>;
-  onGenerationDisabledChange: (newValue: boolean) => void
 }
 
 const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
@@ -38,7 +37,6 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   fetchingFiles,
   uploadFileCompletionCallback,
   handleDeleteFile,
-  onGenerationDisabledChange
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
@@ -50,6 +48,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     specifications,
     specificationsLoading,
     selectedSpecificationId,
+    modules,
     pages,
     updateSpecification,
     updateSpecificationName,
@@ -57,6 +56,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     addSpecification,
     deleteSpecification,
     selectSpecification,
+    selectModule,
     addLessonPage,
     selectPage,
   } = useWorkspaceContext();
@@ -335,21 +335,10 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     }
   }
 
-  // ------------------------------//
-  //  Is generation disabled
-  // ------------------------------//
-
-  useEffect(() => {
-    if (topic === '' || name === '') {
-      onGenerationDisabledChange(true)
-    } else {
-      onGenerationDisabledChange(false)
-    }
-  }, [topic, name])
 
   return (
-    <div className="flex flex-row !w-fit !min-w-fit h-full mr-6 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
-      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[380px] w-[320px] "}`}>
+    <div className="flex flex-row !w-fit !min-w-fit h-full mr-3 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
+      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}>
         <div className={`text-black mt-2 dark:text-zinc-100`}>
           <div className={`flex align-middle p-3 rounded`}>
             <div className="mr-2"></div>
@@ -598,18 +587,18 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             {selectedWorkspace ? (
               <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
                 <div className="flex flex-row justify-between items-center">
-                  <h1 className="text-lg font-normal">Pages</h1>
-                  <div className="cursor-pointer" onClick={createLessonPage}>
+                  <h1 className="text-lg font-normal">Modules</h1>
+                  <div className="cursor-pointer" onClick={() => {}}>
                     <RiAddFill className="w-6 h-6" />
                   </div>
                 </div>
-                {pages?.map((page) => (
+                {modules?.map((module) => (
                   <div
-                    className="flex items-center justify-between bg-zinc-300 rounded p-3 mb-2 cursor-pointer"
-                    key={page.id}
-                    onClick={() => selectPage(page.id)}
+                    className="flex items-center justify-between hover:bg-yellow-300/80 border-y-2 border-zinc-300 border-dashed p-3 mb-2 cursor-pointer"
+                    key={module.id}
+                    onClick={() => selectModule(module.id)}
                   >
-                    {page.title}
+                    {module.name}
                   </div>
                 ))}
               </div>

@@ -19,8 +19,9 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
 // import { Message } from "ai";
 import { Specification, Workspace } from "@/lib/types/workspace-types";
-import { useSocket } from "@/lib/hooks/useSocket";
+import { useSocket } from "@/lib/hooks/useServerEvents";
 import { Message } from '@/lib/types/workspace-types';
+import { useUserContext } from "@/lib/hooks/context-providers/user-context";
 
 interface ChatProps {
   workspace: Workspace;
@@ -48,6 +49,8 @@ export const Chat: React.FC<ChatProps> = ({
     updateChatStatus,
   } = useWorkspaceContext();
 
+  const { user } = useUserContext();
+
   const { sendMessageToAssistant } = useSocket();
 
   const getCurrentSpecifications = (): Specification | {} => {
@@ -57,16 +60,6 @@ export const Chat: React.FC<ChatProps> = ({
 
     return specToLoad ? specToLoad : {};
   }
-
-  const { 
-    // messages, 
-    // input, 
-    // handleInputChange, 
-    // handleSubmit, 
-    // isLoading 
-  } = useChat({
-    body: { namespaceId: workspace.id, specifications: JSON.stringify(getCurrentSpecifications(), null, 2) },
-  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -78,7 +71,7 @@ export const Chat: React.FC<ChatProps> = ({
     console.log("Submit prompt to server: ", input);
     updateChatStatus(true);
     if (selectedWorkspace) {
-      sendMessageToAssistant(input, selectedWorkspace.id, selectedWorkspace.chatHistory);
+      sendMessageToAssistant(input, user?.userId!, selectedWorkspace.id, selectedWorkspace.chatHistory);
     } else {
       console.error("Not connected to workspace!");
     }

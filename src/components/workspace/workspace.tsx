@@ -9,12 +9,14 @@ import React, {
 } from "react";
 import { IoIosSwap } from "react-icons/io";
 import { FetchedFile } from "@/app/api/files/route";
-import { MilkdownEditorWrapper } from "../ui/ui-composite/chat/milkdown";
+import { MilkdownEditorWrapper } from "../ui/ui-composite/material/milkdown";
 import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
-import Quiz from "./quiz";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
 import { Workspace } from "@/lib/types/workspace-types";
+import CrepeEditor from "../ui/ui-composite/material/milkdownCrepe";
+import MaterialArea from "../ui/ui-composite/material/material-area";
+import { useSocket } from "@/lib/hooks/useServerEvents";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -35,15 +37,19 @@ const fetchFileUrls = async (workspaceId: string) => {
 
 export default function WorkspaceComponent({ workspace }: { workspace: Workspace }) {
   const {
+    loading,
+    moduleDataLoading,
     selectWorkspace,
     loadWorkspaceData,
     selectedWorkspace,
+    selectedModuleId,
   } = useWorkspaceContext();
+  
+  const { socket, joinWorkspaceRoom, socketConnected } = useSocket();
+
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
-  const [generationDisabled, setGenerationDisabled] = useState(true);
-  // const [name, setName] = useState('')
-  // const [topic, setTopic] = useState('')
+  const [connectionInitialized, setConnectionInitialized] = useState<boolean>(false);
 
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
@@ -73,11 +79,6 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
     setFetchingFiles(false);
   }, [workspace.id]);
 
-  // TODO: update workspace data (specifications)
-  const handleWorkspaceChange = (newWorkspace: Workspace) => {
-    workspace = newWorkspace
-  }
-
   useEffect(() => { fetchFiles() }, [fetchFiles]);
 
   const loadWorkspace = useCallback(async () => {
@@ -87,6 +88,15 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
     loadWorkspaceData(workspace.id, selectedWorkspace);
   }, [workspace.id]);
 
+  useEffect(() => {
+    console.log("Socket connected:", socketConnected);
+    console.log(loading, selectedWorkspace, socketConnected, connectionInitialized);
+    if (!loading && selectedWorkspace?.id && socketConnected && socket.connected && !connectionInitialized) { // Jesus fucking christ
+      joinWorkspaceRoom(selectedWorkspace?.id);
+      setConnectionInitialized(true);
+    }
+  }, [loading, socketConnected, connectionInitialized])
+
   useEffect(() => { loadWorkspace() }, [loadWorkspace]);
 
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false); // 'chat' or 'markdown'
@@ -94,10 +104,6 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
   const closeChat = () => {
     setIsChatOpen(false);
   };
-
-  const handleGenerationDisabledChanged = (newValue: boolean) => {
-    setGenerationDisabled(newValue)
-  }
 
   return (
     <div className="flex flex-row-reverse justify-center items-center h-full w-full">
@@ -118,7 +124,17 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
           </button>
         </div>
 
-        <MilkdownEditorWrapper />
+        {/* <MilkdownEditorWrapper /> */}
+        
+        {selectedModuleId && !moduleDataLoading ? (
+          <>
+            <MaterialArea />
+            {/* <CrepeEditor /> */}
+          </>
+        ) : (
+          <>No module selected</>
+        )}
+        
 
         <Overlay isOpen={isChatOpen} onClose={closeChat} overlayName={"Chat"} overlayType="chat">
           <Chat
@@ -136,10 +152,7 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
         files={files}
         fetchingFiles={fetchingFiles}
         uploadFileCompletionCallback={fetchFiles}
-        // specifications={specifications}
-        // fetchingSpecifications={fetchingSpecifications}
         handleDeleteFile={handleDeleteFile}
-        onGenerationDisabledChange={handleGenerationDisabledChanged}
       />
     </div>
   );
