@@ -74,3 +74,63 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// Assistant routes
+
+export async function GET(requestBuilder: RequestBuilder) {
+  requestBuilder
+    .setMethod("GET")
+    .setHeaders({ 'Content-Type': 'application/json' })
+    .setCredentials("include");
+
+  try {
+    const response = await fetch(requestBuilder.build());
+
+    if (response.ok) {
+      const chatHistory = await response.json();
+      console.log("Chat history retrieved successfully:", chatHistory);
+      return new Response(JSON.stringify(chatHistory), { status: 200 });
+    } else {
+      throw new Error("Failed to retrieve chat history, " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error retrieving chatHistory:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}
+
+/**
+ * @param requestBuilder - The RequestBuilder instance used to construct the create workspace request.
+ * @returns A Promise that resolves to a Response object.
+ */
+export async function PATCH(requestBuilder: RequestBuilder) {
+  requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/assistant/update`)
+    .setMethod("PATCH")
+    .setCredentials("include")
+    .setHeaders({ 'Content-Type': 'application/json' });
+
+  try {
+    const response = await fetch(requestBuilder.build());
+
+    if (response.ok) {
+      const responseBody = await response.text();
+      const responseData = JSON.parse(responseBody);
+      console.log("Chat message update successful:", responseData);
+      return new Response(
+        JSON.stringify({ 
+          responseData
+      }),
+        { status: 200 }
+      );
+    } else {
+      throw new Error("Failed to update chat message" + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error updating:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}

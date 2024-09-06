@@ -12,7 +12,7 @@ interface ItemProps {
 }
 
 export const Item: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWindow }) => {
-  const { connectSocket } = useUserContext();
+  const { connectSocket, createTransaction } = useUserContext();
   
   const formattedAmount = (item.amount / 100).toLocaleString(undefined, {
     minimumFractionDigits: 2,
@@ -25,7 +25,10 @@ export const Item: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWin
       if (response && response.data) {
         console.log(response.data)
         const newWindow = window.open(response.data.attributes.checkout_url, '_blank');
-        connectSocket(response.data.attributes.payment_intent.id);
+
+        //TODO: Find a way to terminate the connection on shop close or on transaction cancel
+        // connectSocket(response.data.attributes.payment_intent.id);
+        createTransaction(response.data.attributes.payment_intent.id);
         if (newWindow) {
           console.log("Opened new window:", response.data.attributes.checkout_url)
           setCheckoutWindow(newWindow);

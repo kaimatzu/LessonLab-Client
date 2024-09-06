@@ -4,16 +4,16 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
 import { FaPlus, FaLock } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
-import { useWorkspaceMaterialContext } from '@/lib/hooks/context-providers/workspace-material-context';
+import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './chat/tooltip';
 import '../css/custom-scrollbar.css'
-import { Workspace } from '@/redux/slices/workspaceSlice';
+import { Workspace } from '@/lib/types/workspace-types';
 
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceMaterialContext();
+  const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceContext();
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -26,7 +26,7 @@ const Sidenav: React.FC = () => {
 
   const isActive = (path: string) => pathname === path;
 
-  const sortedChats = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
+  const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
   return (
     <div className="flex flex-row w-fit !overflow-x-visible z-[100] dark:bg-zinc-900 shadow-lg">
@@ -34,7 +34,7 @@ const Sidenav: React.FC = () => {
         <div className={`text-black mb-2 mt-2 dark:text-zinc-100`}>
           <div className={`flex align-middle p-3 rounded`}>
             <div className={`mr-2`}></div>
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Materials</span>
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Workspaces</span>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ const Sidenav: React.FC = () => {
               <></>
             ) : (
               <>
-                {sortedChats.map((workspace: Workspace) => {
+                {sortedWorkspaces.map((workspace: Workspace) => {
                   if (!workspace) return null;
                   return (
                     <SidenavItem
@@ -60,7 +60,7 @@ const Sidenav: React.FC = () => {
                       href={`/workspace/${workspace.id}`}
                       isActive={isActive(`/workspace/${workspace.id}`)}
                       onClick={() => handleWorkspaceClick(workspace.id)}
-                      icon={workspace.materialType === "LESSON" ? (<TbBook />) : (<TbPencil />)}
+                      icon={<TbBook />}
                       isCollapsed={isCollapsed}
                       locked={workspace.locked}
                     />

@@ -5,22 +5,7 @@ import { POST as login } from '@/app/api/auth/login/route';
 import { POST as register } from '@/app/api/auth/register/route';
 import Cookies from 'js-cookie';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
-
-export interface User {
-  userId: string;
-  userType: 'STUDENT' | 'TEACHER';
-  name: string;
-  email: string;
-  tokens: number;
-}
-
-export interface UserState {
-  user: User | null;
-  error: string | null;
-  loading: boolean;
-  isTransactionFinished: boolean;
-  transactionStatus: string;
-}
+import { UserState, User } from '@/lib/types/user-types';
 
 const initialState: UserState = {
   user: null,
@@ -57,7 +42,14 @@ export const loginUser = createAsyncThunk<User, FormData, { rejectValue: string 
         return rejectWithValue(errorData);
       }
       const responseData = await response.json();
-      return responseData.user;
+      const data = {
+        userId: responseData.user.UserID,
+        name: responseData.user.Name,
+        email: responseData.user.Email,
+        tokens: responseData.user.Tokens,
+      }
+      console.log("Data",data);
+      return data;
     } catch (error: any) {
       return rejectWithValue(error.toString());
     }
