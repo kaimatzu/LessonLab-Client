@@ -368,10 +368,10 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
 
         {/* <div className="border-t border-border"></div> */}
 
-        <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="text-lg font-normal transition-none">Files</h1>
-            <div className="cursor-pointer" onClick={handleDivClick}>
+        <div className="flex flex-col">
+          <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+            <h1 className="text-sm font-normal transition-none ml-4">Files</h1>
+            <div className="cursor-pointer mr-4" onClick={handleDivClick}>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -380,9 +380,12 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                 multiple
                 onChange={handleFileChange}
               />
-              <RiAddFill className="w-6 h-6" />
+              <RiAddFill className="w-4 h-4" />
             </div>
           </div>
+
+          {/* <div className="w-full border-t border-gray-300"></div> */}
+
           <div
             className={`flex flex-col justify-center items-center text-start`}
             onDragOver={handleDragOver}
@@ -391,15 +394,16 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
             onDrop={handleDrop}
           >
             {files.length === 0 && !fetchingFiles && (
-              <p className="text-zinc-400">
-                No files uploaded yet <br />
-                Drag and drop documents here or click to upload
+              <p className="text-zinc-400 mt-4">
+                No files uploaded yet 
+                {/* <br /> */}
+                {/* Drag and drop documents here or click to upload */}
               </p>
             )}
 
             {isUploading ? (
               <div className="text-zinc-500 text-sm animate-pulse">
-                Uploading documents...
+                Uploading documents
               </div>
             ) : (
               <>
@@ -415,12 +419,12 @@ const SidenavMaterial: React.FC<SidenavMaterialProps> = ({
                           key={file.name}
                           className="flex items-center justify-between rounded hover:bg-gray-300"
                         >
-                          <a>O</a>
+                          <a className="ml-4">O</a>
                           <span className="cursor-pointer truncate w-4/5 p-2">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="cursor-pointer mr-2"
+                            className="cursor-pointer mr-5"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
