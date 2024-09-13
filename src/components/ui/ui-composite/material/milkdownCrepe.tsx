@@ -136,12 +136,12 @@ const CrepeEditorWrapper: FC = () => {
   };
 
   return (
-    <div className="relative p-4 rounded-lg border border-gray-300 h-full w-full bg-white shadow-md">
+    <div className="relative h-full w-full bg-[#F1F3F8]">
       {/* {moduleContent === null || selectedModuleNodeId === null ? (
         <p className="text-center mt-4">No content available. Please select a module node.</p>
       ) : ( */}
         <>
-          <div className="absolute top-0 left-0 right-0 bg-white z-10 p-4">
+          {/* <div className="absolute top-0 left-0 right-0 bg-white z-10">
             <div className="flex justify-end mb-2">
               <ToggleButtonGroup
                 value={view}
@@ -158,9 +158,9 @@ const CrepeEditorWrapper: FC = () => {
               </ToggleButtonGroup>
             </div>
             <hr className="border-t border-zinc-300" />
-          </div>
+          </div> */}
 
-          <div className="pt-16 overflow-y-auto custom-scrollbar" style={{ height: 'calc(100% - 4rem)' }}>
+          <div className="overflow-y-auto custom-scrollbar" style={{ height: 'calc(100% - 4rem)' }}>
             {view === 'editor' ? (
               <CrepeEditor
                 ref={crepeEditorRef}
@@ -172,7 +172,7 @@ const CrepeEditorWrapper: FC = () => {
                 value={moduleContent}
                 onChange={handleMarkdownChange}
                 style={{ height: '100%', width: '100%' }}
-                className="p-2 border rounded-md no-scrollbar"
+                className="p-2 border rounded-md no-scrollbar bg-[#F1F3F8]"
               />
             )}
           </div>

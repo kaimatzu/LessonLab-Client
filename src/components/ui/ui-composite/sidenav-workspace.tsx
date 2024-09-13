@@ -337,23 +337,14 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
 
 
   return (
-    <div className="flex flex-row !w-fit !min-w-fit h-full mr-3 !overflow-x-visible z-[300] dark:bg-zinc-900 shadow-lg no-scrollbar overflow-y-auto">
-      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}>
-        <div className={`text-black mt-2 dark:text-zinc-100`}>
-          <div className={`flex align-middle p-3 rounded`}>
-            <div className="mr-2"></div>
-            <span className={`${isCollapsed ? "hidden" : "inline font-medium"}`}>
-              {workspace.name}
-            </span>
-          </div>
-        </div>
-
-        <div className="border-t border-border my-2"></div>
-
-        <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-          <div className="flex flex-row justify-between items-center">
-            <h1 className="text-lg font-normal transition-none">Files</h1>
-            <div className="cursor-pointer" onClick={handleDivClick}>
+    <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
+      {/* <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}> */}
+        {/* <div className="border-t border-border my-2"></div> */}
+        <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
+        <div className="flex flex-col border-b border-gray-300 flex-1 overflow-y-auto">
+          <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+            <h1 className="text-sm font-normal transition-none ml-4">Files</h1>
+            <div className="cursor-pointer mr-4" onClick={handleDivClick}>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -362,11 +353,11 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 multiple
                 onChange={handleFileChange}
               />
-              <RiAddFill className="w-6 h-6" />
+              <RiAddFill className="w-4 h-4" />
             </div>
           </div>
           <div
-            className={`border-2 border-dashed border-zinc-400 p-4 flex flex-col gap-2 justify-center items-center text-center`}
+            className={`flex flex-col justify-center items-center text-center`}
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
@@ -374,8 +365,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
           >
             {files.length === 0 && !fetchingFiles && (
               <p className="text-zinc-400">
-                No files uploaded yet <br />
-                Drag and drop documents here or click to upload
+                No files uploaded yet 
               </p>
             )}
 
@@ -395,13 +385,13 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
-                          className="flex items-center justify-between bg-zinc-700 text-white rounded p-3 mb-2"
+                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-3 mb-2"
                         >
                           <span className="truncate w-4/5 text-left">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="text-red-500 cursor-pointer"
+                            className="text-zinc-900 cursor-pointer"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -414,187 +404,19 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
           </div>
         </div>
 
-        <div className="border-t border-border my-2"></div>
+        {/* <div className="border-t border-border"></div> */}
 
-        {!specificationsLoading ? (
-          <>
-            <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-              <div className="flex flex-row justify-between items-center">
-                <h1 className="text-lg font-normal">Specifications</h1>
-                <div className="flex flex-row justify-end">
-                  <div
-                    className={`${selectSpecificationRef.current?.length === 1 ? '' : 'cursor-pointer'}`}
-                    onClick={() => {
-                      selectSpecificationRef.current?.length === 1 ? {} : deleteCurrentSpecification();
-                    }}
-                  >
-                    <RiDeleteBinLine className={`${selectSpecificationRef.current?.length === 1 ? 'text-zinc-500' : ''} w-6 h-6`} />
-                  </div>
-                  <div className="cursor-pointer" onClick={() => addNewSpecification()}>
-                    <RiAddFill className="w-6 h-6" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <div className="text-sm text-zinc-500">Select Specification</div>
-                <select
-                  className="border border-border rounded focus-visible:outline-ring bg-background p-1 text-sm"
-                  ref={selectSpecificationRef}
-                  value={selectedSpecificationId || ''}
-                  onChange={handleSpecificationSelect}
-                >
-                  {specifications.map((spec) => (
-                    <option className="truncate w-4/5 text-left" key={spec.id} value={spec.id}>
-                      {spec.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-sm text-zinc-500">Specification Name</div>
-                {name !== null ? (
-                  <input
-                    type="text"
-                    className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (selectedWorkspace && selectedWorkspace.id && selectedSpecificationId) {
-                        updateSpecificationName(selectedWorkspace.id, selectedSpecificationId, e.target.value);
-                      } else {
-                        console.log(selectedWorkspace, selectedSpecificationId)
-                      }
-                    }}
-                    onBlur={(e) => { _updateSpecificationName(selectedSpecificationId!, e.target.value) }}
-                    onKeyDown={(e) => handleInputKeyDown(e, () => { })}
-                    placeholder="Specification Name"
-                  />
-                ) : (
-                  <></>
-                )}
-                {
-                  // workspace.workspaceType === 'QUIZ' ?
-                  //   <>
-                  //     <div className="text-sm text-zinc-500">Number of Items</div>
-                  //     <input
-                  //       type='number'
-                  //       className="border border-border p-2 rounded focus-visible:outline-ring bg-background placeholder-zinc-500 text-sm"
-                  //       value={numItems}
-                  //       onChange={e => {
-                  //         const value = parseInt(e.target.value)
-                  //         if (value < 1) {
-                  //           return
-                  //         }
-                  //         setNumItems(value)
-
-                  //         // TODO: redux here
-                  //         if (selectedWorkspace && selectedSpecificationId) {
-                  //           updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
-                  //         }
-
-                  //         // workspace.specifications.map(specification => {
-                  //         //   if (specification.id === selectedSpecificationId) {
-                  //         //     specification = {
-                  //         //       ...specification,
-                  //         //       numItems: value,
-                  //         //     }
-                  //         //   }
-                  //         // })
-                  //       }}
-                  //     />
-                  //   </>
-                  //   : null
-                }
-                <div className="text-sm text-zinc-500">Topic</div>
-                <div
-                  className={`${isTopicFocused ? 'border border-primary' : 'border'} border-border p-2 rounded cursor-pointer`}
-                  onClick={() => setIsTopicFocused(true)}
-                  onBlur={() => setIsTopicFocused(false)}
-                >
-                  {/* TODO: Update the redux state for topic */}
-                  {isTopicFocused ? (
-                    <textarea
-                      className="w-full h-20 p-2 bg-background placeholder-zinc"
-                      value={topic}
-                      onChange={(e) => setTopic(e.target.value)}
-                      onBlur={(e) => _updateSpecificationTopic(selectedSpecificationId!, e.target.value)}
-                      onKeyDown={(e) => handleTextareaKeyDown(e, () => { })}
-                      placeholder="Provide a topic..."
-                    />
-                  ) : (
-                    <span className={`${topic ? '' : 'text-zinc-500'}`}>{topic || 'Provide a topic...'}</span>
-                  )}
-                </div>
-                <div className="text-sm text-zinc-500">Writing Level</div>
-                <select
-                  className="border border-border p-2 rounded focus-visible:outline-primary bg-background text-sm"
-                  value={writingLevel}
-                  onChange={(e) => {
-                    setWritingLevel(e.target.value);
-                    _updateSpecificationWritingLevel(selectedSpecificationId!, e.target.value);
-                  }}
-                >
-                  <option>Elementary</option>
-                  <option>High-school</option>
-                  <option>College</option>
-                  <option>Professional</option>
-                </select>
-                <div className="text-sm text-zinc-500">Comprehension Level</div>
-                <select
-                  className="border border-border p-2 rounded focus-visible:outline-primary bg-background text-sm"
-                  value={comprehensionLevel}
-                  onChange={(e) => {
-                    setComprehensionLevel(e.target.value);
-                    _updateSpecificationComprehensionLevel(selectedSpecificationId!, e.target.value);
-                  }}
-                >
-                  <option className="border-border">Simple</option>
-                  <option className="border-border">Standard</option>
-                  <option className="border-border">Comprehensive</option>
-                </select>
-                <div className="text-sm text-zinc-500">Additional Specifications</div>
-                {additionalSpecs.map((spec, index) => (
-                  <div
-                    key={index}
-                    className={`${focusedAdditionalSpecIndex === index ? 'border border-yellow-500' : 'border'} border-border p-2 rounded cursor-pointer`}
-                    onClick={() => setFocusedAdditionalSpecIndex(index)}
-                    onBlur={() => handleAdditionalSpecBlur(index)}
-                  >
-                    {focusedAdditionalSpecIndex === index ? (
-                      <textarea
-                        className="w-full h-20 p-2"
-                        value={spec.content}
-                        onChange={(e) => handleAdditionalSpecChange(index, e.target.value)}
-                        onBlur={(e) => {
-                          e.target.value === '' ? _removeAdditionalSpecification(index, additionalSpecs) : _updateAdditionalSpecification(index, e.target.value, additionalSpecs);
-                        }}
-                        onKeyDown={(e) => handleTextareaKeyDown(e, () => setFocusedAdditionalSpecIndex(null))}
-                        placeholder="Additional specifications..."
-                      />
-                    ) : (
-                      <span className={`${spec ? '' : 'text-zinc-400'}`}>{spec.content || 'Additional specifications...'}</span>
-                    )}
-                  </div>
-                ))}
-                <div
-                  className="flex flex-row justify-center items-center cursor-pointer rounded mb-1 py-4 hover:bg-yellow-300/80"
-                  onClick={addAdditionalSpecField}
-                >
-                  <RiAddFill className="w-6 h-6" />
-                </div>
-              </div>
+        <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+            <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
+            <div className="cursor-pointer mr-4" onClick={() => {}}>
+              <RiAddFill className="w-4 h-4" />
             </div>
-            <div className="border-t border-zinc-600 my-2"></div>
-
-            {selectedWorkspace ? (
-              <div className="flex flex-col mx-3 mb-2 p-2 gap-2">
-                <div className="flex flex-row justify-between items-center">
-                  <h1 className="text-lg font-normal">Modules</h1>
-                  <div className="cursor-pointer" onClick={() => {}}>
-                    <RiAddFill className="w-6 h-6" />
-                  </div>
-                </div>
+        </div>
+        {selectedWorkspace ? (
+              <div className="flex flex-col flex-1 overflow-y-auto">
                 {modules?.map((module) => (
                   <div
-                    className="flex items-center justify-between hover:bg-yellow-300/80 border-y-2 border-zinc-300 border-dashed p-3 mb-2 cursor-pointer"
+                    className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] p-3 mb-2 cursor-pointer"
                     key={module.id}
                     onClick={() => selectModule(module.id)}
                   >
@@ -602,12 +424,8 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                   </div>
                 ))}
               </div>
-            ) : (null)}
-          </>
-        ) : (
-          <SkeletonLoader />
-        )}
-      </div>
+        ) : (null)}
+        </div>
     </div >
   );
 };
