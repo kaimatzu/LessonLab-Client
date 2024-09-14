@@ -46,7 +46,11 @@ const Header: React.FC = () => {
   ];
 
   return (
+<<<<<<< HEAD
     <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none">
+=======
+    <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
+>>>>>>> origin/mod/UX
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>

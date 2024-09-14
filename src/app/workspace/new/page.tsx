@@ -117,7 +117,7 @@ export default function NewPage() {
             rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
             placeholder="Topic"
           />
-          <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-zinc-300">
+          {/* <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-zinc-300">
             <span className="text-lg text-gray-400 dark:text-zinc-400">
               {selectedFiles ? `${selectedFiles.length} file(s) selected` : "Add .pdf file(s)..."}
             </span>
@@ -137,14 +137,44 @@ export default function NewPage() {
               style={{ display: "none" }}
               multiple
             />
-          </div>
-          <div className="mt-4 text-sm font-medium text-primary py-2 mb-5 rounded-lg">
+          </div> */}
+          {/* <div className="mt-4 text-sm font-medium text-primary py-2 mb-5 rounded-lg">
             <p>
               This is a public demo, do not upload private information.
               <br />
             </p>
-          </div>
+          </div> */}
           <div className="flex justify-between gap-4">
+            <button
+              name="save"
+              type="submit"
+              value="Save"
+              className="w-full py-3 text-lg font-medium text-white bg-primary rounded-md 
+            hover:opacity-65 focus:outline-none flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                "Save"
+              )}
+            </button>
+            <button
+              name="cancel"
+              type="reset"
+              value="Cancel"
+              className="w-full py-3 text-lg font-medium text-zinc-900 bg-white rounded-md rounded-primary
+            hover:bg-primary flex items-center justify-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Spinner />
+              ) : (
+                "Cancel"
+              )}
+            </button>
+          </div>
+          {/* <div className="flex justify-between gap-4">
             <button
               name="lesson"
               type="submit"
@@ -178,7 +208,7 @@ export default function NewPage() {
             <div className="mt-4 text-sm font-medium text-gray-500 dark:text-zinc-500">
               Upserting and indexing documents... this may take a few minutes....
             </div>
-          )}
+          )} */}
         </form>
       </div>
     </div>

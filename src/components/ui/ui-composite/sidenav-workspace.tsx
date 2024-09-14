@@ -29,7 +29,6 @@ interface SidenavWorkspaceProps {
   fetchingFiles: boolean;
   uploadFileCompletionCallback: () => void;
   handleDeleteFile: (documentId: string) => Promise<void>;
-  onGenerationDisabledChange: (newValue: boolean) => void
 }
 
 const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
@@ -38,7 +37,6 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   fetchingFiles,
   uploadFileCompletionCallback,
   handleDeleteFile,
-  onGenerationDisabledChange
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
@@ -50,6 +48,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     specifications,
     specificationsLoading,
     selectedSpecificationId,
+    modules,
     pages,
     updateSpecification,
     updateSpecificationName,
@@ -57,6 +56,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     addSpecification,
     deleteSpecification,
     selectSpecification,
+    selectModule,
     addLessonPage,
     selectPage,
   } = useWorkspaceContext();
@@ -335,19 +335,9 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     }
   }
 
-  // ------------------------------//
-  //  Is generation disabled
-  // ------------------------------//
-
-  useEffect(() => {
-    if (topic === '' || name === '') {
-      onGenerationDisabledChange(true)
-    } else {
-      onGenerationDisabledChange(false)
-    }
-  }, [topic, name])
 
   return (
+<<<<<<< HEAD
     <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
       {/* <div className={`text-black mt-1 dark:text-zinc-100`}>
             <div className={`flex align-middle p-3 rounded text-sm`}>
@@ -363,6 +353,13 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
         {/* <div className="border-t border-border"></div> */}
 
         <div className="flex flex-col">
+=======
+    <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
+      {/* <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}> */}
+        {/* <div className="border-t border-border my-2"></div> */}
+        <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
+        <div className="flex flex-col border-b border-gray-300 flex-1 overflow-y-auto">
+>>>>>>> origin/mod/UX
           <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
             <h1 className="text-sm font-normal transition-none ml-4">Files</h1>
             <div className="cursor-pointer mr-4" onClick={handleDivClick}>
@@ -381,17 +378,26 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
           {/* <div className="w-full border-t border-gray-300"></div> */}
 
           <div
+<<<<<<< HEAD
             className={`flex flex-col justify-center items-center text-start`}
+=======
+            className={`flex flex-col justify-center items-center text-center`}
+>>>>>>> origin/mod/UX
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
             {files.length === 0 && !fetchingFiles && (
+<<<<<<< HEAD
               <p className="text-zinc-400 mt-4">
                 No files uploaded yet 
                 {/* <br /> */}
                 {/* Drag and drop documents here or click to upload */}
+=======
+              <p className="text-zinc-400">
+                No files uploaded yet 
+>>>>>>> origin/mod/UX
               </p>
             )}
 
@@ -411,14 +417,22 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
+<<<<<<< HEAD
                           className="flex items-center justify-between rounded hover:bg-gray-300"
+=======
+                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-3 mb-2"
+>>>>>>> origin/mod/UX
                         >
                           <a className="ml-4">O</a>
                           <span className="cursor-pointer truncate w-4/5 p-2">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
+<<<<<<< HEAD
                             className="cursor-pointer mr-5"
+=======
+                            className="text-zinc-900 cursor-pointer"
+>>>>>>> origin/mod/UX
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -431,6 +445,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* <div className="border-t border-border my-2"></div> */}
 {/* 
         {!specificationsLoading ? (
@@ -610,21 +625,39 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                   </div>
                 </div>
                 {pages?.map((page) => (
+=======
+        {/* <div className="border-t border-border"></div> */}
+
+        <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+            <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
+            <div className="cursor-pointer mr-4" onClick={() => {}}>
+              <RiAddFill className="w-4 h-4" />
+            </div>
+        </div>
+        {selectedWorkspace ? (
+              <div className="flex flex-col flex-1 overflow-y-auto">
+                {modules?.map((module) => (
+>>>>>>> origin/mod/UX
                   <div
-                    className="flex items-center justify-between bg-zinc-300 rounded p-3 mb-2 cursor-pointer"
-                    key={page.id}
-                    onClick={() => selectPage(page.id)}
+                    className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] p-3 mb-2 cursor-pointer"
+                    key={module.id}
+                    onClick={() => selectModule(module.id)}
                   >
-                    {page.title}
+                    {module.name}
                   </div>
                 ))}
               </div>
+<<<<<<< HEAD
             ) : (null)}
           </>
         ) : (
           <SkeletonLoader /> */}
         {/*)} */}
       </div>
+=======
+        ) : (null)}
+        </div>
+>>>>>>> origin/mod/UX
     </div >
   );
 };

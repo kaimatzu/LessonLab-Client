@@ -355,7 +355,7 @@ const MilkdownEditor: React.FC = () => {
           }
         }}
       />
-      <div className="editor-container" spellCheck="false">
+      <div className="editor-container bg-[#F1F3F8]" spellCheck="false">
         <Milkdown />
       </div>
     </div>

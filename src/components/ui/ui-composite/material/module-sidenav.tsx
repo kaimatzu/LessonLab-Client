@@ -249,6 +249,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
 
   return (
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
+<<<<<<< HEAD
       <div className="font-sans py-2">
         <Tree
           ref={ref}
@@ -257,6 +258,16 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
             placeholder: "relative",
             dropTarget: "outline outline-1 outline-[#1967d2] inset",
             listItem: "list-none relative my-1",
+=======
+      <div className="px-2">
+        <Tree
+          ref={ref}
+          classes={{
+            root: "list-none py-2 relative rounded-lg border-full border-gray-300",
+            placeholder: "relative",
+            dropTarget: "outline outline-1 outline-[#1967d2] inset",
+            listItem: "list-none truncate",
+>>>>>>> origin/mod/UX
           }}
           tree={treeData}
           sort={false}
