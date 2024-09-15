@@ -104,7 +104,7 @@ export default function NewPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full rounded-2xl bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-950">
+    <div className="flex flex-col items-center justify-center h-full rounded-2xl w-full align-center">
       <div className="w-full max-w-xl rounded-md p-6">
         <form onSubmit={handleSubmit}>
           <input
@@ -113,9 +113,9 @@ export default function NewPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full font-light px-0 py-3 mb-4 text-opacity-75 text-6xl bg-transparent border-gray-200 dark:border-zinc-100 
+            className="w-full text-center font-light px-0 py-3 mb-4 text-opacity-75 text-lg bg-transparent border-gray-200 dark:border-zinc-100 
             rounded-md focus:outline-none focus:ring-2 focus:ring-transparent focus:border-transparent text-black dark:text-zinc-100 dark:placeholder:text-zinc-100 dark:placeholder:text-opacity-75"
-            placeholder="Topic"
+            placeholder="Enter workspace name"
           />
           {/* <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-zinc-300">
             <span className="text-lg text-gray-400 dark:text-zinc-400">
@@ -144,12 +144,12 @@ export default function NewPage() {
               <br />
             </p>
           </div> */}
-          <div className="flex justify-between gap-4">
+          <div className="flex justify-center gap-4">
             <button
               name="save"
               type="submit"
               value="Save"
-              className="w-full py-3 text-lg font-medium text-white bg-primary rounded-md 
+              className="w-[120px] py-3 text-lg font-medium text-white bg-primary rounded-md 
             hover:opacity-65 focus:outline-none flex items-center justify-center"
               disabled={isLoading}
             >
@@ -161,10 +161,11 @@ export default function NewPage() {
             </button>
             <button
               name="cancel"
-              type="reset"
+              type="button"
               value="Cancel"
-              className="w-full py-3 text-lg font-medium text-zinc-900 bg-white rounded-md rounded-primary
-            hover:bg-primary flex items-center justify-center"
+              onClick={() => router.push("/workspace")}
+              className="w-[120px] py-3 text-lg font-medium text-zinc-900 bg-white rounded rounded-md rounded-primary
+            hover:bg-[#E2E4EA] hover:text-[#5e77d3] flex items-center justify-center"
               disabled={isLoading}
             >
               {isLoading ? (

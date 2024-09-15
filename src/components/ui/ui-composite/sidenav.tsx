@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { TbNotes, TbBook, TbPencil } from 'react-icons/tb';
 import { FaPlus, FaLock } from 'react-icons/fa';
+import { FaRegFolderClosed } from "react-icons/fa6";
+import { GoSidebarExpand, GoSidebarCollapse } from "react-icons/go";
 import { usePathname } from 'next/navigation';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { SkeletonLoader } from '../ui-base/skeleton-loader';
@@ -29,15 +30,17 @@ const Sidenav: React.FC = () => {
   const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
   return (
-    <div className="flex flex-row w-fit bg-[#F1F3F8] !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
+    <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16 max-w-[30px]' : 'max-w-[320px] w-[250px] '}`}>
         <div className={`text-black mb-1 mt-1 dark:text-zinc-100 text-sm border-b border-gray-300`}>
           <div className={`flex align-middle justify-between p-3 rounded`}>
               {/* <div className={`mr-1`}></div> */}
             <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Workspaces</span>
-            <button
-              onClick={toggleSidebar}
-            >A</button>
+            {isCollapsed ? (
+              <GoSidebarExpand className={"w-4 h-4 cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
+            ) : (
+              <GoSidebarCollapse className={"w-4 h-4 cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
+            )}
           </div>
         </div>
 
@@ -63,7 +66,7 @@ const Sidenav: React.FC = () => {
                       href={`/workspace/${workspace.id}`}
                       isActive={isActive(`/workspace/${workspace.id}`)}
                       onClick={() => handleWorkspaceClick(workspace.id)}
-                      icon={<TbBook />}
+                      icon={<FaRegFolderClosed/>}
                       isCollapsed={isCollapsed}
                       locked={workspace.locked}
                     />
@@ -81,7 +84,7 @@ const Sidenav: React.FC = () => {
             isActive={isActive('/workspace/new')}
             onClick={() => handleWorkspaceClick(null)}
             isCollapsed={isCollapsed}
-            icon={<FaPlus className={`${isActive('/workspace/new') ? 'text-zinc-900' : 'text-zinc-900'}`} />}
+            icon={<FaPlus className={`${isActive('/workspace/new') ? 'text-zinc-900 w-3 h-3' : 'w-3 h-3 text-zinc-900'}`} />}
             animatedBorder
           />
         </div>
