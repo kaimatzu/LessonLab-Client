@@ -417,15 +417,15 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             </div>
         </div>
         {selectedWorkspace ? (
-              <div className="flex flex-col flex-1 overflow-y-auto">
+              <div className="flex flex-col h-full justify-start overflow-y-auto">
                 {modules?.map((module) => (
                   <div
-                    className="flex items-center text-sm justify-start hover:bg-[#E2E4EA] p-3 mb-2 cursor-pointer"
+                    className="flex items-center text-sm p-3 justify-start hover:bg-[#E2E4EA] cursor-pointer"
                     key={module.id}
                     onClick={() => selectModule(module.id)}
                   >
-                    <IoBookOutline />
-                    {module.name}
+                    <IoBookOutline className="mr-2 w-4 h-4"/>
+                    <span className="truncate w-[200px]">{module.name}</span>
                   </div>
                 ))}
               </div>

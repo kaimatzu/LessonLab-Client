@@ -31,15 +31,15 @@ const Sidenav: React.FC = () => {
 
   return (
     <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
-      <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16 max-w-[30px]' : 'max-w-[320px] w-[250px] '}`}>
-        <div className={`text-black mb-1 mt-1 dark:text-zinc-100 text-sm border-b border-gray-300`}>
-          <div className={`flex align-middle justify-between p-3 rounded`}>
+      <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-50 max-w-[50px]' : 'max-w-[320px] w-[250px] '}`}>
+        <div className={`text-black mb-1 mt-1 ${isCollapsed? 'pl-2' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
+          <div className={`flex align-middle justify-between items-center h-[44px]`}>
               {/* <div className={`mr-1`}></div> */}
-            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'}`}>Workspaces</span>
+            <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'} p-3`}>Workspaces</span>
             {isCollapsed ? (
-              <GoSidebarExpand className={"w-4 h-4 cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
+              <GoSidebarCollapse className={"cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
             ) : (
-              <GoSidebarCollapse className={"w-4 h-4 cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
+              <GoSidebarExpand className={"cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
             )}
           </div>
         </div>
