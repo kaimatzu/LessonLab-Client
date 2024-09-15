@@ -5,6 +5,8 @@
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 10px;
+  background-color: transparent;
+  transition: background-color 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

@@ -22,6 +22,9 @@ import {
 import { POST as _addLessonPage } from '@/app/api/workspace/page/route'
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
 import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/workspace-types";
+import { FaRegFilePdf } from "react-icons/fa";
+import { IoBookOutline } from "react-icons/io5";
+import { LiaUploadSolid } from "react-icons/lia";
 
 interface SidenavWorkspaceProps {
   workspace: Workspace;
@@ -371,7 +374,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 multiple
                 onChange={handleFileChange}
               />
-              <RiAddFill className="w-4 h-4" />
+              <LiaUploadSolid className="w-4 h-4 hover:text-[#5e77d3]"/>
             </div>
           </div>
 
@@ -389,26 +392,20 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             onDrop={handleDrop}
           >
             {files.length === 0 && !fetchingFiles && (
-<<<<<<< HEAD
-              <p className="text-zinc-400 mt-4">
-                No files uploaded yet 
-                {/* <br /> */}
-                {/* Drag and drop documents here or click to upload */}
-=======
-              <p className="text-zinc-400">
+              <p className="text-zinc-400 select-none cursor-default">
                 No files uploaded yet 
 >>>>>>> origin/mod/UX
               </p>
             )}
 
             {isUploading ? (
-              <div className="text-zinc-500 text-sm animate-pulse">
-                Uploading documents
+              <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default">
+                Uploading documents...
               </div>
             ) : (
               <>
                 {fetchingFiles ? (
-                  <div className="text-zinc-500 text-sm animate-pulse">
+                  <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default">
                     Fetching documents...
                   </div>
                 ) : (
@@ -423,16 +420,12 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                           className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-3 mb-2"
 >>>>>>> origin/mod/UX
                         >
-                          <a className="ml-4">O</a>
-                          <span className="cursor-pointer truncate w-4/5 p-2">
+                          <FaRegFilePdf />
+                          <span className="truncate w-4/5 text-left">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-<<<<<<< HEAD
-                            className="cursor-pointer mr-5"
-=======
-                            className="text-zinc-900 cursor-pointer"
->>>>>>> origin/mod/UX
+                            className="text-zinc-900 cursor-pointer mr-2"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -639,10 +632,11 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 {modules?.map((module) => (
 >>>>>>> origin/mod/UX
                   <div
-                    className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] p-3 mb-2 cursor-pointer"
+                    className="flex items-center text-sm justify-start hover:bg-[#E2E4EA] p-3 mb-2 cursor-pointer"
                     key={module.id}
                     onClick={() => selectModule(module.id)}
                   >
+                    <IoBookOutline />
                     {module.name}
                   </div>
                 ))}

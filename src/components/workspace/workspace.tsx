@@ -25,7 +25,8 @@ import { Workspace } from "@/lib/types/workspace-types";
 import CrepeEditor from "../ui/ui-composite/material/milkdownCrepe";
 import MaterialArea from "../ui/ui-composite/material/material-area";
 import { useSocket } from "@/lib/hooks/useServerEvents";
->>>>>>> origin/mod/UX
+import { BsThreeDots } from "react-icons/bs";
+import { FaFolderClosed, FaRegFolderClosed } from "react-icons/fa6";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -119,49 +120,19 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
   };
 
   return (
-<<<<<<< HEAD
-    <div className="flex flex-col h-full w-full">
-      {/* This is workspace header */}
-      <div className={`flex flex-col z-[200] border-b border-gray-300 select-none text-black w-full mx-0`}>
-            <div className={`flex items-center align-middle p-2 rounded text-sm justify-between`}>
-                <div className="flex flex-row justify-start">
-                <div className="mr-4 ml-2">O</div>
-                    <span>{workspace.name}</span>
-                <button className="ml-8">...</button>
-                </div>
-                <button className="text-white text-sm h-8 px-2 bg-gradient-to-r from-secondary to-primary rounded-sm hover:opacity-65 focus:outline-none"
-                onClick={() => {
-                  setIsChatOpen(true);
-                } }
-                > AI Assist</button>
-            </div>
-        </div>
-    <div className="flex flex-row-reverse justify-center items-center h-full w-full">
-      <div className="relative flex flex-col h-full w-full py-10 items-center justify-start ">
-        <div className="flex flex-row h-fit w-full items-start justify-start">
-          {/* <button
-            onClick={() => {
-              setIsChatOpen(true);
-            } }
-            className="mb-4 px-4 bg-transparent text-zinc-950 rounded-md"
-          >
-            <div className="flex flex-row items-start justify-start text-foreground">
-              <IoIosSwap className="w-6 h-6 mr-2" />
-              {isChatOpen
-                ? "Switch to Markdown" : "Switch to Chat"}
-            </div>
-          </button> */}
-        </div>
-
-        <MilkdownEditorWrapper />
-=======
     <div className="flex flex-col h-full w-full !bg-[#F1F3F8]">
       <div className={`flex flex-col z-[200] border-b border-gray-300 select-none text-black w-full mx-0`}>
           <div className={`flex items-center align-middle p-2 rounded text-sm justify-between`}>
-              <div className="flex flex-row justify-start">
-              <div className="mr-4 ml-2">O</div>
+              <div className="flex flex-row justify-between max-w-[320px] w-[220px]">
+                <div className="flex flex-row items-center justify-start truncate">
+                  <div className="mr-4 ml-2">
+                    <FaRegFolderClosed/>
+                  </div>
                   <span>{workspace.name}</span>
-              <button className="ml-8">...</button>
+                </div>
+                <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
+                  <BsThreeDots />
+                </div>
               </div>
               <button className="text-white text-sm h-8 px-2 bg-gradient-to-r from-secondary to-primary rounded-sm hover:opacity-65 focus:outline-none"
               onClick={() => {
@@ -181,7 +152,7 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
           </>
         ) : (
           <>
-            <h2 className="mt-20 text-zinc-500">Please select a module</h2>
+            <h2 className="mt-20 text-zinc-500 cursor-default select-none">Please select or create a module</h2>
           </>
         )}
         
