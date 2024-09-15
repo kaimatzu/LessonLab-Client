@@ -31,7 +31,7 @@ const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-backgro
     },
     overlayType: {
       transaction: 'bottom-0 h-fit w-fit p-8',
-      auth: 'inset-y-0 right-auto left-0 fixed h-screen w-1/3 p-8 !rounded-none',
+      auth: 'inset-y-0 right-auto left-0 fixed h-screen w-2/5 p-8 !rounded-none',
       chat: 'bottom-[20%] w-3/4 h-3/4 bg-background px-8 pb-4 overflow-auto no-scrollbar',
       quizExport: 'bottom-0 h-fit w-fit p-4',
     },
