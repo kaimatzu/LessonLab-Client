@@ -3,7 +3,7 @@ import { Crepe } from '../milkdown-crepe/core'; // Your custom version of Crepe
 import { Editor } from '@milkdown/core'; // Import the Editor type
 
 import '@milkdown/crepe/theme/common/style.css';
-import '@milkdown/crepe/theme/frame.css';
+import '@milkdown/crepe/theme/nord.css';
 import "../../css/custom-scrollbar.css";
 import "./css/milkdown-override.css";
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
