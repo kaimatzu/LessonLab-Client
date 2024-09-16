@@ -46,23 +46,23 @@ const Header: React.FC = () => {
   ];
 
   return (
-    <div className="z-[200] mx-0 w-full p-4 shadow-lg select-none">
+    <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
-            <Image src={icon} alt="icon" width={32} height={32} />
-            <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide font-sans">LessonLab</span>
+            <Image src={icon} alt="icon" width={24} height={24} />
+            {/* <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide font-sans">LessonLab</span> */}
           </Link>
         </div>
 
         <div className="ml-auto flex space-x-4 justify-center align-center">
-          <ThemeSwitcher className={'hover:bg-zinc-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} />
+          {/* <ThemeSwitcher className={'hover:bg-zinc-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} /> */}
           <div className="relative">
             <Image
               src={profileIcon}
               alt="Profile"
-              width={40}
-              height={32}
+              width={24}
+              height={24}
               className="cursor-pointer"
               onClick={toggleDropdown} // Toggle dropdown on click
             />
