@@ -340,29 +340,11 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
 
 
   return (
-<<<<<<< HEAD
-    <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
-      {/* <div className={`text-black mt-1 dark:text-zinc-100`}>
-            <div className={`flex align-middle p-3 rounded text-sm`}>
-              <div className="mr-2 ml-2">O</div>
-              <span className={`flex flex-row`}>
-                {workspace.name}
-              </span>
-            </div>
-      </div> */}
-      <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[380px] w-[320px] "}`}>
-        
-
-        {/* <div className="border-t border-border"></div> */}
-
-        <div className="flex flex-col">
-=======
     <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
       {/* <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}> */}
         {/* <div className="border-t border-border my-2"></div> */}
       <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
         <div className="flex flex-col border-b border-gray-300 flex-1 overflow-y-auto">
->>>>>>> origin/mod/UX
           <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
             <h1 className="text-sm font-normal transition-none ml-4">Files</h1>
             <div className="cursor-pointer mr-4" onClick={handleDivClick}>
@@ -390,7 +372,6 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             {files.length === 0 && !fetchingFiles && (
               <p className="text-zinc-400 select-none cursor-default">
                 No files uploaded yet 
->>>>>>> origin/mod/UX
               </p>
             )}
 
@@ -410,11 +391,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
-<<<<<<< HEAD
-                          className="flex items-center justify-between rounded hover:bg-gray-300"
-=======
                           className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-3 mb-2"
->>>>>>> origin/mod/UX
                         >
                           <FaRegFilePdf />
                           <span className="truncate w-4/5 text-left">
@@ -433,8 +410,6 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             )}
           </div>
         </div>
-
-<<<<<<< HEAD
         {/* <div className="border-t border-border my-2"></div> */}
 {/* 
         {!specificationsLoading ? (

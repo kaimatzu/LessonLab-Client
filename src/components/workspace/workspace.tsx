@@ -9,14 +9,6 @@ import React, {
 } from "react";
 import { IoIosSwap } from "react-icons/io";
 import { FetchedFile } from "@/app/api/files/route";
-<<<<<<< HEAD
-import { MilkdownEditorWrapper } from "../ui/ui-composite/chat/milkdown";
-import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
-import Quiz from "./quiz";
-import { Chat } from "./chat/chat"
-import Overlay from "../ui/ui-base/overlay";
-import { Workspace } from "@/lib/types/workspace-types";
-=======
 import { MilkdownEditorWrapper } from "../ui/ui-composite/material/milkdown";
 import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
 import { Chat } from "./chat/chat"
@@ -52,15 +44,11 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
     selectWorkspace,
     loadWorkspaceData,
     selectedWorkspace,
-<<<<<<< HEAD
-  } = useWorkspaceContext();
-=======
     selectedModuleId,
   } = useWorkspaceContext();
   
   const { socket, joinWorkspaceRoom, socketConnected } = useSocket();
 
->>>>>>> origin/mod/UX
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [connectionInitialized, setConnectionInitialized] = useState<boolean>(false);
@@ -156,7 +144,6 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
           </>
         )}
         
->>>>>>> origin/mod/UX
 
         <Overlay isOpen={isChatOpen} onClose={closeChat} overlayName={"Chat"} overlayType="chat">
           <Chat
@@ -164,7 +151,8 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
             fetchingFiles={fetchingFiles}
             files={files}
             fetchFiles={fetchFiles}
-            handleDeleteFile={handleDeleteFile} />
+            handleDeleteFile={handleDeleteFile}
+          />
         </Overlay>
 
       </div>
@@ -174,14 +162,8 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
         fetchingFiles={fetchingFiles}
         uploadFileCompletionCallback={fetchFiles}
         handleDeleteFile={handleDeleteFile}
-<<<<<<< HEAD
-        onGenerationDisabledChange={handleGenerationDisabledChanged} />
-    </div>
-=======
       />
->>>>>>> origin/mod/UX
     </div>
     </div>
   );
 }
-

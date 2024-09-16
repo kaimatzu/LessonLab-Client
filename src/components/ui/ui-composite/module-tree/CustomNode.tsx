@@ -96,21 +96,13 @@ export const CustomNode: React.FC<Props> = ({
 
   return (
     <div
-<<<<<<< HEAD
-      className={`flex items-center h-8 ${props.isSelected ? 'bg-green-200' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
-=======
       className={`flex items-center h-15 hover:bg-[#E2E4EA] cursor-pointer truncate ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
->>>>>>> origin/mod/UX
       style={{ paddingInlineStart: indent }}
       data-testid={`${testIdPrefix}custom-node-${id}`}
       onClick={handleClick}
     >
       <div
-<<<<<<< HEAD
-        className={`flex items-center justify-center w-6 h-6 transition-transform duration-100 cursor-pointer transform`}
-=======
         className={`flex items-center justify-center w-6 h-6 transition-transform duration-100 transform`}
->>>>>>> origin/mod/UX
       >
         {!props.node.data?.isLeaf && (
           <div onClick={handleToggle}>
@@ -122,11 +114,7 @@ export const CustomNode: React.FC<Props> = ({
           </div>
         )}
       </div>
-<<<<<<< HEAD
-      <div className="flex-1 pl-2">
-=======
       <div className="flex-1 truncate">
->>>>>>> origin/mod/UX
         {visibleInput ? (
           <div className="flex items-center">
             <TextField
@@ -143,12 +131,8 @@ export const CustomNode: React.FC<Props> = ({
             </IconButton>
           </div>
         ) : (
-<<<<<<< HEAD
-          <Typography variant="body2">{labelText}</Typography>
-=======
           // <Typography variant="body2">{labelText}</Typography>
           <h2 className="max-w-[150px] text-sm truncate">{labelText}</h2>
->>>>>>> origin/mod/UX
         )}
       </div>
       <div>
