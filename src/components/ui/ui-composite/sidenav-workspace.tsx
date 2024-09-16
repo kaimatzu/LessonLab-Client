@@ -360,7 +360,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
       {/* <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}> */}
         {/* <div className="border-t border-border my-2"></div> */}
-        <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
+      <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
         <div className="flex flex-col border-b border-gray-300 flex-1 overflow-y-auto">
 >>>>>>> origin/mod/UX
           <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
@@ -381,11 +381,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
           {/* <div className="w-full border-t border-gray-300"></div> */}
 
           <div
-<<<<<<< HEAD
-            className={`flex flex-col justify-center items-center text-start`}
-=======
-            className={`flex flex-col justify-center items-center text-center`}
->>>>>>> origin/mod/UX
+            className={`flex flex-col min-w-[50%] justify-center items-center text-center`}
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
@@ -620,38 +616,31 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 {pages?.map((page) => (
 =======
         {/* <div className="border-t border-border"></div> */}
-
-        <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
-            <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
-            <div className="cursor-pointer mr-4" onClick={() => {}}>
-              <RiAddFill className="w-4 h-4" />
+        
+        
+          <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+                <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
+                <div className="cursor-pointer mr-4" onClick={() => {}}>
+                  <RiAddFill className="w-4 h-4" />
+                </div>
             </div>
-        </div>
-        {selectedWorkspace ? (
-              <div className="flex flex-col h-full justify-start overflow-y-auto">
-                {modules?.map((module) => (
->>>>>>> origin/mod/UX
-                  <div
-                    className="flex items-center text-sm p-3 justify-start hover:bg-[#E2E4EA] cursor-pointer"
-                    key={module.id}
-                    onClick={() => selectModule(module.id)}
-                  >
-                    <IoBookOutline className="mr-2 w-4 h-4"/>
-                    <span className="truncate w-[200px]">{module.name}</span>
-                  </div>
-                ))}
-              </div>
-<<<<<<< HEAD
-            ) : (null)}
-          </>
-        ) : (
-          <SkeletonLoader /> */}
-        {/*)} */}
+          <div className="flex flex-col border-b border-gray-300 flex-1 custom-scrollbar overflow-y-auto">
+          {selectedWorkspace ? (
+                <div className="flex flex-col min-w-[50%] justify-start">
+                  {modules?.map((module) => (
+                    <div
+                      className="flex items-center text-sm p-3 justify-start hover:bg-[#E2E4EA] cursor-pointer"
+                      key={module.id}
+                      onClick={() => selectModule(module.id)}
+                    >
+                      <IoBookOutline className="mr-2 w-4 h-4"/>
+                      <span className="truncate w-[200px]">{module.name}</span>
+                    </div>
+                  ))}
+                </div>
+          ) : (null)}
+          </div>
       </div>
-=======
-        ) : (null)}
-        </div>
->>>>>>> origin/mod/UX
     </div >
   );
 };
