@@ -1,7 +1,5 @@
 // components/LoginForm.tsx
 import React, { useState } from 'react';
-import Image from 'next/image';
-import icon from '@/assets/icon.png';
 import { cn } from '@/lib/utils';
 import HypertextLogo from '@/assets/hypertext-logo';
 
@@ -25,7 +23,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
   return (
     <div className={cn("w-fit h-fit mx-auto p-5 rounded-lg bg-transparent text-zinc-50 flex flex-col items-center", "login-form")}>
       <HypertextLogo className="self-start mb-4" width="60" height="60"/>
-      <h2 className="text-3xl text-[#193468] font-bold transition-transform duration-300 ease-in-out self-start hover:translate-y-[-10px] hover:text-yellow-400 mb-10">Welcome back!</h2>
+      <h2 className="text-3xl text-[#193468] font-bold transition-transform duration-300 ease-in-out self-start hover:translate-y-[-10px] hover:text-[#5E77D3] mb-10">Welcome back!</h2>
       <form onSubmit={handleSubmit} className="flex flex-col w-full">
         <div className="mb-4">
           <label htmlFor="identifier" className="mb-1 text-[#193468]">Email or Username</label>
@@ -34,7 +32,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
             id="identifier"
             value={identifier}
             onChange={handleIdentifierChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
@@ -45,7 +43,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
             id="password"
             value={password}
             onChange={handlePasswordChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>

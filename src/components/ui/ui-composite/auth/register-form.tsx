@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import Image from 'next/image';
-import icon from '@/assets/icon.png';
 import { cn } from '@/lib/utils';
+import HypertextLogo from '@/assets/hypertext-logo';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -41,80 +40,80 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
   };
 
   return (
-    <div className={cn("w-[450px] h-fit mx-auto p-5 border border-zinc-50/10 rounded-lg bg-zinc-900 text-zinc-50 flex flex-col items-center")}>
-      <Image src={icon} alt="LessonLab Icon" className="w-16 h-16 mb-4" />
-      <h2 className="text-2xl font-semibold transition-transform duration-300 ease-in-out text-center hover:translate-y-[-10px] hover:text-yellow-400">Join us now and get started!</h2>
+    <div className={cn("w-fit h-fit mx-auto p-5 rounded-lg bg-transparent text-zinc-50 flex flex-col items-center")}>
+      <HypertextLogo className="self-start mb-4" width="60" height="60"/>
+      <h2 className="text-3xl text-[#193468] font-bold transition-transform duration-300 ease-in-out self-start hover:translate-y-[-10px] hover:text-[#5E77D3] mb-10">Create an account</h2>
       <form onSubmit={handleSubmit} className="flex flex-col w-full">
         <div className="mb-4">
-          <label htmlFor="username" className="mb-1 text-xs">Username:</label>
+          <label htmlFor="username" className="mb-1 text-[#193468]">Username</label>
           <input
             type="text"
             id="username"
             value={username}
             onChange={handleUsernameChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="mb-1 text-xs">Email:</label>
+          <label htmlFor="email" className="mb-1 text-xs">Email</label>
           <input
             type="text"
             id="email"
             value={email}
             onChange={handleEmailChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="name" className="mb-1 text-xs">Name:</label>
+          <label htmlFor="name" className="mb-1 text-xs">Name</label>
           <input
             type="text"
             id="name"
             value={name}
             onChange={handleNameChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="mb-1 text-xs">Password:</label>
+          <label htmlFor="password" className="mb-1 text-xs">Password</label>
           <input
             type="password"
             id="password"
             value={password}
             onChange={handlePasswordChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="mb-1 text-xs">Confirm Password:</label>
+          <label htmlFor="confirmPassword" className="mb-1 text-xs">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
             value={confirmPassword}
             onChange={handleConfirmPasswordChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
             required
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="userType" className="mb-1 text-xs">Register as:</label>
+          <label htmlFor="userType" className="mb-1 text-xs">Register as</label>
           <select
             id="userType"
             value={userType}
             onChange={handleUserTypeChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-yellow-400 focus:border-yellow-400 focus:outline-none"
+            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
           >
             <option value="teacher">Teacher</option>
             <option value="student">Student</option>
           </select>
         </div>
-        <div className="flex justify-center space-x-4">
-          <button type="button" className="px-4 py-2 text-lg rounded bg-zinc-950 border border-yellow-400/60 text-white hover:bg-yellow-500 hover:border-yellow-500" onClick={onSwitchToLogin}>Back</button>
-          <button type="submit" className="px-4 py-2 text-lg rounded bg-yellow-400 text-white hover:bg-yellow-500">Confirm</button>
+        <button type="submit" className="text-xs bg-gradient-to-r from-secondary to-primary p-1 px-4 rounded-lg md:text-base text-white hover:opacity-65 focus:outline-none items-center text-center justify-start mt-10 h-11">Sign Up</button>
+        <div className="flex justify-center space-x-2 mt-8">
+          <div className="text-black font-bold">Already have an account? </div><div className="text-blue-500 hover:text-blue-700 font-semibold ml-1 cursor-pointer" onClick={onSwitchToLogin}>Log In Here</div>
         </div>
       </form>
     </div>
