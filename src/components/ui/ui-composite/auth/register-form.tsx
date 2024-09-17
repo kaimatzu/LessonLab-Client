@@ -56,7 +56,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="mb-1 text-xs">Email</label>
+          <label htmlFor="email" className="mb-1 text-[#193468]">Email</label>
           <input
             type="text"
             id="email"
@@ -67,7 +67,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="name" className="mb-1 text-xs">Name</label>
+          <label htmlFor="name" className="mb-1 text-[#193468]">Name</label>
           <input
             type="text"
             id="name"
@@ -78,7 +78,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="mb-1 text-xs">Password</label>
+          <label htmlFor="password" className="mb-1 text-[#193468]">Password</label>
           <input
             type="password"
             id="password"
@@ -89,7 +89,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="confirmPassword" className="mb-1 text-xs">Confirm Password</label>
+          <label htmlFor="confirmPassword" className="mb-1 text-[#193468]">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
@@ -100,7 +100,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="userType" className="mb-1 text-xs">Register as</label>
+          <label htmlFor="userType" className="mb-1 text-[#193468]">Register as</label>
           <select
             id="userType"
             value={userType}
@@ -111,7 +111,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
             <option value="student">Student</option>
           </select>
         </div>
-        <button type="submit" className="text-xs bg-gradient-to-r from-secondary to-primary p-1 px-4 rounded-lg md:text-base text-white hover:opacity-65 focus:outline-none items-center text-center justify-start mt-10 h-11">Sign Up</button>
+        <button type="submit" className="text-[#193468] bg-gradient-to-r from-secondary to-primary p-1 px-4 rounded-lg md:text-base text-white hover:opacity-65 focus:outline-none items-center text-center justify-start mt-10 h-11">Sign Up</button>
         <div className="flex justify-center space-x-2 mt-8">
           <div className="text-black font-bold">Already have an account? </div><div className="text-blue-500 hover:text-blue-700 font-semibold ml-1 cursor-pointer" onClick={onSwitchToLogin}>Log In Here</div>
         </div>
