@@ -167,4 +167,3 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
     </div>
   );
 }
-
