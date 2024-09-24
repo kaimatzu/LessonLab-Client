@@ -21,6 +21,7 @@ interface ModuleOutlineCardProps {
   children: React.ReactNode;
 }
 
+// #region Module Outline Card
 const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistantMessageId, subject, context_instructions, children }) => {
   type Status = 'In progress' | 'Done' | 'Error';
   const [status, setStatus] = useState<Status>('In progress');
@@ -154,6 +155,7 @@ const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistan
     socket.emit('confirm-module-outline-response', "submit", selectedWorkspace?.id, moduleId, treeFormat, subject, context_instructions);
   };
 
+  // #region JSX
   return (
     <div className="w-full h-fit border border-gray-300 rounded p-2 bg-transparent">
       <div className="flex justify-between items-center bg-gray-100 p-2 rounded">

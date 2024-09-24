@@ -11,6 +11,7 @@ interface ModuleOutlineGenerationConfirmCardProps {
   context_instructions: string;
 }
 
+// #region Module Outline Generation Confirm Card
 const ModuleOutlineGenerationConfirmCard: FC<ModuleOutlineGenerationConfirmCardProps> = memo(({ assistantMessageId, subject, context_instructions }) => {
   const { socket } = useSocket();
   const { selectedWorkspace, chatLoading } = useWorkspaceContext();
@@ -35,6 +36,7 @@ const ModuleOutlineGenerationConfirmCard: FC<ModuleOutlineGenerationConfirmCardP
     }
   };
 
+  // #region JSX
   return (
     <div className="w-full h-fit border border-gray-300 rounded p-2 bg-transparent">
       <div className="flex justify-between items-center bg-gray-100 p-2 rounded">

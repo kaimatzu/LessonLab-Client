@@ -6,14 +6,13 @@ import Overlay from "@/components/ui/ui-base/overlay";
 import LoginForm from '@/components/ui/ui-composite/auth/login-form';
 import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Toast } from '@/components/ui/ui-base/toast';
 import { useToast } from '@/components/ui/ui-base/use-toast';
 import { useSocket } from '@/lib/hooks/useServerEvents';
 
 interface LoginPageProps {
   switchForm: () => void;
 }
-
+// #region Login Page
 export default function LoginPage({ switchForm }: LoginPageProps) {
   const { toast } = useToast()
   const dispatch = useAppDispatch();
@@ -24,6 +23,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     connectSocket,
   } = useSocket();
 
+  // #region Handle Submit
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -51,13 +51,12 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     }
   };
 
+  // #region JSX
   return (
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} overlayType="auth">
       <div className="pt-4">
         <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
         {loading && <p>Loading...</p>}
-        {/* Make the error message into a toast */}
-        
       </div>
     </Overlay>
   );

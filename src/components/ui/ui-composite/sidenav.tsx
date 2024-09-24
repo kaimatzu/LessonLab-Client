@@ -11,6 +11,7 @@ import { Tooltip } from './chat/tooltip';
 import '../css/custom-scrollbar.css'
 import { Workspace } from '@/lib/types/workspace-types';
 
+// #region Sidenav
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
@@ -29,6 +30,7 @@ const Sidenav: React.FC = () => {
 
   const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
+  // #region JSX
   return (
     <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-50 max-w-[50px]' : 'max-w-[320px] w-[250px] '}`}>
@@ -50,6 +52,9 @@ const Sidenav: React.FC = () => {
           // overflow-y-scroll`}
         >
 
+            {/* 
+            // #region List of Items
+             */}
           <ul className="!overflow-hidden">
             {!workspacesInitialized ? (
               <SkeletonLoader />
@@ -77,6 +82,9 @@ const Sidenav: React.FC = () => {
           </ul>
         </div>
 
+        {/* 
+        // #region New Workspace
+         */}
         <div className='list-none'>
           <SidenavItem
             title="Create New"

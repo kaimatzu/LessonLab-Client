@@ -34,6 +34,7 @@ interface SidenavWorkspaceProps {
   handleDeleteFile: (documentId: string) => Promise<void>;
 }
 
+// #region Sidenav Workspace
 const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   workspace,
   files,
@@ -44,6 +45,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
+  // #region Workspace Context
   const {
     loading,
     workspaces,
@@ -64,6 +66,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     selectPage,
   } = useWorkspaceContext();
 
+  // #region States
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [showAddFile, setShowAddFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -93,6 +96,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   //   updateSpecificationCount(selectedWorkspace.id, selectedSpecificationId, value)
   // }
 
+  // #region File Handling
   ////////////////////////////////////
   ////////////File Handling///////////
   ////////////////////////////////////
@@ -206,6 +210,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     };
   }, []);
 
+  // #region Workspace Notifications
   ////////////////////////////////////
   ///////Workspace Specifications//////
   ////////////////////////////////////
@@ -314,6 +319,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     }
   };
 
+  // #region Lesson Pages
   ////////////////////////////////////
   /////////////Lesson Pages///////////
   ////////////////////////////////////
@@ -339,6 +345,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   }
 
 
+  // #region JSX
   return (
     <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
       {/* <div className={`flex flex-col transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[340px] w-[300px] "}`}> */}

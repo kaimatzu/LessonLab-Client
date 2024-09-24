@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Module } from '../types/workspace-types';
 import { throttle } from 'lodash';
 
+// #region Enums
 export enum MessageRole {
   User = "user",
   Assistant = "assistant"
@@ -19,6 +20,7 @@ export enum MessageType {
   Action = "action"
 }
 
+// #region class SocketClient
 class SocketClient {
   public socket: Socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`, { autoConnect: false });
 
@@ -170,7 +172,7 @@ class SocketClient {
 }
 
 export const socketClient = new SocketClient();
-
+// #region useSocket
 export const useSocket = () => {
   // const [socketConnected, setSocketConnected] = useState<boolean>(false);
   const [transactionRoomId, setTransactionRoomId] = useState<string>('');
@@ -180,6 +182,7 @@ export const useSocket = () => {
   
   const socketConnected = useAppSelector((state: RootState) => state.webSocket.connected);
 
+  // #region Connect Socket
   const connectSocket = (userId: string) => {
     socketClient.setQueryParams({ userId: userId });
   
@@ -203,10 +206,12 @@ export const useSocket = () => {
   };
   
 
+  // #region Disconnect Socket
   const disconnectSocket = () => {
     socketClient.socket.disconnect();
   }
 
+  // #region Join Transaction Room
   const joinTransactionRoom = (payment_intent_id: string) => {
     console.log(payment_intent_id);
 
@@ -218,6 +223,7 @@ export const useSocket = () => {
     }
   };
 
+  // #region Leave Transaction Room
   const leaveTransactionRoom = (payment_intent_id: string) => {
     console.log(payment_intent_id);
 
@@ -229,6 +235,7 @@ export const useSocket = () => {
     }
   }
 
+  // #region Join Workspace Room
   const joinWorkspaceRoom = (workspaceId: string | null) => {
     console.log("Connecting to room:", workspaceId);
 
@@ -245,6 +252,7 @@ export const useSocket = () => {
     }
   };
 
+  // #region Send Message to Assistant
   const sendMessageToAssistant = (message: string, userId: string, workspaceId: string, chatHistory: Message[], maxHistorySize: number = 6) => {
     console.log(userId)
     // Limit the chat history to the last `maxHistorySize` messages

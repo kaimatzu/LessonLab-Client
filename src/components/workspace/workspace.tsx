@@ -37,6 +37,7 @@ const fetchFileUrls = async (workspaceId: string) => {
   }
 };
 
+// #region Workspace Component
 export default function WorkspaceComponent({ workspace }: { workspace: Workspace }) {
   const {
     loading,
@@ -107,6 +108,7 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
     setIsChatOpen(false);
   };
 
+  // #region JSX
   return (
     <div className="flex flex-col h-full w-full !bg-[#F1F3F8]">
       <div className={`flex flex-col z-[200] border-b border-gray-300 select-none text-black w-full mx-0`}>

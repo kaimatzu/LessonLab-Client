@@ -43,6 +43,7 @@ import { Message, Module, Page, Specification, Workspace } from '@/lib/types/wor
 import { useSocket } from '../useServerEvents';
 import { any } from 'zod';
 
+// #region Wokrspace Context Value Interface
 export interface WorkspaceContextValue {
   workspaces: Workspace[];
   workspacesInitialized: boolean;
@@ -130,6 +131,7 @@ const defaultValue: WorkspaceContextValue = {
 export const WorkspaceContext = createContext(defaultValue);
 export const useWorkspaceContext = () => useContext(WorkspaceContext);
 
+// #region Workspace Provider
 export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const dispatch = useAppDispatch();

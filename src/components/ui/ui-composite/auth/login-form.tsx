@@ -8,6 +8,7 @@ interface LoginFormProps {
   handleSubmit: (e: React.SyntheticEvent) => any;
 }
 
+// #region Login Form
 export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFormProps) {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -20,6 +21,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
     setPassword(e.target.value);
   };
 
+  // #region JSX
   return (
     <div className={cn("w-fit h-fit mx-auto p-5 rounded-lg bg-transparent text-zinc-50 flex flex-col items-center", "login-form")}>
       <HypertextLogo className="self-start mb-4" width="60" height="60"/>

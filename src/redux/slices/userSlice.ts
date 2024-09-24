@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import { UserState, User } from '@/lib/types/user-types';
 
+// #region User State
 const initialState: UserState = {
   user: null,
   error: null,
@@ -15,6 +16,7 @@ const initialState: UserState = {
   transactionStatus: '',
 };
 
+// #region Check Auth
 export const checkAuth = createAsyncThunk<User, void, { rejectValue: string }>(
   'user/checkAuth',
   async (_, { rejectWithValue }) => {
@@ -31,6 +33,7 @@ export const checkAuth = createAsyncThunk<User, void, { rejectValue: string }>(
   }
 );
 
+// #region Login User
 export const loginUser = createAsyncThunk<User, FormData, { rejectValue: string }>(
   'user/loginUser',
   async (formData, { rejectWithValue }) => {
@@ -56,6 +59,7 @@ export const loginUser = createAsyncThunk<User, FormData, { rejectValue: string 
   }
 );
 
+// #region Register User
 export const registerUser = createAsyncThunk<User, FormData, { rejectValue: string }>(
   'user/registerUser',
   async (formData, { rejectWithValue }) => {
@@ -74,6 +78,7 @@ export const registerUser = createAsyncThunk<User, FormData, { rejectValue: stri
   }
 );
 
+// #region User Slice
 const userSlice = createSlice({
   name: 'user',
   initialState,
