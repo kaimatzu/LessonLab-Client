@@ -38,10 +38,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>LessonLab</title>
+        <title>HyperText</title>
         <meta name="description" content="This is a simple multi-tenant RAG application built using Pinecone Serverless, the Vercel AI SDK and OpenAI. It uses namespaces to separate context between workspaces." />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} overflow-hidden`}>
         <Provider store={store}>
           <CombinedProvider>
             {children}

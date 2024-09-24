@@ -2,8 +2,9 @@ import React, { FC, forwardRef, useCallback, useEffect, useImperativeHandle, use
 import { Crepe } from '../milkdown-crepe/core'; // Your custom version of Crepe
 import { Editor } from '@milkdown/core'; // Import the Editor type
 
+import '../milkdown-crepe/theme/nord/style.css';
 import '@milkdown/crepe/theme/common/style.css';
-import '@milkdown/crepe/theme/frame.css';
+import '@milkdown/crepe/theme/nord.css';
 import "../../css/custom-scrollbar.css";
 import "./css/milkdown-override.css";
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
@@ -13,6 +14,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { replaceModuleNodeContent, selectSelectedWorkspaceModuleContent } from '@/redux/slices/workspaceSlice';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { debounce } from 'lodash';
+import { TbMarkdown, TbMarkdownOff } from 'react-icons/tb';
 
 interface CrepeEditorProps {
   markdownRef: React.MutableRefObject<string>;
@@ -59,6 +61,10 @@ const CrepeEditor = forwardRef((props: CrepeEditorProps, ref) => {
         markdownRef,
         onUpdate,
       });
+
+      if (editorRef.current) {
+        editorRef.current.classList.add('nord-theme');
+      }
 
       crepe.create().then((editor) => {
         editorInstanceRef.current = crepe;
@@ -129,11 +135,14 @@ const CrepeEditorWrapper: FC = () => {
     handleMarkdownUpdateRef.current(event.target.value);
   };
 
-  const handleToggleView = (_event: React.MouseEvent<HTMLElement>, nextView: 'editor' | 'raw') => {
-    if (nextView !== null) {
-      setView(nextView);
-    }
-  };
+  // const handleToggleView = (_event: React.MouseEvent<HTMLElement>, nextView: 'editor' | 'raw') => {
+  //   if (nextView !== null) {
+  //     setView(nextView);
+  //   }
+  // };
+  const handleToggleView = () => {
+    setView((prevView) => (prevView === 'editor' ? 'raw' : 'editor'));
+};
 
   return (
     <div className="relative h-full w-full bg-[#F1F3F8]">
@@ -141,13 +150,14 @@ const CrepeEditorWrapper: FC = () => {
         <p className="text-center mt-4">No content available. Please select a module node.</p>
       ) : ( */}
         <>
-          {/* <div className="absolute top-0 left-0 right-0 bg-white z-10">
-            <div className="flex justify-end mb-2">
+          {/* <div className="absolute z-10">
+            <div className="flex justify-end mt-2">
               <ToggleButtonGroup
                 value={view}
                 exclusive
                 onChange={handleToggleView}
                 aria-label="text editor view"
+                className='w-5 h-5'
               >
                 <ToggleButton value="editor" aria-label="crepe view">
                   <FormatListBulletedIcon />
@@ -157,8 +167,17 @@ const CrepeEditorWrapper: FC = () => {
                 </ToggleButton>
               </ToggleButtonGroup>
             </div>
-            <hr className="border-t border-zinc-300" />
           </div> */}
+
+          <div className="m-2 p-2 z-10">
+            <div className="flex justify-end mt-2">
+              {view === 'editor' ? (
+                <TbMarkdownOff className="w-5 h-5 cursor-pointer bg-zinc-900 hover:text-[#5e77d3]" onClick={handleToggleView} />
+              ) : (
+                <TbMarkdown className="w-5 h-5 cursor-pointer text-[#5e77d3]" onClick={handleToggleView} />
+              )}
+            </div>
+          </div>
 
           <div className="overflow-y-auto custom-scrollbar" style={{ height: 'calc(100% - 4rem)' }}>
             {view === 'editor' ? (
