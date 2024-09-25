@@ -172,7 +172,7 @@ const CrepeEditorWrapper: FC = () => {
           <div className="m-2 p-2 z-10">
             <div className="flex justify-end mt-2">
               {view === 'editor' ? (
-                <TbMarkdownOff className="w-5 h-5 cursor-pointer bg-zinc-900 hover:text-[#5e77d3]" onClick={handleToggleView} />
+                <TbMarkdownOff className="w-5 h-5 cursor-pointer text-zinc-900 hover:text-[#5e77d3]" onClick={handleToggleView} />
               ) : (
                 <TbMarkdown className="w-5 h-5 cursor-pointer text-[#5e77d3]" onClick={handleToggleView} />
               )}
