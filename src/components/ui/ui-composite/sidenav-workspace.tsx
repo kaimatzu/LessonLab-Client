@@ -377,19 +377,19 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
             onDrop={handleDrop}
           >
             {files.length === 0 && !fetchingFiles && (
-              <p className="text-zinc-400 select-none cursor-default">
+              <p className="text-zinc-400 select-none cursor-default mt-3">
                 No files uploaded yet 
               </p>
             )}
 
             {isUploading ? (
-              <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default">
+              <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default mt-3">
                 Uploading documents...
               </div>
             ) : (
               <>
                 {fetchingFiles ? (
-                  <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default">
+                  <div className="text-zinc-500 text-sm animate-pulse select-none cursor-default mt-3">
                     Fetching documents...
                   </div>
                 ) : (
@@ -398,14 +398,14 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
-                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-3 mb-2"
+                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-2 rounded-md my-0.5 mx-1.5"
                         >
                           <FaRegFilePdf />
                           <span className="truncate w-4/5 text-left">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="text-zinc-900 cursor-pointer mr-2"
+                            className="text-zinc-900 cursor-pointer mr-3"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -611,7 +611,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 <div className="flex flex-col min-w-[50%] justify-start">
                   {modules?.map((module) => (
                     <div
-                      className="flex items-center text-sm p-3 justify-start hover:bg-[#E2E4EA] cursor-pointer"
+                      className="flex items-center text-sm justify-start hover:bg-[#E2E4EA] cursor-pointer p-2 rounded-md my-0.5 mx-1.5"
                       key={module.id}
                       onClick={() => selectModule(module.id)}
                     >

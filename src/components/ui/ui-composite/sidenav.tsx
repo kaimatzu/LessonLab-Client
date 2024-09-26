@@ -130,10 +130,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           <Link
             href={href}
             onClick={onClick}
-            className={`flex items-center no-underline rounded mb-1
+            className={`flex items-center no-underline rounded-md my-0.5 mx-0.5
               ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-gray-300'
-              } duration-100 justify-start p-2  mt-1 ${animatedBorder ? 'border-glow' : ''}`}
+              } duration-100 justify-start p-2 mt-2 ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -145,12 +145,12 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Link
           href={href}
           onClick={onClick}
-          className={`flex items-center no-underline rounded
+          className={`flex items-center no-underline rounded-md my-0.5 mx-1.5
             ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-[#E2E4EA]'
             } duration-100 justify-start p-2 ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
         >
-          {<div className="mr-2">{icon}</div> || <TbNotes className="mr-2" />}
+          {<div className="mr-3">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>
           {locked &&
             <span className="ml-2 scale-75">
