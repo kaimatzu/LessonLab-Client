@@ -10,6 +10,7 @@ import profileIcon from '@/assets/profileIcon.png';
 import ThemeSwitcher from '../ui-base/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/button';
+import HypertextLogo from '@/assets/hypertext-logo';
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -50,7 +51,7 @@ const Header: React.FC = () => {
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
-            <Image src={icon} alt="icon" width={24} height={24} />
+            <HypertextLogo width={24} height={24}/>
             {/* <span className="ml-2 text-2xl text-zinc-950 dark:text-zinc-50 font-bold tracking-wide font-sans">LessonLab</span> */}
           </Link>
         </div>
