@@ -74,14 +74,14 @@ const Header: React.FC = () => {
                     <Button
                       variant={'ghost'}
                       onClick={closeShop}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-yellow-200 dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
                       Shop
                     </Button>
                     <Button
                       variant={'ghost'}
                       onClick={handleLogout}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-yellow-200 dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
                       Logout
                     </Button>
