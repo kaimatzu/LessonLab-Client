@@ -33,22 +33,49 @@ class SocketClient {
       console.log('Incoming message:', data);
     });
       
+
+    const throttledReplaceChatMessage = throttle(
+      (workspaceId: string, assistantMessageId: string, contentSnapshot: string) => {
+        // Parse and format the content before dispatching
+        let parsedContent = contentSnapshot;
+
+        if (typeof contentSnapshot === 'string') {
+          parsedContent = contentSnapshot.trim();
+          parsedContent = parsedContent.replace(/^"|"$/g, ''); // Remove leading and trailing double quotes if they exist
+          parsedContent = parsedContent.replace(/\\n/g, '\n'); // Replace escaped newlines with actual newlines
+        }
+
+        // Dispatch the pre-parsed content
+        store.dispatch(
+          replaceChatMessage({
+            workspaceId,
+            id: assistantMessageId,
+            content: parsedContent,
+          })
+        );
+      },
+      150, // Throttle the action to once every 150ms
+      { leading: true, trailing: true }
+    );
+    
     this.socket.on('content', (contentDelta, contentSnapshot, assistantMessageId, workspaceId) => {
       console.log("Content chunk:", contentDelta);
       console.log("Content snapshot:", contentSnapshot);
       console.log("Assistant message ID:", assistantMessageId);
-      store.dispatch(
-        // updateChatMessage({ 
-        //   workspaceId: workspaceId, 
-        //   id: assistantMessageId, 
-        //   contentDelta: contentDelta 
-        // })
-        replaceChatMessage({ 
-          workspaceId: workspaceId, 
-          id: assistantMessageId, 
-          content: contentSnapshot 
-        })
-      );
+      // store.dispatch(
+      //   // updateChatMessage({ 
+      //   //   workspaceId: workspaceId, 
+      //   //   id: assistantMessageId, 
+      //   //   contentDelta: contentDelta 
+      //   // })
+      //   replaceChatMessage({ 
+      //     workspaceId: workspaceId, 
+      //     id: assistantMessageId, 
+      //     content: contentSnapshot 
+      //   })
+      // );
+
+      throttledReplaceChatMessage(workspaceId, assistantMessageId, contentSnapshot);
     });
     
     this.socket.on('initialize-assistant-message', (assistantMessageId, type, workspaceId) => {
@@ -133,13 +160,6 @@ class SocketClient {
           parsedContent = contentSnapshot.trim();
     
           parsedContent = parsedContent.replace(/\\n/g, '\n');
-    
-          // // If the content is a JSON string, try parsing it back to a JavaScript object
-          // try {
-          //   parsedContent = JSON.parse(parsedContent);
-          // } catch (e) {
-          //   console.warn("Content is not valid JSON, using raw string:", parsedContent);
-          // }
         }
     
         // Dispatch the pre-parsed content

@@ -148,6 +148,12 @@ export const Chat: React.FC<ChatProps> = ({
     }
   }, [documentTrayIsOpen, fetchFiles]);
 
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   return (
     <>
       <div className={chatHistory.length > 0 ? "h-full w-full" : "w-full"}>
@@ -163,7 +169,9 @@ export const Chat: React.FC<ChatProps> = ({
           <div className="animate-pulse bg-gray-500 dark:bg-zinc-500 h-4 w-4 rotate-45 rounded-sm"></div>
         )}
         <div className={documentTrayIsOpen ? "h-[70%]" : "h-1/3"}></div>
+        <div ref={bottomRef} />
       </div>
+
 
       {chatHistory.length === 0 && (
         <div className="relative flex flex-col items-center justify-center h-full">

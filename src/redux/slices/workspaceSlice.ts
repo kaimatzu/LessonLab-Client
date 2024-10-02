@@ -185,6 +185,12 @@ export const fetchWorkspaceChatHistory = createAsyncThunk(
   }
 );
 
+const parseContent = (content: string) => {
+  let parsedContent = content.trim();
+  parsedContent = parsedContent.replace(/\\n/g, '\n');
+  return parsedContent;
+};
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
@@ -391,7 +397,7 @@ const workspaceSlice = createSlice({
       const findAndUpdateNode = (nodes: ModuleNode[], nodeId: string, newContent: string): boolean => {
         for (const node of nodes) {
           if (node.id === nodeId) {
-            node.content = newContent; // Update the content if the node is found
+            node.content = parseContent(newContent); // Update the content if the node is found
             return true;
           }
           if (node.children && node.children.length > 0) {
@@ -492,12 +498,6 @@ const workspaceSlice = createSlice({
         state.moduleDataLoading = false;
         const { moduleId, moduleData } = action.payload;
         state.selectedModuleData = moduleData.tree;
-
-        const parseContent = (content: string) => {
-          let parsedContent = content.trim();
-          parsedContent = parsedContent.replace(/\\n/g, '\n');
-          return parsedContent;
-        };
 
         const parseNodeRecursively = (node: ModuleNode): ModuleNode => {
           return {
