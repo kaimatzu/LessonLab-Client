@@ -99,18 +99,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, handleSubm
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="userType" className="mb-1 text-[#193468]">Register as</label>
-          <select
-            id="userType"
-            value={userType}
-            onChange={handleUserTypeChange}
-            className="w-full p-2 text-lg text-black rounded border border-gray-300 box-border hover:border-[#5E77D3] focus:border-[#5E77D3] focus:outline-none"
-          >
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
-          </select>
-        </div>
         <button type="submit" className="text-[#193468] bg-gradient-to-r from-secondary to-primary p-1 px-4 rounded-lg md:text-base text-white hover:opacity-65 focus:outline-none items-center text-center justify-start mt-10 h-11">Sign Up</button>
         <div className="flex justify-center space-x-2 mt-8">
           <div className="text-black font-bold">Already have an account? </div><div className="text-blue-500 hover:text-blue-700 font-semibold ml-1 cursor-pointer" onClick={onSwitchToLogin}>Log In Here</div>

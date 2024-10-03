@@ -88,7 +88,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
           <div className={cn(
             overlayContainerStyles({ hidden: !isOpen, overlayType }),
             'overlay-container',
-            'flex flex-col justify-center'
+            'flex flex-col overflow-y-auto'
           )}>
             <div className={cn(
               headerStyles({ overlayType }),

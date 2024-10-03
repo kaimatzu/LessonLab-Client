@@ -34,15 +34,17 @@ const Sidenav: React.FC = () => {
   return (
     <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-50 max-w-[50px]' : 'max-w-[320px] w-[250px] '}`}>
-        <div className={`text-black mb-1 mt-1 ${isCollapsed? 'pl-2' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
+        <div className={`text-black mb-1 mt-1 ${isCollapsed? 'pl-[6px]' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
           <div className={`flex align-middle justify-between items-center h-[44px]`}>
               {/* <div className={`mr-1`}></div> */}
             <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'} p-3`}>Workspaces</span>
-            {isCollapsed ? (
-              <GoSidebarCollapse className={"cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
-            ) : (
-              <GoSidebarExpand className={"cursor-pointer hover:text-[#5e77d3]"} onClick={toggleSidebar} />
-            )}
+            <div className={"cursor-pointer hover:bg-[#E2E4EA] hover:text-[#5e77d3] rounded-md py-[9px] px-[10px]"} onClick={toggleSidebar}>
+              {isCollapsed ? (
+                <GoSidebarCollapse className={"cursor-pointer"}/>
+              ) : (
+                <GoSidebarExpand className={"cursor-pointer"}/>
+              )}
+            </div>
           </div>
         </div>
 
@@ -130,10 +132,10 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           <Link
             href={href}
             onClick={onClick}
-            className={`flex items-center no-underline rounded-md my-0.5 mx-0.5
+            className={`flex items-center no-underline rounded-md my-0.5 mx-1.5
               ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-gray-300'
-              } duration-100 justify-start p-2 mt-2 ${animatedBorder ? 'border-glow' : ''}`}
+              } duration-100 justify-start py-[9px] px-[10px] ${animatedBorder ? 'border-glow' : ''}`}
           >
             <div className="relative">
               {icon || <TbNotes />}
@@ -148,7 +150,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           className={`flex items-center no-underline rounded-md my-0.5 mx-1.5
             ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-[#E2E4EA]'
-            } duration-100 justify-start p-2 ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
+            } duration-100 justify-start py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
         >
           {<div className="mr-3">{icon}</div> || <TbNotes className="mr-2" />}
           <span>{title}</span>
