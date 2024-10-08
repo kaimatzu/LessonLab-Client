@@ -37,7 +37,6 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     formData.append("email", target.email.value);
 
     const resultAction = await dispatch(registerUser(formData));
-    console.log('>>> resultAction: ', resultAction)
     if (registerUser.fulfilled.match(resultAction)) {
       connectSocket(resultAction.payload.userId);
       router.push('/workspace');
@@ -46,7 +45,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
       console.error("Registration failed");
       toast({
         title: 'Registration Failed',
-        description: error ? error : 'Something went wrong.',
+        description: resultAction ? resultAction.payload : 'Something went wrong.',
         variant: 'destructive',
       })
     }
