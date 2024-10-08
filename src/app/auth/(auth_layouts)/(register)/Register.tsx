@@ -7,6 +7,7 @@ import RegisterForm from "@/components/ui/ui-composite/auth/register-form";
 import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useSocket } from '@/lib/hooks/useServerEvents';
+import { toast } from '@/components/ui/ui-base/use-toast';
 
 interface RegisterPageProps {
   switchForm: () => void;
@@ -17,9 +18,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
   const router = useRouter();
   const loading = useAppSelector((state) => state.user.loading);
   const error = useAppSelector((state) => state.user.error);
-  const {
-    connectSocket,
-  } = useSocket();
+  const { connectSocket } = useSocket();
   
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -38,12 +37,18 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     formData.append("email", target.email.value);
 
     const resultAction = await dispatch(registerUser(formData));
+    console.log('>>> resultAction: ', resultAction)
     if (registerUser.fulfilled.match(resultAction)) {
       connectSocket(resultAction.payload.userId);
       router.push('/workspace');
     } else {
       // Handle registration error (e.g., display error message to the user)
       console.error("Registration failed");
+      toast({
+        title: 'Registration Failed',
+        description: error ? error : 'Something went wrong.',
+        variant: 'destructive',
+      })
     }
   };
 
