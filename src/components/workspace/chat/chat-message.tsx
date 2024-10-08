@@ -23,6 +23,7 @@ import React from 'react'
 import ModuleOutlineCard from '@/components/ui/ui-base/directives/module-outline-card'
 import ModuleOutlineGenerationConfirmCard from '@/components/ui/ui-base/directives/module-outline-generation-confirm-card'
 import ActionNotificationCard from '@/components/ui/ui-base/directives/action-notification-card'
+import RAGEmptyContextNotification from '@/components/ui/ui-base/directives/rag-empty-context-notification';
 
 const iconMap = new Map([
   ['user', new Map([
@@ -141,6 +142,18 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
               // Render ActionNotificationCard only if the message is from the assistant or is an action message
               if (message.role === 'assistant' || message.type === 'action') {
                 return <ActionNotificationCard actionMessage={actionMessage} />;
+              }
+
+              // Otherwise, render the message content as a paragraph
+              return <p className="mb-0 last:mb-0">{message.content}</p>;
+            },
+
+            'rag_empty_context_notification': (props: any) => {
+              const { notificationMessage } = props;
+
+              // Render ActionNotificationCard only if the message is from the assistant or is an action message
+              if (message.role === 'assistant' || message.type === 'action') {
+                return <RAGEmptyContextNotification notificationMessage={notificationMessage} />;
               }
 
               // Otherwise, render the message content as a paragraph

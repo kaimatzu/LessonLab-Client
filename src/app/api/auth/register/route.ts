@@ -63,7 +63,8 @@ export async function POST(requestBuilder: RequestBuilder) {
         } else {
             const errorData = await response.json();
             console.error("Failed to register:", errorData);
-            return new Response(JSON.stringify(errorData), { status: response.status });
+            const { message } = errorData
+            return new Response(JSON.stringify(message), { status: response.status });
         }
     } catch (error) {
         console.error("Error registering user:", error);
