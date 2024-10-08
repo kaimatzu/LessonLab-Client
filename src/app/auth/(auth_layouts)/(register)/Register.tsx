@@ -33,7 +33,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     const formData = new FormData();
     formData.append("username", target.username.value);
     formData.append("password", target.password.value);
-    formData.append("userType", target.userType.value);
+    formData.append("userType", "STUDENT");
     formData.append("name", target.name.value);
     formData.append("email", target.email.value);
 

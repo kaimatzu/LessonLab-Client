@@ -2,6 +2,7 @@ import React, { useEffect, ReactNode } from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils'; // Adjust the import path to your actual utils file
 import '../css/custom-scrollbar.css'
+import ChatSidenav from '@/components/workspace/chat/chat-sidenav';
 
 interface OverlayProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-backgro
     overlayType: {
       transaction: 'bottom-0 h-fit w-fit p-8',
       auth: 'inset-y-0 right-auto left-0 fixed h-screen w-2/5 p-8 !rounded-none',
-      chat: 'bottom-[20%] w-3/4 h-3/4 bg-background px-8 pb-4 overflow-auto no-scrollbar',
+      chat: 'bottom-7 top-7 w-5/6 h-6/7 bg-background overflow-auto no-scrollbar',
       quizExport: 'bottom-0 h-fit w-fit p-4',
     },
   },
@@ -47,7 +48,7 @@ const headerStyles = cva('flex justify-between items-center py-2 px-4', {
     overlayType: {
       transaction: 'bg-zinc-900',
       auth: 'bg-zinc-900',
-      chat: 'bg-white border-b border-gray-200 mt-6',
+      chat: 'bg-white border-b border-gray-300',
       quizExport: 'bg-zinc-900'
     },
   },
@@ -113,8 +114,11 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
                 </button>
               )}
             </div>
-            <div className={overlayType === 'chat' ? 'flex-grow overflow-auto p-4 no-scrollbar' : ''}>
-              {children}
+            <div className={overlayType === 'chat' ? 'flex h-screen overflow-hidden': ''}>
+              <div className={overlayType === 'chat' ? 'flex-grow overflow-auto no-scrollbar' : ''}>
+                {children}
+              </div>
+              {overlayType === 'chat' ? <ChatSidenav/> : <></>}
             </div>
           </div>
         </div>
