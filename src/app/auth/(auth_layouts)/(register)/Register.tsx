@@ -26,14 +26,14 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     const target = e.target as typeof e.target & {
       username: { value: string };
       password: { value: string };
-      userType: { value: string };
+      // userType: { value: string };
       name: { value: string };
       email: { value: string };
     };
     const formData = new FormData();
     formData.append("username", target.username.value);
     formData.append("password", target.password.value);
-    formData.append("userType", target.userType.value);
+    formData.append("userType", 'TEACHER');
     formData.append("name", target.name.value);
     formData.append("email", target.email.value);
 
