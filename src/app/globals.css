@@ -4,7 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --foreground-rgb: 0, 0, 0;
@@ -66,7 +65,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-family);
   }
   /*h1 {*/
   /*  @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;*/
@@ -121,7 +119,7 @@ body {
     text-wrap: balance;
   }
 }
-/* 
+/*
 .gradient-background {
   background: linear-gradient(to right, #5E77D3 0%, #2C4C7A 50%, #051A41 100%);
   min-height: 100vh;
