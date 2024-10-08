@@ -34,7 +34,7 @@ const Sidenav: React.FC = () => {
   return (
     <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-50 max-w-[50px]' : 'max-w-[320px] w-[250px] '}`}>
-        <div className={`text-black h-[49px] ${isCollapsed? 'pl-[6px]' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
+        <div className={`text-black h-[49px] mb-2 ${isCollapsed? 'pl-[6px]' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
           <div className={`flex align-middle justify-between items-center h-[44px]`}>
               {/* <div className={`mr-1`}></div> */}
             <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'} p-3`}>Workspaces</span>
