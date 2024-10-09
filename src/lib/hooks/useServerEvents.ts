@@ -60,7 +60,7 @@ class SocketClient {
     
     this.socket.on('content', (contentDelta, contentSnapshot, assistantMessageId, workspaceId) => {
       console.log("Content chunk:", contentDelta);
-      console.log("Content snapshot:", contentSnapshot);
+      // console.log("Content snapshot:", contentSnapshot);
       console.log("Assistant message ID:", assistantMessageId);
       // store.dispatch(
       //   // updateChatMessage({ 
@@ -78,7 +78,10 @@ class SocketClient {
       throttledReplaceChatMessage(workspaceId, assistantMessageId, contentSnapshot);
     });
     
-    this.socket.on('initialize-assistant-message', (assistantMessageId, type, workspaceId) => {
+    this.socket.on('initialize-assistant-message', async (assistantMessageId, type, workspaceId, callbackAssistant) => {
+      console.log("Assistant message ID:", assistantMessageId);
+      console.log("Callback", callbackAssistant);
+      
       store.dispatch(
         addChatHistory({ 
           workspaceId: workspaceId, 
@@ -87,11 +90,15 @@ class SocketClient {
           type: type,
           content: '' 
       }));
+
+      // Acknowledge data object creation on frontend
+      callbackAssistant({ ack: 'success' });
     });
     
-    this.socket.on('initialize-user-message', (userMessageId, message, type, workspaceId) => {
+    this.socket.on('initialize-user-message', async (userMessageId, message, type, workspaceId, callback) => {
       console.log("User message ID:", userMessageId);
       console.log("User message:", message);
+      console.log("Callback", callback);
       store.dispatch(
         addChatHistory({ 
           workspaceId: workspaceId, 
@@ -100,6 +107,9 @@ class SocketClient {
           type: type,
           content: message 
       }));
+
+      // Acknowledge data object creation on frontend
+      callback({ ack: 'success' });
     });
     
     this.socket.on('end', () => {
@@ -279,6 +289,7 @@ export const useSocket = () => {
     const limitedHistory = chatHistory.slice(-maxHistorySize);
     socketClient.socket.emit('new-message', message, userId, workspaceId, limitedHistory);
   }
+
   return {
     socket: socketClient.socket,
     connectSocket,
