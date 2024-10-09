@@ -118,7 +118,7 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
                   <div className="mr-4 ml-2">
                     <FaRegFolderClosed/>
                   </div>
-                  <span>{workspace.name}</span>
+                  <span className="max-w-[120px] truncate">{workspace.name}</span>
                 </div>
                 <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
                   <BsThreeDots />

@@ -43,7 +43,7 @@ const MaterialArea: FC = () => {
       <div className="max-w-[320px] w-[250px] h-full border border-gray-300 rounded-lg m-2 p-1">
         <div className="flex flex-row justify-between items-center p-1">
             <h1 className="text-sm font-normal transition-none ml-2">Contents</h1>
-            <div className="cursor-pointer mr-4" onClick={() => {}}>
+            <div className="cursor-pointer mr-2" onClick={() => {}}>
               <RiAddFill className="w-4 h-4" />
             </div>
         </div>

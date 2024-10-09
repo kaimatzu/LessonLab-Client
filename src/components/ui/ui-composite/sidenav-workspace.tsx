@@ -25,6 +25,7 @@ import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/w
 import { FaRegFilePdf } from "react-icons/fa";
 import { IoBookOutline } from "react-icons/io5";
 import { LiaUploadSolid } from "react-icons/lia";
+import { BsThreeDots } from "react-icons/bs";
 
 interface SidenavWorkspaceProps {
   workspace: Workspace;
@@ -398,14 +399,14 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
-                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-2 rounded-md my-0.5 mx-1.5"
+                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-2 rounded-md my-0.5 ml-2"
                         >
-                          <FaRegFilePdf />
+                          <FaRegFilePdf/>
                           <span className="truncate w-4/5 text-left">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="text-zinc-900 cursor-pointer mr-3"
+                            className="text-zinc-900 cursor-pointer mr-3 hover:text-[#ff0000]"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -602,7 +603,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
         
           <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
                 <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
-                <div className="cursor-pointer mr-4" onClick={() => {}}>
+                <div className="cursor-pointer mr-2" onClick={() => {}}>
                   <RiAddFill className="w-4 h-4" />
                 </div>
             </div>
@@ -611,12 +612,17 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 <div className="flex flex-col min-w-[50%] justify-start">
                   {modules?.map((module) => (
                     <div
-                      className="flex items-center text-sm justify-start hover:bg-[#E2E4EA] cursor-pointer p-2 rounded-md my-0.5 mx-1.5"
+                      className="flex flex-row items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer p-2 rounded-md my-0.5 mx-1.5"
                       key={module.id}
                       onClick={() => selectModule(module.id)}
                     >
-                      <IoBookOutline className="mr-2 w-4 h-4"/>
-                      <span className="truncate w-[200px]">{module.name}</span>
+                      <div className="flex flex-row items-center max-w-[200px]">
+                        <IoBookOutline className="!mr-2 w-4 h-4 flex-shrink-0"/>
+                        <span className="truncate">{module.name}</span>
+                      </div>
+                      <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
+                        <BsThreeDots />
+                      </div>
                     </div>
                   ))}
                 </div>
