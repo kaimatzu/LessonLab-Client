@@ -10,12 +10,26 @@ import { SkeletonLoader } from '../ui-base/skeleton-loader';
 import { Tooltip } from './chat/tooltip';
 import '../css/custom-scrollbar.css'
 import { Workspace } from '@/lib/types/workspace-types';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { LuPencil } from 'react-icons/lu';
+import { RiDeleteBinLine } from 'react-icons/ri';
+import { BsThreeDots } from 'react-icons/bs';
 
 // #region Sidenav
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceContext();
+  const [anchorEl, setAnchorEl] = useState<null | SVGElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<SVGElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -76,6 +90,10 @@ const Sidenav: React.FC = () => {
                       icon={<FaRegFolderClosed/>}
                       isCollapsed={isCollapsed}
                       locked={workspace.locked}
+                      anchorEl={anchorEl}
+                      handleMenuOpen={handleMenuOpen}
+                      handleMenuClose={handleMenuClose}
+                      isWorkspace={true}
                     />
                   );
                 })}
@@ -96,6 +114,10 @@ const Sidenav: React.FC = () => {
             isCollapsed={isCollapsed}
             icon={<FaPlus className={`${isActive('/workspace/new') ? 'text-zinc-900 w-3 h-3' : 'w-3 h-3 text-zinc-900'}`} />}
             animatedBorder
+            anchorEl={null}
+            handleMenuOpen={()=>{}}
+            handleMenuClose={()=>{}}
+            isWorkspace={false}
           />
         </div>
 
@@ -122,9 +144,13 @@ interface SidenavItemProps {
   locked?: boolean;
   animatedBorder?: boolean;
   onClick?: () => void;
+  anchorEl?: null | SVGElement;  // Add anchorEl prop
+  handleMenuOpen?: (event: React.MouseEvent<SVGElement>) => void;  // Add handleMenuOpen prop
+  handleMenuClose?: () => void;
+  isWorkspace: boolean;
 }
 
-const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick }) => {
+const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick, anchorEl, handleMenuOpen, handleMenuClose, isWorkspace}) => {
   return (
     <li>
       {isCollapsed ? (
@@ -150,16 +176,46 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           className={`flex items-center no-underline rounded-md my-0.5 mx-1.5 h-[32px]
             ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-[#E2E4EA]'
-            } duration-100 justify-start py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
+            } duration-100 justify-between py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
         >
-          {<div className="mr-3">{icon}</div> || <TbNotes className="mr-2" />}
-          <span>{title}</span>
-          {locked &&
+          <div className="flex flex-row items-center max-w-[200px]">
+            {<div className="mr-3">{icon}</div> || <TbNotes className="mr-2" />}
+            <span>{title}</span>
+            {locked &&
             <span className="ml-2 scale-75">
               <Tooltip text={<span className="">Read-Only</span>}>
                 <FaLock />
               </Tooltip>
             </span>}
+          </div>
+          {isWorkspace && (
+            <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
+              <BsThreeDots onClick={(event) => handleMenuOpen ? handleMenuOpen(event) : undefined}/>
+            </div>
+          )}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            slotProps={{
+              paper: {
+                sx: {
+                  backgroundColor: '#f1f3f8', // Custom background color
+                  borderRadius: '8px',           // Rounded corners
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                },
+              },
+            }}
+          >
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+              <LuPencil className="mr-2"/>
+              Rename
+            </MenuItem>
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+              <RiDeleteBinLine className="mr-2"/>
+              Delete
+            </MenuItem>
+          </Menu>
         </Link>
       )}
     </li>

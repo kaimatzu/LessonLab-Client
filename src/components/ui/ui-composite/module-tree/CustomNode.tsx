@@ -171,29 +171,29 @@ export const CustomNode: React.FC<Props> = ({
           }}
         >
           <MenuItem onClick={handleRename} sx={{ fontSize: '0.875rem' }}>
-            <LuPencil />
+            <LuPencil className="mr-2"/>
             Rename
           </MenuItem>
           <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
-            <SlRefresh />
+            <SlRefresh className="mr-2"/>
             Regenerate Content
           </MenuItem>
           <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
-            <RiAddFill className="w-4 h-4" />
+            <RiAddFill className="w-4 h-4 mr-2"/>
             Add Sub-content
           </MenuItem>
           <Divider />
           <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
-            <HypertextLogo width={4} height={4}/>
+            <HypertextLogo width={16} height={16} className="mr-2"/>
             Generate Sub-content
           </MenuItem>
           <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
-            <PiNoteBlankLight />
+            <PiNoteBlankLight className="mr-2"/>
             Generate Assessment
           </MenuItem>
           <Divider />
           <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
-            <RiDeleteBinLine/>
+            <RiDeleteBinLine className="mr-2"/>
             Delete
           </MenuItem>
           {/* Add more menu items here for other actions */}

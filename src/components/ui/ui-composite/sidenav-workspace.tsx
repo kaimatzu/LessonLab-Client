@@ -26,6 +26,9 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { IoBookOutline } from "react-icons/io5";
 import { LiaUploadSolid } from "react-icons/lia";
 import { BsThreeDots } from "react-icons/bs";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { LuPencil } from "react-icons/lu";
 
 interface SidenavWorkspaceProps {
   workspace: Workspace;
@@ -72,6 +75,8 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   const [showAddFile, setShowAddFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | SVGElement>(null);
+  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
 
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
@@ -345,6 +350,15 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
     }
   }
 
+  const handleMenuOpen = (event: React.MouseEvent<SVGElement>, moduleId: string) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedModuleId(moduleId);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedModuleId(null);
+  };
 
   // #region JSX
   return (
@@ -621,8 +635,32 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                         <span className="truncate">{module.name}</span>
                       </div>
                       <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
-                        <BsThreeDots />
+                        <BsThreeDots onClick={(event) => handleMenuOpen(event, module.id)}/>
                       </div>
+
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        slotProps={{
+                          paper: {
+                            sx: {
+                              backgroundColor: '#f1f3f8', // Custom background color
+                              borderRadius: '8px',           // Rounded corners
+                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                            },
+                          },
+                        }}
+                      >
+                        <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+                          <LuPencil className="mr-2"/>
+                          Rename
+                        </MenuItem>
+                        <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+                          <RiDeleteBinLine className="mr-2"/>
+                          Delete
+                        </MenuItem>
+                      </Menu>
                     </div>
                   ))}
                 </div>
