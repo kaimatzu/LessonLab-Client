@@ -13,6 +13,7 @@ import type { CrepeFeatureConfig } from '../feature';
 import { CrepeFeature, defaultFeatures, loadFeature } from '../feature';
 import { configureFeatures } from './slice';
 import { listener, listenerCtx } from '@milkdown/plugin-listener';
+import { debounce } from 'lodash';
 // import { placeholderCtx } from '@milkdown/plugin-placeholder';
 
 export interface CrepeConfig {
@@ -52,6 +53,10 @@ export class Crepe {
     this.rootElement =
       (typeof root === 'string' ? document.querySelector(root) : root) ?? document.body;
 
+    const debouncedOnUpdate = debounce((markdown) => {
+      onUpdate(markdown);
+    }, 300); 
+
     this.editorInstance = Editor.make()
       .config(configureFeatures(enabledFeatures))
       .config((ctx) => {
@@ -72,10 +77,10 @@ export class Crepe {
             }
 
             // Check if the new markdown is different from the previous one
-            if (onUpdate && markdown !== this.lastMarkdown) {
-              console.log("Updating markdown", markdown);
+            if (markdown !== this.lastMarkdown) {
               this.lastMarkdown = markdown; // Update the tracked last markdown value
-              onUpdate(markdown); // Trigger the onUpdate function if there's a change
+              // onUpdate(markdown); // Trigger the onUpdate function if there's a change 
+              debouncedOnUpdate(markdown);
             }
           });
       })
@@ -86,7 +91,7 @@ export class Crepe {
       .use(trailing)
       .use(clipboard)
       .use(gfm);
-
+      
     const promiseList: Promise<unknown>[] = [];
 
     enabledFeatures.forEach((feature) => {

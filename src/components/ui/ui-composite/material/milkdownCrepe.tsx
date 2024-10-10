@@ -122,10 +122,9 @@ const CrepeEditorWrapper: FC = () => {
     if (selectedModuleNodeId) {
       handleMarkdownUpdateRef.current(moduleContent);
     }
-  }, [selectedModuleNodeId, moduleContent]);
+  }, [selectedModuleNodeId]);
 
   useEffect(() => {
-    console.log("Module content", moduleContent);
     if (moduleContent !== null && crepeEditorRef.current) {
       crepeEditorRef.current.setMarkdown(moduleContent); // Directly update markdown in the Crepe editor
     }
