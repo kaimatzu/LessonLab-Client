@@ -367,7 +367,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
         {/* <div className="border-t border-border my-2"></div> */}
       <div className={`flex flex-col h-full transition-[width] duration-500 ease-in-out ${isCollapsed ? "w-16 max-w-[0px]" : "max-w-[320px] w-[250px] "}`}>
         <div className="flex flex-col border-b border-gray-300 flex-1 overflow-y-auto">
-          <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+          <div className="flex flex-row justify-between items-center p-1 py-3 mb-1 border-b border-gray-300">
             <h1 className="text-sm font-normal transition-none ml-4">Files</h1>
             <div className="cursor-pointer mr-4" onClick={handleDivClick}>
               <input
@@ -413,14 +413,14 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                       {files.map((file) => (
                         <div
                           key={file.name}
-                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-2 rounded-md my-0.5 ml-2"
+                          className="flex items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer text-zinc-900 p-2 rounded-md my-0.5 mx-1.5 group"
                         >
                           <FaRegFilePdf/>
                           <span className="truncate w-4/5 text-left">
                             {file.name}
                           </span>
                           <RiDeleteBinLine
-                            className="text-zinc-900 cursor-pointer mr-3 hover:text-[#ff0000]"
+                            className="text-zinc-900 cursor-pointer hover:text-[#ff0000] opacity-0 group-hover:opacity-100"
                             onClick={() => handleDeleteFile(file.documentId)}
                           />
                         </div>
@@ -615,7 +615,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
         {/* <div className="border-t border-border"></div> */}
         
         
-          <div className="flex flex-row justify-between items-center p-1 py-3 border-b border-gray-300">
+          <div className="flex flex-row justify-between items-center p-1 py-3 mb-1 border-b border-gray-300">
                 <h1 className="text-sm font-normal transition-none ml-4">Modules</h1>
                 <div className="cursor-pointer mr-2" onClick={() => {}}>
                   <RiAddFill className="w-4 h-4" />
@@ -626,7 +626,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                 <div className="flex flex-col min-w-[50%] justify-start">
                   {modules?.map((module) => (
                     <div
-                      className="flex flex-row items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer p-2 rounded-md my-0.5 mx-1.5"
+                      className="flex flex-row items-center text-sm justify-between hover:bg-[#E2E4EA] cursor-pointer p-2 rounded-md my-0.5 mx-1.5 group"
                       key={module.id}
                       onClick={() => selectModule(module.id)}
                     >
@@ -634,7 +634,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                         <IoBookOutline className="!mr-2 w-4 h-4 flex-shrink-0"/>
                         <span className="truncate">{module.name}</span>
                       </div>
-                      <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
+                      <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3] opacity-0 group-hover:opacity-100">
                         <BsThreeDots onClick={(event) => handleMenuOpen(event, module.id)}/>
                       </div>
 
