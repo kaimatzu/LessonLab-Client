@@ -2,7 +2,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
-import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -23,7 +22,6 @@ import {
   addLessonPage,
   updateLessonPage,
   updateLessonPageTitle,
-  fetchLessonPages,
   selectSpecificationsForSelectedWorkspace,
   selectPagesForSelectedWorkspace,
   updateChatLoadingStatus,
@@ -174,14 +172,6 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         }
       }
     });
-    // dispatch(fetchLessonPages(workspaceId)).then((action) => {
-    //   if (fetchLessonPages.fulfilled.match(action)) {
-    //     const pages = action.payload.pages;
-    //     if (pages.length > 0) {
-    //       dispatch(setSelectedPageId(pages[0].id));
-    //     }
-    //   }
-    // });
     dispatch(fetchWorkspaceModules(workspaceId)).then((action) => {
       if (fetchWorkspaceModules.fulfilled.match(action)) {
         const modules = action.payload.modules;

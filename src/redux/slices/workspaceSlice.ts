@@ -3,7 +3,6 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
-import { POST as _addLessonPage, GET as _getLessonPages } from "@/app/api/workspace/page/route";
 import { POST as _addWorkspaceModule, insertNode as _insertNode, GET as _getWorkspaceModules, GET as _getWorkspaceModuleData } from "@/app/api/workspace/module/route";
 import { GET as _getChatHistory } from "@/app/api/chat/route"
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
@@ -97,28 +96,6 @@ export const fetchSpecifications = createAsyncThunk(
       return { workspaceId, specifications };
     }
     return { workspaceId, specifications: [] };
-  }
-);
-
-export const fetchLessonPages = createAsyncThunk(
-  'workspace/fetchLessonPages',
-  async (lessonId: string) => {
-    const requestBuilder = new RequestBuilder().setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/lessons/pages/${lessonId}`);
-    const response = await _getLessonPages(requestBuilder).catch(error => {
-      console.error("Error fetching lesson pages:", error);
-      return null;
-    });
-
-    if (response && response.ok) {
-      const data = await response.json();
-      const pages = data.map((page: any) => ({
-        id: page.PageID,
-        title: page.PageTitle,
-        content: page.Content,
-      }));
-      return { lessonId, pages };
-    }
-    return { lessonId, pages: [] };
   }
 );
 
@@ -547,23 +524,6 @@ const workspaceSlice = createSlice({
       })
       .addCase(fetchWorkspaceModuleData.rejected, (state) => {
         state.moduleDataLoading = false;
-      })
-      .addCase(fetchLessonPages.pending, (state) => {
-        state.pagesLoading = true;
-      })
-      .addCase(fetchLessonPages.fulfilled, (state, action: PayloadAction<{ lessonId: string, pages: Page[] }>) => {
-        state.pagesLoading = false;
-        const { lessonId, pages } = action.payload;
-        const workspace = state.workspaces.find(ws => ws.id === lessonId);
-        if (workspace) {
-          workspace.pages = pages;
-        }
-        if (state.selectedWorkspace && state.selectedWorkspace.id === lessonId) {
-          state.selectedWorkspace.pages = pages;
-        }
-      })
-      .addCase(fetchLessonPages.rejected, (state) => {
-        state.pagesLoading = false;
       })
       .addCase(fetchWorkspaceChatHistory.pending, (state) => {
         state.chatHistoryLoading = true;

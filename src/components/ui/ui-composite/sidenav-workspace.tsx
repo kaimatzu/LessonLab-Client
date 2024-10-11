@@ -19,7 +19,6 @@ import {
   updateAdditionalSpecification as _updateAdditionalSpecification,
   removeAdditionalSpecification as _removeAdditionalSpecification,
 } from "@/app/api/workspace/specification/route"
-import { POST as _addLessonPage } from '@/app/api/workspace/page/route'
 import { SkeletonLoader } from "../ui-base/skeleton-loader";
 import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/workspace-types";
 import { FaRegFilePdf } from "react-icons/fa";
@@ -326,29 +325,6 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
   };
 
   // #region Lesson Pages
-  ////////////////////////////////////
-  /////////////Lesson Pages///////////
-  ////////////////////////////////////
-
-  const createLessonPage = async () => {
-    if (selectedWorkspace
-      // && selectedWorkspace.workspaceType === 'LESSON'
-    ) {
-      const requestBuilder = new RequestBuilder()
-        .setBody(JSON.stringify({
-          LessonID: selectedWorkspace.id,
-          LastPageID: null
-        }))
-      const result = await _addLessonPage(requestBuilder);
-      const data = await result.json();
-
-      addLessonPage(selectedWorkspace.id, {
-        id: data.PageID,
-        title: data.Title || 'Untitled',
-        content: data.Content || '',
-      });
-    }
-  }
 
   const handleMenuOpen = (event: React.MouseEvent<SVGElement>, moduleId: string) => {
     setAnchorEl(event.currentTarget);
