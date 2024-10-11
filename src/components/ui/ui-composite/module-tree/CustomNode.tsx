@@ -11,6 +11,14 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { NodeModel, RenderParams } from "@minoru/react-dnd-treeview";
 import { ExtendedModuleNode } from "./types"; // Adjust import path based on your structure
+import { BsThreeDots } from "react-icons/bs";
+import Divider from "@mui/material/Divider";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { LuPencil } from "react-icons/lu";
+import { SlRefresh } from "react-icons/sl";
+import { RiAddFill } from "react-icons/ri";
+import { PiNoteBlankLight } from "react-icons/pi";
+import HypertextLogo from '@/assets/hypertext-logo';
 
 type Props = RenderParams & {
   node: NodeModel<ExtendedModuleNode>;
@@ -102,14 +110,15 @@ export const CustomNode: React.FC<Props> = ({
       onClick={handleClick}
     >
       <div
-        className={`flex items-center justify-center w-6 h-6 transition-transform duration-100 transform`}
+        className={`flex items-center justify-center ${ props.node.data?.isLeaf ? 'ml-1 w-1' : 'w-6' }
+        h-6 transition-transform duration-100 transform`}
       >
         {!props.node.data?.isLeaf && (
           <div onClick={handleToggle}>
             {props.isOpen ? (
-              <ArrowDropDownIcon data-testid={`arrow-down-icon-${id}`} />
+              <ArrowDropDownIcon data-testid={`arrow-down-icon-${id}`} sx={{ color: 'gray' }}/>
             ) : (
-              <ArrowRightIcon data-testid={`arrow-right-icon-${id}`} />
+              <ArrowRightIcon data-testid={`arrow-right-icon-${id}`} sx={{ color: 'gray' }}/>
             )}
           </div>
         )}
@@ -132,7 +141,7 @@ export const CustomNode: React.FC<Props> = ({
           </div>
         ) : (
           // <Typography variant="body2">{labelText}</Typography>
-          <h2 className="max-w-[150px] text-sm truncate">{labelText}</h2>
+          <h2 className="max-w-[172px] text-sm truncate">{labelText}</h2>
         )}
       </div>
       <div>
@@ -142,7 +151,8 @@ export const CustomNode: React.FC<Props> = ({
           onClick={handleMenuOpen}
           size="small"
         >
-          <MoreHorizIcon />
+          {/* <MoreHorizIcon /> */}
+          <BsThreeDots/>
         </IconButton>
         <Menu
           id="node-menu"
@@ -150,8 +160,42 @@ export const CustomNode: React.FC<Props> = ({
           keepMounted
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
+          slotProps={{
+            paper: {
+              sx: {
+                backgroundColor: '#f1f3f8', // Custom background color
+                borderRadius: '8px',           // Rounded corners
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+              },
+            },
+          }}
         >
-          <MenuItem onClick={handleRename}>Rename</MenuItem>
+          <MenuItem onClick={handleRename} sx={{ fontSize: '0.875rem' }}>
+            <LuPencil className="mr-2"/>
+            Rename
+          </MenuItem>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <SlRefresh className="mr-2"/>
+            Regenerate Content
+          </MenuItem>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <RiAddFill className="w-4 h-4 mr-2"/>
+            Add Sub-content
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <HypertextLogo width={16} height={16} className="mr-2"/>
+            Generate Sub-content
+          </MenuItem>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <PiNoteBlankLight className="mr-2"/>
+            Generate Assessment
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+            <RiDeleteBinLine className="mr-2"/>
+            Delete
+          </MenuItem>
           {/* Add more menu items here for other actions */}
         </Menu>
       </div>
