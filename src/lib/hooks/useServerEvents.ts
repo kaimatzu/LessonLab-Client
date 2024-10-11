@@ -80,6 +80,8 @@ class SocketClient {
     
     this.socket.on('initialize-assistant-message', async (assistantMessageId, type, workspaceId, callbackAssistant) => {
       console.log("Assistant message ID:", assistantMessageId);
+      console.log("Workspace ID:", workspaceId);
+      console.log("Message type:", type);
       console.log("Callback", callbackAssistant);
       
       store.dispatch(
