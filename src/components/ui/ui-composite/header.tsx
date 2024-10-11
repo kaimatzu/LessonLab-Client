@@ -11,6 +11,7 @@ import ThemeSwitcher from '../ui-base/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/button';
 import HypertextLogo from '@/assets/hypertext-logo';
+import { MdGeneratingTokens } from "react-icons/md";
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -46,6 +47,8 @@ const Header: React.FC = () => {
     // Add more items as needed
   ];
 
+  const tokens = user?.tokens ? user.tokens.toFixed(2) : '0.00';
+  
   return (
     <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
       <div className="relative flex justify-between items-center font-bold">
@@ -56,7 +59,17 @@ const Header: React.FC = () => {
           </Link>
         </div>
 
+        
         <div className="ml-auto flex space-x-4 justify-center align-center">
+        <div className="ml-auto flex space-x-4 justify-center items-center">
+          <div className="flex items-center space-x-1 mr-4">
+            <MdGeneratingTokens size={18} className="text-[#5e77d3]" />
+            <span className="text-sm font-bold">
+              {tokens} {/* Display tokens with 2 decimal places */}
+            </span>
+          </div>
+        </div>
+
           {/* <ThemeSwitcher className={'hover:bg-zinc-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} /> */}
           <div className="relative">
             <Image
