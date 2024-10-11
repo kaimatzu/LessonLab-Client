@@ -48,8 +48,8 @@ const Sidenav: React.FC = () => {
   return (
     <div className="flex flex-row w-fit bg-[#F1F3F8] h-full !overflow-x-visible z-[100] dark:bg-zinc-900 border-r border-gray-300">
       <div className={`flex flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'w-50 max-w-[50px]' : 'max-w-[320px] w-[250px] '}`}>
-        <div className={`text-black h-[49px] mb-1 ${isCollapsed? 'pl-[6px]' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
-          <div className={`flex align-middle justify-between items-center h-[44px]`}>
+        <div className={`flex text-black h-[49px] items-center justify-between w-full mb-1 ${isCollapsed? 'pl-[6px]' : 'pr-2'} dark:text-zinc-100 text-sm border-b border-gray-300`}>
+          <div className={`flex w-full justify-between items-center h-[44px]`}>
               {/* <div className={`mr-1`}></div> */}
             <span className={`${isCollapsed ? 'hidden' : 'inline font-medium'} p-3`}>Workspaces</span>
             <div className={"cursor-pointer hover:bg-[#E2E4EA] hover:text-[#5e77d3] rounded-md py-[9px] px-[10px]"} onClick={toggleSidebar}>
@@ -173,7 +173,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
         <Link
           href={href}
           onClick={onClick}
-          className={`flex items-center no-underline rounded-md my-0.5 mx-1.5 h-[32px]
+          className={`flex items-center no-underline rounded-md my-0.5 mx-1.5 h-[32px] group
             ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
                 : 'hover:bg-[#E2E4EA]'
             } duration-100 justify-between py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
@@ -189,7 +189,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
             </span>}
           </div>
           {isWorkspace && (
-            <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
+            <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3] opacity-0 group-hover:opacity-100">
               <BsThreeDots onClick={(event) => handleMenuOpen ? handleMenuOpen(event) : undefined}/>
             </div>
           )}
@@ -203,15 +203,16 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
                   backgroundColor: '#f1f3f8', // Custom background color
                   borderRadius: '8px',           // Rounded corners
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  padding: '6px',
                 },
               },
             }}
           >
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
               <LuPencil className="mr-2"/>
               Rename
             </MenuItem>
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
               <RiDeleteBinLine className="mr-2"/>
               Delete
             </MenuItem>
