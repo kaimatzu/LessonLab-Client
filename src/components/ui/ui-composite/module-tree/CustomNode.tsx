@@ -104,7 +104,7 @@ export const CustomNode: React.FC<Props> = ({
 
   return (
     <div
-      className={`flex items-center h-15 hover:bg-[#E2E4EA] cursor-pointer truncate ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
+      className={`flex items-center h-15 hover:bg-[#E2E4EA] cursor-pointer truncate rounded-sm group ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
       style={{ paddingInlineStart: indent }}
       data-testid={`${testIdPrefix}custom-node-${id}`}
       onClick={handleClick}
@@ -144,7 +144,7 @@ export const CustomNode: React.FC<Props> = ({
           <h2 className="max-w-[172px] text-sm truncate">{labelText}</h2>
         )}
       </div>
-      <div>
+      <div className="opacity-0 group-hover:opacity-100">
         <IconButton
           aria-controls="node-menu"
           aria-haspopup="true"
@@ -166,33 +166,34 @@ export const CustomNode: React.FC<Props> = ({
                 backgroundColor: '#f1f3f8', // Custom background color
                 borderRadius: '8px',           // Rounded corners
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                padding: '6px',
               },
             },
           }}
         >
-          <MenuItem onClick={handleRename} sx={{ fontSize: '0.875rem' }}>
+          <MenuItem onClick={handleRename} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
             <LuPencil className="mr-2"/>
             Rename
           </MenuItem>
-          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
             <SlRefresh className="mr-2"/>
             Regenerate Content
           </MenuItem>
-          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
             <RiAddFill className="w-4 h-4 mr-2"/>
             Add Sub-content
           </MenuItem>
           <Divider />
-          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
             <HypertextLogo width={16} height={16} className="mr-2"/>
             Generate Sub-content
           </MenuItem>
-          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
             <PiNoteBlankLight className="mr-2"/>
             Generate Assessment
           </MenuItem>
           <Divider />
-          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+          <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
             <RiDeleteBinLine className="mr-2"/>
             Delete
           </MenuItem>
