@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* TODO: Figure out how to implement correct height of main elements if styling breaks for some reason, this is a temporary measure */}
         <div className="flex h-[calc(100%-41px)] w-full"> 
           <Sidenav />
-          <main className="flex-1 w-full bg-[#F1F3F8]">{children}</main>
+          <main className="flex-1 w-full bg-[#F1F3F8] overflow-hidden">{children}</main>
         </div>
       </div>
     </WorkspaceProvider>
