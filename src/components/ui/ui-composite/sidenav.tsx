@@ -203,15 +203,16 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
                   backgroundColor: '#f1f3f8', // Custom background color
                   borderRadius: '8px',           // Rounded corners
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  padding: '6px',
                 },
               },
             }}
           >
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem' }}>
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
               <LuPencil className="mr-2"/>
               Rename
             </MenuItem>
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red' }}>
+            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
               <RiDeleteBinLine className="mr-2"/>
               Delete
             </MenuItem>
