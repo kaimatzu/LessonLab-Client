@@ -48,7 +48,7 @@ const headerStyles = cva('flex justify-between items-center p-2', {
     overlayType: {
       transaction: 'bg-zinc-900',
       auth: 'bg-zinc-900',
-      chat: 'bg-white border-b border-gray-300',
+      chat: 'bg-[#F1F3F8] border-b border-gray-300',
       quizExport: 'bg-zinc-900'
     },
   },
