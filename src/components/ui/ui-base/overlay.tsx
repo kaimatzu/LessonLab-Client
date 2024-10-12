@@ -96,10 +96,11 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
               overlayType === 'chat' ? 'sticky top-0 z-10 bg-background' : 'bg-background'
             )}>
               <h1 className={cn(
-                "text-2xl font-semibold",
+                "text-lg font-semibold ml-3",
                 overlayType === 'chat' ? 'text-foreground bg-background' : 'text-foreground bg-background'
               )}>
                 {/* {overlayName} */}
+                {overlayType === 'chat' && 'AI Assistant'}
               </h1>
               {isClosable && (
                 <button
