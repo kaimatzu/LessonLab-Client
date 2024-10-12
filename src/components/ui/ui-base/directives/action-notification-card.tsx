@@ -7,16 +7,12 @@ interface ActionNotificationCardProps {
 
 const ActionNotificationCard: FC<ActionNotificationCardProps> = memo(({ actionMessage }) => {
   return (
-    <Card sx={{ maxWidth: 400, margin: 'auto', borderRadius: 2, boxShadow: 3 }}>
-      <CardContent>
-        <Typography variant="h6" component="div" gutterBottom>
-          Action Notification
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          {actionMessage}
-        </Typography>
-      </CardContent>
-    </Card>
+    <div>
+      <span className="font-bold mb-2">Action Notification</span>
+      <Typography variant="body1" color="text.secondary">
+        {actionMessage}
+      </Typography>
+    </div>
   );
 });
 

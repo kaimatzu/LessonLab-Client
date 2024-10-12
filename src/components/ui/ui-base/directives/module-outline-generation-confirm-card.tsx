@@ -38,25 +38,39 @@ const ModuleOutlineGenerationConfirmCard: FC<ModuleOutlineGenerationConfirmCardP
 
   // #region JSX
   return (
-    <div className="w-full h-fit border border-gray-300 rounded p-2 bg-transparent">
-      <div className="flex justify-between items-center bg-gray-100 p-2 rounded">
+    <div className="w-full h-fit rounded bg-transparent">
+      <div className="flex justify-between items-center bg-gray-100 rounded">
         <span className="font-bold">Module Outline Generation</span>
       </div>
-      <div className="flex justify-end items-center bg-gray-200 p-2 rounded mt-2">
+      <div className="flex justify-end items-center rounded mt-2">
         <Button 
-          variant="contained" 
-          color="primary" 
           onClick={handleGenerateDirectly} 
-          sx={{ mr: 2, bgcolor: isLatestMessage ? 'blue.500' : 'blue.700' }}
+          sx={{ mr: 2, border: 1, borderColor: '#d1d5db', color: isLatestMessage ? '#2f2f2f' : '#d1d5db',
+            '&.Mui-disabled': {
+            borderColor: '#d1d5db',
+            color: '#d1d5db',
+            },
+            ':hover': {
+            borderColor: '#5E77D3',
+            color: '#5E77D3',
+            },
+           }}
           disabled={!isLatestMessage}
         >
           Generate Module Directly
         </Button>
         <Button 
-          variant="contained" 
-          color="success" 
           onClick={handleGenerateOutline} 
-          sx={{ bgcolor: isLatestMessage ? 'green.500' : 'green.700' }}
+          sx={{ border: 1, borderColor: '#d1d5db', color: isLatestMessage ? '#2f2f2f' : '#d1d5db',
+            '&.Mui-disabled': {
+            borderColor: '#d1d5db',
+            color: '#d1d5db',
+            },
+            ':hover': {
+            borderColor: '#5E77D3',
+            color: '#5E77D3',
+            },
+          }}
           disabled={!isLatestMessage}
         >
           Generate Module Outline
