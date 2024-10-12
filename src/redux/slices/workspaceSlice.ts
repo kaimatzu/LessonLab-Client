@@ -7,7 +7,6 @@ import { POST as _addWorkspaceModule, insertNode as _insertNode, GET as _getWork
 import { GET as _getChatHistory } from "@/app/api/chat/route"
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import { MessageRole, Page, Specification, Workspace, Message, Module, MessageType, ModuleNode } from '@/lib/types/workspace-types';
-import { any } from 'zod';
 import { transformModuleDataToTreeFormat } from '@/components/ui/ui-composite/module-tree/data-processing';
 import { current } from 'immer';
 import { createSelector } from 'reselect';

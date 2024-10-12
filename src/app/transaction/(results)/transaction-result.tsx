@@ -1,7 +1,7 @@
 "use client"
 
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Box from '@mui/material/Box';

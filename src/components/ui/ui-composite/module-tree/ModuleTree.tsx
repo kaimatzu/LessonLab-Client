@@ -10,16 +10,12 @@ import {
   Tree,
   NodeModel,
   isAncestor,
-  DragLayerMonitorProps,
 } from "@minoru/react-dnd-treeview";
 import { ExtendedModuleNode } from "./types";
 import { Module } from "./types";
 import { CustomNode } from "./CustomNode";
-import { CustomDragPreview } from "./CustomDragPreview";
-import { MultipleDragPreview } from "./MultipleDragPreview";
 import Placeholder from "./Placeholder";
 import useTreeOpenHandler from "./useTreeOpenHandler";
-import sampleModules from "./sample-modules.json";
 import { processModuleNodes } from "./data-processing";
 
 interface ModuleTreeProps {

@@ -33,6 +33,7 @@ const Sidenav: React.FC = () => {
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('');
 
   const handleMenuOpen = (event: React.MouseEvent<SVGElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 

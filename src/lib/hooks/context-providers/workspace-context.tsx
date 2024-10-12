@@ -1,8 +1,6 @@
 // client/src/lib/hooks/workspace-context.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { GET as getWorkspaces } from '@/app/api/workspace/route';
 import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
-import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {

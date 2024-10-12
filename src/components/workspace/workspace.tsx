@@ -7,18 +7,15 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { IoIosSwap } from "react-icons/io";
 import { FetchedFile } from "@/app/api/files/route";
-import { MilkdownEditorWrapper } from "../ui/ui-composite/material/milkdown";
 import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
 import { Chat } from "./chat/chat"
 import Overlay from "../ui/ui-base/overlay";
 import { Workspace } from "@/lib/types/workspace-types";
-import CrepeEditor from "../ui/ui-composite/material/milkdownCrepe";
 import MaterialArea from "../ui/ui-composite/material/material-area";
 import { useSocket } from "@/lib/hooks/useServerEvents";
 import { BsThreeDots } from "react-icons/bs";
-import { FaFolderClosed, FaRegFolderClosed } from "react-icons/fa6";
+import { FaRegFolderClosed } from "react-icons/fa6";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { RiDeleteBinLine } from "react-icons/ri";

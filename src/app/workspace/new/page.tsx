@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
-// import { Workspace } from "@/redux/slices/workspaceSlice";
 import Spinner from "@/components/ui/ui-base/spinner";
 import { POST as createWorkspace } from "@/app/api/workspace/route";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
