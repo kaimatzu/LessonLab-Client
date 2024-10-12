@@ -43,7 +43,7 @@ const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-backgro
   },
 });
 
-const headerStyles = cva('flex justify-between items-center py-2 px-4', {
+const headerStyles = cva('flex justify-between items-center p-2', {
   variants: {
     overlayType: {
       transaction: 'bg-zinc-900',
@@ -104,7 +104,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
               {isClosable && (
                 <button
                   className={cn(
-                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-yellow-500 rounded-full w-8 h-8 flex items-center justify-center",
+                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-gray-200 rounded-md w-8 h-8 flex items-center justify-center",
                     overlayType === 'chat' ? 'text-foreground' : 'text-foreground'
                   )}
                   type="button"
