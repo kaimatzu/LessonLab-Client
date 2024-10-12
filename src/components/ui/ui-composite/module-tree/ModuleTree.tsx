@@ -246,7 +246,7 @@ const ModuleTree: FC<ModuleTreeProps> = ({ treeFormat }) => {
             root: "list-none p-0 relative",
             placeholder: "relative",
             dropTarget: "outline outline-1 outline-[#1967d2] inset",
-            listItem: "list-none p-0 relative pb-1",
+            listItem: "list-none p-0 relative",
           }}
           tree={treeData}
           sort={false}
