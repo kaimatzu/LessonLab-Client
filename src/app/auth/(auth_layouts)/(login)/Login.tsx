@@ -8,6 +8,7 @@ import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useToast } from '@/components/ui/ui-base/use-toast';
 import { useSocket } from '@/lib/hooks/useServerEvents';
+import HypertextLoading from '@/assets/animated/hypertext-loading';
 
 interface LoginPageProps {
   switchForm: () => void;
@@ -55,7 +56,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Login"} overlayType="auth">
       <div className="pt-4">
         <LoginForm onSwitchToRegister={switchForm} handleSubmit={handleSubmit} />
-        {loading && <p>Loading...</p>}
+        {loading && <div className="flex w-full justify-center"><HypertextLoading progress={99} width={70} height={70}/></div>}
       </div>
     </Overlay>
   );
