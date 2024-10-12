@@ -15,19 +15,30 @@ import MenuItem from '@mui/material/MenuItem';
 import { LuPencil } from 'react-icons/lu';
 import { RiDeleteBinLine } from 'react-icons/ri';
 import { BsThreeDots } from 'react-icons/bs';
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { TextField } from '@mui/material';
+import { PATCH as _updateWorkspaceName, DELETE as _deleteWorkspace } from '../../../app/api/workspace/route';
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
+import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 
 // #region Sidenav
 const Sidenav: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { workspaces, workspacesInitialized, selectWorkspace } = useWorkspaceContext();
+  const { workspaces, workspacesInitialized, selectWorkspace, updateWorkspaceName, removeWorkspace } = useWorkspaceContext();
+  const { push } = useRouteContext();
   const [anchorEl, setAnchorEl] = useState<null | SVGElement>(null);
+  const [editingWorkspaceId, setEditingWorkspaceId] = useState<string | null>(null);
+  const [newWorkspaceName, setNewWorkspaceName] = useState<string>('');
 
   const handleMenuOpen = (event: React.MouseEvent<SVGElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
+    setEditingWorkspaceId(null);
     setAnchorEl(null);
   };
 
@@ -41,6 +52,35 @@ const Sidenav: React.FC = () => {
   };
 
   const isActive = (path: string) => pathname === path;
+
+  const renameWorkspace = (workspaceId: string) => {
+    setAnchorEl(null);
+    setEditingWorkspaceId(workspaceId);
+  }
+
+  const handleRename = (workspaceId: string, newName: string) => {
+    console.log(`Renaming workspace ID ${workspaceId} to ${newName}`);
+    updateWorkspaceName(workspaceId, newName);
+
+    const requestBuilder = new RequestBuilder()
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/${workspaceId}/${newName}`);
+    
+    _updateWorkspaceName(requestBuilder);
+
+    handleMenuClose(); // Close the menu after renaming
+  };
+
+  const handleDelete = (workspaceId: string) => {
+    console.log(`Deleting workspace ID ${workspaceId}`);
+    removeWorkspace(workspaceId);
+
+    const requestBuilder = new RequestBuilder()
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/${workspaceId}`);
+    
+    _deleteWorkspace(requestBuilder);
+
+    handleMenuClose(); // Close the menu after deleting
+  };
 
   const sortedWorkspaces = workspaces.slice().sort((a, b) => Number(b.createdAt) - Number(a.createdAt));
 
@@ -94,6 +134,13 @@ const Sidenav: React.FC = () => {
                       handleMenuOpen={handleMenuOpen}
                       handleMenuClose={handleMenuClose}
                       isWorkspace={true}
+                      workspaceId={workspace.id}
+                      editingId={editingWorkspaceId}
+                      renameWorkspace={renameWorkspace}
+                      newWorkspaceName={newWorkspaceName}
+                      setNewWorkspaceName={setNewWorkspaceName}
+                      onRename={handleRename}
+                      onDelete={handleDelete}
                     />
                   );
                 })}
@@ -148,9 +195,32 @@ interface SidenavItemProps {
   handleMenuOpen?: (event: React.MouseEvent<SVGElement>) => void;  // Add handleMenuOpen prop
   handleMenuClose?: () => void;
   isWorkspace: boolean;
+  workspaceId?: string;
+  editingId?: string | null; // Track the ID of the workspace being edited
+  renameWorkspace?: (workspaceId: string) => void;
+  newWorkspaceName?: string; // New name for the workspace
+  setNewWorkspaceName?: (name: string) => void; // Setter for the new workspace name
+  onRename?: (workspaceId: string, newName: string) => void; // Rename function
+  onDelete?: (workspaceId: string) => void; // Delete function
 }
 
-const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder, onClick, anchorEl, handleMenuOpen, handleMenuClose, isWorkspace}) => {
+const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isCollapsed, icon, locked, animatedBorder,
+  onClick, anchorEl, handleMenuOpen, handleMenuClose, isWorkspace, workspaceId, editingId, renameWorkspace, newWorkspaceName, setNewWorkspaceName,
+  onRename, onDelete }) => {
+
+  const { push } = useRouteContext();
+
+  const handleRenameSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onRename!(editingId!, newWorkspaceName!); // Pass the workspace ID and new name
+  };
+
+  const handleDelete = (e: React.UIEvent) => {
+    e.preventDefault();
+    push('/workspace/new');
+    onDelete!(workspaceId!);
+  }
+  
   return (
     <li>
       {isCollapsed ? (
@@ -170,54 +240,76 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
           </Link>
         </Tooltip>
       ) : (
-        <Link
-          href={href}
-          onClick={onClick}
-          className={`flex items-center no-underline rounded-md my-0.5 mx-1.5 h-[32px] group
-            ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
-                : 'hover:bg-[#E2E4EA]'
-            } duration-100 justify-between py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
-        >
-          <div className="flex flex-row items-center max-w-[200px]">
-            {<div className="mr-3">{icon}</div> || <TbNotes className="mr-2" />}
-            <span>{title}</span>
-            {locked &&
-            <span className="ml-2 scale-75">
-              <Tooltip text={<span className="">Read-Only</span>}>
-                <FaLock />
-              </Tooltip>
-            </span>}
-          </div>
-          {isWorkspace && (
-            <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3] opacity-0 group-hover:opacity-100">
-              <BsThreeDots onClick={(event) => handleMenuOpen ? handleMenuOpen(event) : undefined}/>
-            </div>
+        <div>
+          {editingId === undefined || editingId !== workspaceId ? (
+              <Link
+              href={href}
+              onClick={onClick}
+              className={`flex items-center no-underline rounded-md my-0.5 mx-1.5 h-[32px] group
+                ${isActive ? 'bg-[#dce3fa] text-[#5e77d3] duration-0'
+                    : 'hover:bg-[#E2E4EA]'
+                } duration-100 justify-between py-[6px] px-[10px] ${animatedBorder ? 'border-glow' : ''} text-sm text-center align-center truncate`}
+            >
+              <div className="flex flex-row items-center max-w-[200px]">
+                {icon ? <div className="mr-3">{icon}</div> : <TbNotes className="mr-2" />}
+                <span>{title}</span>
+                {locked &&
+                <span className="ml-2 scale-75">
+                  <Tooltip text={<span className="">Read-Only</span>}>
+                    <FaLock />
+                  </Tooltip>
+                </span>}
+              </div>
+              {isWorkspace && (
+                <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3] opacity-0 group-hover:opacity-100">
+                  <BsThreeDots onClick={(event) => handleMenuOpen ? handleMenuOpen(event) : undefined}/>
+                </div>
+              )}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      backgroundColor: '#f1f3f8', // Custom background color
+                      borderRadius: '8px',           // Rounded corners
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      padding: '6px',
+                    },
+                  },
+                }}
+              >
+                <MenuItem onClick={() => { renameWorkspace!(workspaceId!) }} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
+                  <LuPencil className="mr-2"/>
+                  Rename
+                </MenuItem>
+                <MenuItem onClick={handleDelete} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
+                  <RiDeleteBinLine className="mr-2"/>
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Link>
+          ) : (
+            <form onSubmit={handleRenameSubmit}>
+              {/* <div className="flex-1 truncate"> */}
+                <div className="flex items-center px-1 py-4">
+                  <TextField
+                    value={newWorkspaceName}
+                    onChange={(e) => setNewWorkspaceName!(e.target.value)}
+                    className="flex-grow border rounded resize-none"
+                    placeholder="New name..."
+                    size='small'
+                    rows={1}
+                  />
+                  <CheckIcon className="ml-2 cursor-pointer" onClick={handleRenameSubmit} />
+                  <CloseIcon className="ml-1 cursor-pointer" onClick={handleMenuClose} />
+                </div>
+              {/* </div> */}
+            </form>
           )}
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            slotProps={{
-              paper: {
-                sx: {
-                  backgroundColor: '#f1f3f8', // Custom background color
-                  borderRadius: '8px',           // Rounded corners
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  padding: '6px',
-                },
-              },
-            }}
-          >
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
-              <LuPencil className="mr-2"/>
-              Rename
-            </MenuItem>
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
-              <RiDeleteBinLine className="mr-2"/>
-              Delete
-            </MenuItem>
-          </Menu>
-        </Link>
+  
+        </div>
       )}
     </li>
   );

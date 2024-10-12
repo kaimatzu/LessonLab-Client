@@ -5,15 +5,12 @@ import WorkspaceComponent from '@/components/workspace/workspace';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { usePathname, useRouter } from 'next/navigation';
 import { Workspace } from '@/lib/types/workspace-types';
-import { useSocket } from '@/lib/hooks/useServerEvents';
 
 export default function WorkspacePage() {
-  const { workspaces, workspacesInitialized, removeWorkspace, selectWorkspace } = useWorkspaceContext();
+  const { workspaces, removeWorkspace } = useWorkspaceContext();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);  
-
-  const { socketConnected } = useSocket();
 
   let currentWorkspaceId = pathname.split('/').pop() || '';
   let currentWorkspace = workspaces.find((workspace: Workspace) => workspace.id === currentWorkspaceId);
@@ -75,26 +72,7 @@ export default function WorkspacePage() {
           />
         </svg>
       ) : (currentWorkspace && currentChat &&
-        <>
-          {/* <div className='absolute rounded-md top-2 left-0 z-50 p-2 px-10 bg-white/60 dark:bg-zinc-900 border dark:border-zinc-50/10 border-separate backdrop-blur-sm'>
-            <div className='flex flex-row gap-5 align-middle items-center'>
-              <ChatTitle workspace={currentWorkspace} />
-              {!currentWorkspace.locked &&
-                <button
-                  onClick={() => handleDeleteWorkspace(currentWorkspace.id)}
-                >
-                  <Tooltip text='Delete Workspace' position='bottom'>
-                    <FaTrash
-                      className={`cursor-pointer hover:opacity-50 text-gray-500 dark:text-zinc-200 scale-95 
-                                            ${isDeleting ? 'animate-pulse' : ''}`}
-                    />
-                  </Tooltip>
-
-                </button>}
-            </div>
-          </div> */}
-          <WorkspaceComponent workspace={currentWorkspace} />
-        </>
+        <WorkspaceComponent workspace={currentWorkspace} />
       )}
     </div>
   );

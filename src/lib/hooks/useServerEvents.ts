@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 
-import { updateChatLoadingStatus, addChatHistory, updateChatMessage, replaceChatMessage, addModule, setSelectedModuleId, fetchWorkspaceModuleData, replaceModuleNodeContent } from '@/redux/slices/workspaceSlice';
+import { updateChatLoadingStatus, addChatHistory, replaceChatMessage, addModule, fetchWorkspaceModuleData, replaceModuleNodeContent } from '@/redux/slices/workspaceSlice';
 
 import store, { RootState } from '@/redux/store';
 import { connectSocket as _connectSocket } from '@/redux/slices/webSocketSlice';

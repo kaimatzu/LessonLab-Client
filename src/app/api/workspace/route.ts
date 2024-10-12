@@ -134,3 +134,46 @@ export async function GET(requestBuilder: RequestBuilder) {
       });
   }
 }
+
+export async function PATCH(requestBuilder: RequestBuilder) {
+  requestBuilder
+      // .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces`)
+      .setMethod("PATCH")
+      .setCredentials("include");
+
+  try {
+      const response = await fetch(requestBuilder.build());
+
+      if (response.ok) {
+          return new Response(JSON.stringify({}), { status: 200 });
+      } else {
+          throw new Error("Failed to update workspace, " + response.statusText);
+      }
+  } catch (error) {
+      console.error("Error updating workspace:", error);
+      return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+          status: 500,
+      });
+  }
+}
+
+export async function DELETE(requestBuilder: RequestBuilder) {
+  requestBuilder
+      .setMethod("DELETE")
+      .setCredentials("include");
+
+  try {
+      const response = await fetch(requestBuilder.build());
+
+      if (response.ok) {
+          return new Response(JSON.stringify({}), { status: 204 });
+      } else {
+          throw new Error("Failed to delete workspace, " + response.statusText);
+      }
+  } catch (error) {
+      console.error("Error delete workspace:", error);
+      return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+          status: 500,
+      });
+  }
+}

@@ -2,7 +2,6 @@
 
 "use client";
 
-import { useChat } from "ai/react";
 import { ChatMessage } from "./chat-message";
 import UploadButton from "../../ui/ui-composite/chat/upload-button";
 import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
@@ -14,10 +13,7 @@ import React, {
   useState,
 } from "react";
 import { Tooltip } from "../../ui/ui-composite/chat/tooltip";
-import FileCard from "../../ui/ui-base/file-card";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { FetchedFile } from "@/app/api/files/route";
-// import { Message } from "ai";
 import { Specification, Workspace } from "@/lib/types/workspace-types";
 import { useSocket } from "@/lib/hooks/useServerEvents";
 import { Message } from '@/lib/types/workspace-types';
