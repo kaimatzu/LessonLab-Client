@@ -19,6 +19,10 @@ import MaterialArea from "../ui/ui-composite/material/material-area";
 import { useSocket } from "@/lib/hooks/useServerEvents";
 import { BsThreeDots } from "react-icons/bs";
 import { FaFolderClosed, FaRegFolderClosed } from "react-icons/fa6";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { LuPencil } from "react-icons/lu";
 
 const fetchFileUrls = async (workspaceId: string) => {
   try {
@@ -53,7 +57,15 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
   const [files, setFiles] = useState<FetchedFile[]>([]);
   const [fetchingFiles, setFetchingFiles] = useState(true);
   const [connectionInitialized, setConnectionInitialized] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<null | SVGElement>(null);
 
+  const handleMenuOpen = (event: React.MouseEvent<SVGElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
   // TODO: Change how this is called to use request builder and refactor this to api folder
   const handleDeleteFile = async (documentId: string) => {
     console.log(
@@ -121,8 +133,32 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
                   <span className="max-w-[120px] truncate">{workspace.name}</span>
                 </div>
                 <div className="items-center cursor-pointer pt-1 hover:text-[#5e77d3]">
-                  <BsThreeDots />
+                    <BsThreeDots onClick={(event) => handleMenuOpen(event)}/>
                 </div>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    slotProps={{
+                      paper: {
+                        sx: {
+                          backgroundColor: '#f1f3f8', // Custom background color
+                          borderRadius: '8px',           // Rounded corners
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                          padding: '6px',
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
+                      <LuPencil className="mr-2"/>
+                      Rename
+                    </MenuItem>
+                    <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
+                      <RiDeleteBinLine className="mr-2"/>
+                      Delete
+                    </MenuItem>
+                  </Menu>
               </div>
               <button className="text-white text-sm h-8 px-2 bg-gradient-to-r from-secondary to-primary rounded-sm hover:opacity-65 focus:outline-none"
               onClick={() => {

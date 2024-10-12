@@ -292,6 +292,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
                 isDragging={selected && isDragging}
                 onClick={(e) => handleClick(e, node)}
                 onRename={handleRename} // Pass the handleRename function
+                showMenu={true}
               />
             );
           }}

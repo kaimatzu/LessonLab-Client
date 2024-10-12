@@ -257,19 +257,23 @@ const ModuleTree: FC<ModuleTreeProps> = ({ treeFormat }) => {
           rootId={0}
           insertDroppableFirst={false}
           enableAnimateExpand={true}
-          onDrop={handleDrop}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-          canDrop={(tree, options) => {
-            if (
-              selectedNodes.some(
-                (selectedNode) => selectedNode.id === options.dropTargetId
-              )
-            ) {
-              return false;
-            }
-            return true;
-          }}
+          onDrop={() => { }}
+          onDragStart={() => { }}
+          onDragEnd={() => { }}
+          canDrop={() => { return false; }}
+          // onDrop={handleDrop}
+          // onDragStart={handleDragStart}
+          // onDragEnd={handleDragEnd}
+          // canDrop={(tree, options) => {
+          //   if (
+          //     selectedNodes.some(
+          //       (selectedNode) => selectedNode.id === options.dropTargetId
+          //     )
+          //   ) {
+          //     return false;
+          //   }
+          //   return true;
+          // }}
           placeholderRender={(node, { depth }) => (
             <Placeholder node={node} depth={depth} />
           )}
@@ -286,16 +290,18 @@ const ModuleTree: FC<ModuleTreeProps> = ({ treeFormat }) => {
                 isDragging={selected && isDragging}
                 onClick={(e) => handleClick(e, node)}
                 onRename={handleRename} // Pass the handleRename function
+                showMenu={false}
               />
             );
           }}
-          dragPreviewRender={(monitorProps: DragLayerMonitorProps<ExtendedModuleNode>) => {
-            if (selectedNodes.length > 1) {
-              return <MultipleDragPreview dragSources={selectedNodes} />;
-            }
+          // dragPreviewRender={(monitorProps: DragLayerMonitorProps<ExtendedModuleNode>) => {
+          //   if (selectedNodes.length > 1) {
+          //     return <MultipleDragPreview dragSources={selectedNodes} />;
+          //   }
 
-            return <CustomDragPreview monitorProps={monitorProps} />;
-          }}
+          //   return <CustomDragPreview monitorProps={monitorProps} />;
+          // }}
+          // dragPreviewRender={() => { return }}
         />
       </div>
     </DndProvider>
