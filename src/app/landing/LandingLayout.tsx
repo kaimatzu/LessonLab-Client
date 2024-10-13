@@ -1,15 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import LoginPage from '../auth/(auth_layouts)/(login)/Login'
-import RegisterPage from '../auth/(auth_layouts)/(register)/Register'
 import Link from 'next/link'
 import Image from 'next/image';
 import HypertextLogo from '@/assets/hypertext-logo'
 
 const LandingLayout: React.FC = () => {
-  const [showLogin, setShowLogin] = useState(false)
-  const [showSignUp, setShowSignUp] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
   useEffect(() => {
@@ -25,28 +21,10 @@ const LandingLayout: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex(prevIndex => (prevIndex + 1) % textItems.length)
-    }, 10000)
+    }, 8000)
 
     return () => clearInterval(interval)
   }, [])
-
-  // const goToLogin = () => {
-  //   setShowLogin(true)
-  //   setShowSignUp(false)
-  // }
-
-  // const goToSignUp = () => {
-  //   setShowSignUp(true)
-  //   setShowLogin(false)
-  // }
-
-  const switchForm = () => {
-    setShowLogin(prev => !prev)
-    setShowSignUp(prev => !prev)
-  }
-
-  if (showLogin) return <LoginPage switchForm={switchForm} />
-  if (showSignUp) return <RegisterPage switchForm={switchForm} />
 
   // #region Texts
   const textItems = [
@@ -84,29 +62,15 @@ const LandingLayout: React.FC = () => {
           <HypertextLogo />
           HyperText
         </div>
-        {/* <ul className='flex space-x-10 text-white text-lg'>
-          <li className="hover:text-blue-300 cursor-pointer transition duration-300">About</li>
-          <li className="hover:text-blue-300 cursor-pointer transition duration-300">Organizations</li>
-        </ul> */}
         <div>
           <div className='flex justify-start items-center space-x-20'>
             <Link href={'/auth'}>
               <button
                 className='mr-4 text-white hover:text-blue-300 transition duration-300'
-                // onClick={goToLogin}
               >
                 Login
               </button>
             </Link>
-            {/* <Link href={'/auth'}>
-                  <button
-                    className="mr-bg-gradient-to-r from-[#9AADEC] to-[#5E77D3] text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
-                    onClick={goToSignUp}
-                  >
-                    Sign Up
-                  </button>
-                </Link>
-            */}
           </div>
         </div>
       </nav>
