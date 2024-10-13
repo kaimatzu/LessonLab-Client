@@ -1,4 +1,4 @@
-import AuthLayout from "./(auth_layouts)/AuthLayout";
+// import AuthLayout from "./(auth_layouts)/AuthLayout";
 
 // export default function Page() {
 
@@ -10,10 +10,12 @@ import AuthLayout from "./(auth_layouts)/AuthLayout";
 // };
 
 import React from 'react';
-// import LandingLayout from '../landing/LandingLayout'; 
+import LandingLayout from '../landing/LandingLayout'; 
 
 export default function Page() {
   return (
-    <AuthLayout />
+    <LandingLayout />
+    
   );
+}
 }
