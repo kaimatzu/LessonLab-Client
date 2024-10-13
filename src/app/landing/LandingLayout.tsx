@@ -78,6 +78,7 @@ const LandingLayout: React.FC = () => {
     },
   ];
 
+  // #region Header
   return (
     <div className="flex flex-col justify-center h-screen bg-gradient-to-r from-[#5E77D3] to-[#051A41] w-full">
   <nav className="flex justify-between items-center p-6 bg-gradient-to-r from-[#5E77D3] to-[#051A41] shadow-lg w-full">
@@ -112,6 +113,9 @@ const LandingLayout: React.FC = () => {
       </nav>
 
 
+            {/* 
+            // #region Main
+             */}
       <main className="flex-grow flex flex-col justify-center items-start px-16 md:px-0 lg:px-24 text-white">
   <div className="w-full h-auto mb-4">
     <svg
@@ -143,9 +147,9 @@ const LandingLayout: React.FC = () => {
       <text
         fontSize="35"
         fontWeight="bold"
-        fontFamily="Sansation"
         fill="hsla(0, 0%, 100%, 1)"
         dy="-80"
+        className='font-sans'
       >
         <textPath xlinkHref={`#path${currentIndex}`}>
           {textItems[currentIndex].title}
