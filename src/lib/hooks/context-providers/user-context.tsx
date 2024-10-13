@@ -77,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const pathname = getCurrentPath();
 
       if (!authToken) {
-        if (!pathname.startsWith('/auth')) {
+        if (!pathname.startsWith('/auth') && !pathname.startsWith('/')) {
           push('/auth'); // Redirect to /auth if no authToken
         }
         return;
