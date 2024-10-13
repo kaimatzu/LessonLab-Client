@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Sansation:wght@400;700&display=swap');
+
+
 @layer base {
   :root {
     --foreground-rgb: 0, 0, 0;
@@ -27,6 +30,7 @@
     --input: 0 0% 89.8%;
     --ring: 47.9 95.8% 53.1%;
     --radius: 0.75rem;
+    --font-family: 'Sansation', sans-serif;
   }
 
   .dark{
@@ -62,6 +66,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family);
   }
 }
 
@@ -76,8 +81,13 @@
     scrollbar-width: none;  /* Firefox */
   }
 }
+.no-scroll {
+  overflow: hidden;
+}
+
 
 body {
+  margin: 0;
   color: rgb(var(--foreground-rgb));
   /* background: linear-gradient(
       to bottom,
@@ -93,3 +103,10 @@ body {
     text-wrap: balance;
   }
 }
+/* 
+.gradient-background {
+  background: linear-gradient(to right, #5E77D3 0%, #2C4C7A 50%, #051A41 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+} */
