@@ -1,4 +1,4 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import icon from '@/assets/icon.png';
 import { createCheckoutSession, Item as PaymongoItem } from '@/app/api/transaction/paymongo';
@@ -12,7 +12,7 @@ interface ItemProps {
 }
 
 export const Item: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWindow }) => {
-  const { connectSocket, createTransaction } = useUserContext();
+  const { createTransaction } = useUserContext();
   
   const formattedAmount = (item.amount / 100).toLocaleString(undefined, {
     minimumFractionDigits: 2,

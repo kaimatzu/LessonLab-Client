@@ -8,6 +8,7 @@ import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useSocket } from '@/lib/hooks/useServerEvents';
 import { toast } from '@/components/ui/ui-base/use-toast';
+import HypertextLoading from '@/assets/animated/hypertext-loading';
 
 interface RegisterPageProps {
   switchForm: () => void;
@@ -56,8 +57,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
     <Overlay isOpen={true} onClose={() => { }} overlayName={"Register"} overlayType="auth">
       <div className="pt-4">
         <RegisterForm onSwitchToLogin={switchForm} handleSubmit={handleSubmit} />
-        {loading && <p>Loading...</p>}
-        {/*error && <p>{error}</p>*/}
+        {loading && <div className="flex w-full justify-center"><HypertextLoading progress={99} width={70} height={70}/></div>}
       </div>
     </Overlay>
   );

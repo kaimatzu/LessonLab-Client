@@ -12,6 +12,9 @@ import store from '@/redux/store';
 import { replaceChatMessage } from '@/redux/slices/workspaceSlice';
 import { PATCH as _updateChatMessage } from '@/app/api/chat/route';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
+import CheckIcon from '@mui/icons-material/Check';
+import { SlRefresh } from "react-icons/sl";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 interface ModuleOutlineCardProps {
   moduleId: string;
@@ -157,8 +160,8 @@ const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistan
 
   // #region JSX
   return (
-    <div className="w-full h-fit border border-gray-300 rounded p-2 bg-transparent">
-      <div className="flex justify-between items-center bg-gray-100 p-2 rounded">
+    <div className="w-full h-fit rounded bg-transparent">
+      <div className="flex justify-between items-center bg-gray-100 rounded">
         {treeFormat ? treeFormat.name : (
           <span className="loading-text">Creating Module Outline</span>
         )}
@@ -167,33 +170,54 @@ const ModuleOutlineCard: FC<ModuleOutlineCardProps> = memo(({ moduleId, assistan
       <div className="mt-2">
         {treeFormat && <ModuleTree treeFormat={treeFormat} />}
       </div>
-      <div className="flex justify-end items-center bg-gray-200 p-2 rounded mt-2">
+      <div className="flex justify-end items-center rounded pt-4 my-2 border-t border-gray-300">
         <Button 
-          variant="contained" 
-          color="inherit" 
-          onClick={handleRegenerate} 
+          onClick={handleSubmit} 
           disabled={!treeFormat || !isLatestMessage} 
-          sx={{ mr: 2, bgcolor: !treeFormat || !isLatestMessage ? 'grey.700' : 'grey.500' }}
+          startIcon={<CheckIcon/>}
+          sx={{ mr: 2, border: 1, borderColor: '#d1d5db', color: !treeFormat || !isLatestMessage ? '#d1d5db' : '#2f2f2f',
+            '&.Mui-disabled': {
+            borderColor: '#d1d5db',
+            color: '#d1d5db',
+            },
+            ':hover': {
+            borderColor: '#5E77D3',
+            color: '#5E77D3',
+            },
+           }}
+        >
+          Submit
+        </Button>
+        <Button 
+          onClick={handleRegenerate} 
+          disabled={!treeFormat || !isLatestMessage}
+          startIcon={<SlRefresh/>}
+          sx={{ mr: 2, color: !treeFormat || !isLatestMessage ? '#d1d5db' : '#2f2f2f',
+            '&.Mui-disabled': {
+            borderColor: '#d1d5db',
+            color: '#d1d5db',
+            },
+            ':hover': {
+            backgroundColor: '#E2E4EA',
+            },
+           }}
         >
           Regenerate
         </Button>
         <Button 
-          variant="contained" 
-          color="error" 
           onClick={handleDiscard} 
-          disabled={!treeFormat || !isLatestMessage} 
-          sx={{ mr: 2, bgcolor: !treeFormat || !isLatestMessage ? 'red.700' : 'red.500' }}
+          disabled={!treeFormat || !isLatestMessage}
+          startIcon={<RiDeleteBinLine/>}
+          sx={{ color: !treeFormat || !isLatestMessage ? '#d1d5db' : 'red',
+            '&.Mui-disabled': {
+            color: '#d1d5db',
+            },
+            ':hover': {
+            backgroundColor: '#E2E4EA',
+            },
+           }}
         >
           Discard
-        </Button>
-        <Button 
-          variant="contained" 
-          color="success" 
-          onClick={handleSubmit} 
-          disabled={!treeFormat || !isLatestMessage} 
-          sx={{ bgcolor: !treeFormat || !isLatestMessage ? 'green.700' : 'green.500' }}
-        >
-          Submit
         </Button>
       </div>
     </div> 

@@ -10,16 +10,12 @@ import {
   Tree,
   NodeModel,
   isAncestor,
-  DragLayerMonitorProps,
 } from "@minoru/react-dnd-treeview";
 import { ExtendedModuleNode } from "./types";
 import { Module } from "./types";
 import { CustomNode } from "./CustomNode";
-import { CustomDragPreview } from "./CustomDragPreview";
-import { MultipleDragPreview } from "./MultipleDragPreview";
 import Placeholder from "./Placeholder";
 import useTreeOpenHandler from "./useTreeOpenHandler";
-import sampleModules from "./sample-modules.json";
 import { processModuleNodes } from "./data-processing";
 
 interface ModuleTreeProps {
@@ -250,7 +246,7 @@ const ModuleTree: FC<ModuleTreeProps> = ({ treeFormat }) => {
             root: "list-none p-0 relative",
             placeholder: "relative",
             dropTarget: "outline outline-1 outline-[#1967d2] inset",
-            listItem: "list-none p-0 relative pb-1",
+            listItem: "list-none p-0 relative",
           }}
           tree={treeData}
           sort={false}

@@ -28,11 +28,11 @@ import RAGEmptyContextNotification from '@/components/ui/ui-base/directives/rag-
 const iconMap = new Map([
   ['user', new Map([
     ['standard', <IconUser className="size-6 text-black dark:text-zinc-100" />],
-    ['action', <InfoIcon sx={{ fontSize: '1.5rem', color: '#000000', backgroundColor: 'transparent' }} />],
+    ['action', <InfoIcon sx={{ fontSize: '1.5rem', color: '#9AADEC', backgroundColor: 'transparent' }} />],
   ])],
   ['assistant', new Map([
     ['standard', <IconPinecone className="size-6 text-primary-foreground" />],
-    ['action', <AnnouncementIcon sx={{ fontSize: '1.5rem', color: '#000000', backgroundColor: 'transparent' }} />],
+    ['action', <AnnouncementIcon sx={{ fontSize: '1.5rem', color: '#9AADEC', backgroundColor: 'transparent' }} />],
   ])],
 ]);
 
@@ -49,23 +49,30 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
     }
     return null;
   };
+  
+  const isUser = message.role === 'user';
 
   return (
     <div
-      className={cn('group relative mb-4 flex items-start py-5')}
+      className={cn(
+        'group relative mb-6 flex items-start',
+        isUser ? 'justify-end' : 'justify-start'
+      )}
       {...props}
     >
+      {!isUser && (
+        <div className="mr-2 flex items-center justify-center size-6 shrink-0 select-none rounded-md text-primary-foreground">
+          {renderIcon()}
+        </div>
+      )}
+
+      {/* Chat bubble */}
       <div
         className={cn(
-          'flex size-6 shrink-0 select-none items-center justify-center rounded-md',
-          message.role === 'user' || message.type === 'action'
-            ? 'bg-background'
-            : 'bg-primary text-primary-foreground'
+          'max-w-[70%] p-3 rounded-lg border',
+          isUser ? 'bg-[#DCE3FA] border-[#5E77D3] text-[#5E77D3] rounded-br-none' : 'bg-white border-gray-300 text-black rounded-bl-none'
         )}
       >
-        {renderIcon()}
-      </div>
-      <div className="flex-1 px-1 ml-4 space-y-2 overflow-visible">
         <MemoizedReactMarkdown
           className="prose break-words prose-p:leading-relaxed prose-pre:p-0 text-black dark:text-zinc-100"
           remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkDirectiveRehype]}

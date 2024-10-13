@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -105,7 +103,7 @@ export const CustomNode: React.FC<Props> = ({
 
   return (
     <div
-      className={`flex items-center h-15 hover:bg-[#E2E4EA] cursor-pointer truncate rounded-sm group ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
+      className={`flex items-center h-10 hover:bg-[#E2E4EA] cursor-pointer truncate rounded-sm group ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
       style={{ paddingInlineStart: indent }}
       data-testid={`${testIdPrefix}custom-node-${id}`}
       onClick={handleClick}
@@ -142,7 +140,7 @@ export const CustomNode: React.FC<Props> = ({
           </div>
         ) : (
           // <Typography variant="body2">{labelText}</Typography>
-          <h2 className="max-w-[172px] text-sm truncate">{labelText}</h2>
+          <h2 className="max-w-[230px] text-sm truncate">{labelText}</h2>
         )}
       </div>
       {props.showMenu && 
