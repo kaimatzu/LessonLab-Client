@@ -58,16 +58,14 @@ const LandingLayout: React.FC = () => {
   return (
     <div className='flex flex-col justify-center h-screen bg-gradient-to-r from-[#5E77D3] to-[#051A41] w-full'>
       <nav className='flex justify-between items-center p-6 bg-gradient-to-r from-[#5E77D3] to-[#051A41] shadow-lg w-full'>
-        <div className='text-white text-2xl font-light flex flex-row gap-2'>
+        <div className='text-white text-2xl font-light flex flex-row gap-1'>
           <HypertextLogo />
           HyperText
         </div>
         <div>
           <div className='flex justify-start items-center space-x-20'>
             <Link href={'/auth'}>
-              <button
-                className='mr-4 text-white hover:text-blue-300 transition duration-300'
-              >
+              <button className='mr-4 text-white hover:text-blue-300 transition duration-300'>
                 Login
               </button>
             </Link>
