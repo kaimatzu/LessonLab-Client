@@ -14,7 +14,9 @@ const blockHandleComponent: Component<BlockHandleProps> = ({
   addIcon,
   handleIcon,
 }) => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const ref = useRef<HTMLDivElement>()
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     ref.current?.classList.remove('active')
   })

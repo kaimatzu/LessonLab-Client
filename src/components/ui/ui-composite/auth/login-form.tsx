@@ -51,7 +51,7 @@ export default function LoginForm({ onSwitchToRegister, handleSubmit }: LoginFor
         </div>
         <button type="submit" className="text-xs bg-gradient-to-r from-secondary to-primary p-1 px-4 rounded-lg md:text-base text-white hover:opacity-65 focus:outline-none items-center text-center justify-start mt-10 h-11">Log In</button>
         <div className="flex justify-center space-x-2 mt-8">
-          <div className="text-black font-bold">Don't have an account? </div><div className="text-blue-500 hover:text-blue-700 font-semibold ml-1 cursor-pointer" onClick={onSwitchToRegister}>Sign Up Here</div>
+          <div className="text-black font-bold">Don&#39;t have an account? </div><div className="text-blue-500 hover:text-blue-700 font-semibold ml-1 cursor-pointer" onClick={onSwitchToRegister}>Sign Up Here</div>
         </div>
       </form>
     </div>

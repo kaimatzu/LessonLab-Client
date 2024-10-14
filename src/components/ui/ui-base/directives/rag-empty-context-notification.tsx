@@ -6,6 +6,7 @@ interface RAGEmptyContextNotificationProps {
   notificationMessage: string;
 }
 
+// eslint-disable-next-line react/display-name
 const RAGEmptyContextNotification: FC<RAGEmptyContextNotificationProps> = memo(({ notificationMessage }) => {
   return (
     <Card sx={{ maxWidth: 600, margin: 'auto', borderRadius: 2, boxShadow: 3 }}>

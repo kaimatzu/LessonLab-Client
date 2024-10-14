@@ -38,7 +38,6 @@ class MenuView implements PluginView {
     this.#content.hide = this.hide
     this.#content.ctx = ctx
     this.#content.config = config
-    // eslint-disable-next-line ts/no-this-alias
     const self = this
     this.#slashProvider = new SlashProvider({
       content: this.#content,
