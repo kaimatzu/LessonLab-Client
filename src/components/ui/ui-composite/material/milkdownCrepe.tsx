@@ -169,7 +169,7 @@ const CrepeEditorWrapper: FC = () => {
 };
 
   return (
-    <div className="relative h-full w-full bg-[#F1F3F8]">
+    <div className="relative h-full w-full max-w-[825px] bg-[#F1F3F8]">
         <>
           <div className="m-2 p-2 z-10">
             <div className="flex justify-end mt-2">
