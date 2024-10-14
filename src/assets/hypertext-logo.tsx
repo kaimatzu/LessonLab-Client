@@ -31,4 +31,4 @@ const HypertextLogo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
     );
   };
   
-  export default HypertextLogo;
+export default HypertextLogo;
