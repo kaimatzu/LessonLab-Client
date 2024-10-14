@@ -256,7 +256,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
 
   return (
     <DndProvider backend={MultiBackend} options={getBackendOptions()}>
-      <div className="px-2">
+      <div className="px-2 !overflow-y-auto custom-scrollbar">
         <Tree
           ref={ref}
           classes={{
