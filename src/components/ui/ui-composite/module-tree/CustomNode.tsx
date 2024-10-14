@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import TextField from "@mui/material/TextField";
@@ -17,6 +17,9 @@ import { SlRefresh } from "react-icons/sl";
 import { RiAddFill } from "react-icons/ri";
 import { PiNoteBlankLight } from "react-icons/pi";
 import HypertextLogo from '@/assets/hypertext-logo';
+import { updateModuleName as _updateModuleNodeName, insertNode as _insertModuleNode, deleteModuleNode as _deleteModuleNode } from "@/app/api/workspace/module/route";
+import {useWorkspaceContext} from "@/lib/hooks/context-providers/workspace-context";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 type Props = RenderParams & {
   node: NodeModel<ExtendedModuleNode>;
@@ -32,12 +35,21 @@ export const CustomNode: React.FC<Props> = ({
   testIdPrefix = "",
   ...props
 }) => {
-  const { id, droppable, data } = props.node;
+  const { id, droppable, data, parent } = props.node;
   const indent = props.depth * 24;
 
   const [visibleInput, setVisibleInput] = useState(false);
   const [labelText, setLabelText] = useState<string>(props.node.text || props.node.data?.title!);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const { updateModuleNodeTitle, selectedModuleId, selectedWorkspace, insertModuleNode, removeModuleNode } = useWorkspaceContext();
+
+  const stopAllPropagation =  (event: any) =>  {
+    event.preventDefault();
+    event.stopPropagation();
+    event.nativeEvent.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+  }
 
   const handleClick = (e: React.MouseEvent) => {
     props.onClick(e, props.node);
@@ -49,6 +61,7 @@ export const CustomNode: React.FC<Props> = ({
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    stopAllPropagation(event);
     setAnchorEl(event.currentTarget);
   };
 
@@ -72,25 +85,35 @@ export const CustomNode: React.FC<Props> = ({
     window.removeEventListener("keydown", handleKeyDown);
   };
 
-  const handleChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLabelText(e.target.value);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = (newTitle: string) => {
     setVisibleInput(false);
     props.onRename(id, labelText); // Call the onRename function passed as a prop
+    console.log("New title prop: ", newTitle);
+
+    updateModuleNodeTitle(selectedModuleId!, props.node.id as string, selectedWorkspace!.id, labelText);
+
+    console.log("Data", props.node.id as string, selectedModuleId!, selectedWorkspace!.id, labelText);
+
+    const requestBuilder = new RequestBuilder()
+      .setBody(JSON.stringify({
+        moduleNodeId: props.node.id,
+        title: labelText,
+      }))
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/modules/update/node/title`);
+
+    _updateModuleNodeName(requestBuilder)
 
     // Remove keydown listeners
     window.removeEventListener("keydown", handleKeyDown);
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(labelText);
     } else if (e.key === "Escape") {
       handleCancel();
     }
-  };
+  }, [handleSubmit, handleCancel, labelText]);
 
   useEffect(() => {
     return () => {
@@ -99,11 +122,11 @@ export const CustomNode: React.FC<Props> = ({
         window.removeEventListener("keydown", handleKeyDown);
       }
     };
-  }, [visibleInput]);
+  }, [handleKeyDown, visibleInput]);
 
   return (
     <div
-      className={`flex items-center h-10 hover:bg-[#E2E4EA] cursor-pointer truncate rounded-sm group ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
+      className={`flex items-center my-1 h-10 hover:bg-[#E2E4EA] cursor-pointer truncate rounded-sm group ${props.isSelected ? 'text-[#5e77d3]' : ''} ${props.isDragging ? 'opacity-50' : ''}`}
       style={{ paddingInlineStart: indent }}
       data-testid={`${testIdPrefix}custom-node-${id}`}
       onClick={handleClick}
@@ -124,26 +147,31 @@ export const CustomNode: React.FC<Props> = ({
       </div>
       <div className="flex-1 truncate">
         {visibleInput ? (
-          <div className="flex items-center">
+          <div className="flex items-center px-1 py-4">
             <TextField
-              className="flex-grow"
+              className="flex-grow border rounded resize-none"
               value={labelText}
-              onChange={handleChangeText}
+              onChange={(event) => {
+                console.log("Node name", event.target.value);
+                setLabelText(event.target.value);
+              }}
               size="small"
             />
-            <IconButton onClick={handleSubmit} disabled={labelText === ""}>
-              <CheckIcon />
-            </IconButton>
-            <IconButton onClick={handleCancel}>
-              <CloseIcon />
-            </IconButton>
+            <CheckIcon className="ml-2 cursor-pointer"  onClick={(event) => {
+              stopAllPropagation(event);
+              handleSubmit(labelText);
+            }} />
+            <CloseIcon className="ml-1 cursor-pointer" onClick={(event) => {
+              stopAllPropagation(event);
+              handleCancel();
+            }} />
           </div>
         ) : (
           // <Typography variant="body2">{labelText}</Typography>
           <h2 className="max-w-[230px] text-sm truncate">{labelText}</h2>
         )}
       </div>
-      {props.showMenu && 
+      {props.showMenu && !visibleInput &&
         <div className="opacity-0 group-hover:opacity-100">
           <IconButton
             aria-controls="node-menu"
@@ -159,7 +187,10 @@ export const CustomNode: React.FC<Props> = ({
             anchorEl={anchorEl}
             keepMounted
             open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            onClose={(event: Event) => {
+              stopAllPropagation(event);
+              handleMenuClose();
+            }}
             slotProps={{
               paper: {
                 sx: {
@@ -171,7 +202,10 @@ export const CustomNode: React.FC<Props> = ({
               },
             }}
           >
-            <MenuItem onClick={handleRename} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
+            <MenuItem onClick={(event) => {
+              stopAllPropagation(event);
+              handleRename();
+            }} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
               <LuPencil className="mr-2"/>
               Rename
             </MenuItem>
@@ -179,7 +213,36 @@ export const CustomNode: React.FC<Props> = ({
               <SlRefresh className="mr-2"/>
               Regenerate Content
             </MenuItem>
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
+            <MenuItem onClick={async (event)=>{
+              stopAllPropagation(event);
+              setAnchorEl(null);
+
+              const requestBuilder = new RequestBuilder()
+                  .setBody(JSON.stringify({
+                    parentNodeId: id as string,
+                    moduleId: selectedModuleId,
+                    content: '',
+                    title: 'Untitled',
+                  }));
+
+              const response = await _insertModuleNode(requestBuilder);
+
+              if (response.ok) {
+                const responseBody = await response.text();
+                const responseData = JSON.parse(responseBody);
+                console.log("Data:", responseData);
+
+                insertModuleNode(selectedWorkspace!.id, selectedModuleId!, {
+                  id: responseData.moduleNodeID as string,
+                  parent: id as string,
+                  title: 'Untitled',
+                  content: '',
+                  description: 'new node',
+                  children: [],
+                });
+              }
+
+            }} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
               <RiAddFill className="w-4 h-4 mr-2"/>
               Add Sub-content
             </MenuItem>
@@ -188,12 +251,22 @@ export const CustomNode: React.FC<Props> = ({
               <HypertextLogo width={16} height={16} className="mr-2"/>
               Generate Sub-content
             </MenuItem>
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
-              <PiNoteBlankLight className="mr-2"/>
-              Generate Assessment
-            </MenuItem>
+            {/*<MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>*/}
+            {/*  <PiNoteBlankLight className="mr-2"/>*/}
+            {/*  Generate Assessment*/}
+            {/*</MenuItem>*/}
             <Divider />
-            <MenuItem onClick={()=>{}} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
+            <MenuItem onClick={(event)=>{
+              stopAllPropagation(event);
+              console.log("Delete data", selectedWorkspace!.id, selectedModuleId!, id as string)
+              removeModuleNode(selectedWorkspace!.id, selectedModuleId!, id as string);
+              setAnchorEl(null);
+
+              const requestBuilder = new RequestBuilder()
+                  .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/modules/delete/node/${id}`);
+
+              _deleteModuleNode(requestBuilder);
+            }} sx={{ fontSize: '0.875rem', color: 'red', borderRadius: '8px' }}>
               <RiDeleteBinLine className="mr-2"/>
               Delete
             </MenuItem>

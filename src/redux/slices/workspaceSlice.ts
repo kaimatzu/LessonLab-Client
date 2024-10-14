@@ -1,15 +1,23 @@
 // redux/workspaceSlice.ts
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-import { GET as getWorkspaces } from '@/app/api/workspace/route';
-import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
-import { POST as _addWorkspaceModule, insertNode as _insertNode, GET as _getWorkspaceModules, GET as _getWorkspaceModuleData } from "@/app/api/workspace/module/route";
-import { GET as _getChatHistory } from "@/app/api/chat/route"
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from '../store';
+import {GET as getWorkspaces} from '@/app/api/workspace/route';
+import {GET as _getSpecifications} from "@/app/api/workspace/specification/route";
+import {GET as _getWorkspaceModules, GET as _getWorkspaceModuleData} from "@/app/api/workspace/module/route";
+import {GET as _getChatHistory} from "@/app/api/chat/route"
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
-import { MessageRole, Page, Specification, Workspace, Message, Module, MessageType, ModuleNode } from '@/lib/types/workspace-types';
-import { transformModuleDataToTreeFormat } from '@/components/ui/ui-composite/module-tree/data-processing';
-import { current } from 'immer';
-import { createSelector } from 'reselect';
+import {
+  Message,
+  MessageRole,
+  MessageType,
+  Module,
+  ModuleNode,
+  Specification,
+  Workspace
+} from '@/lib/types/workspace-types';
+import {transformModuleDataToTreeFormat} from '@/components/ui/ui-composite/module-tree/data-processing';
+import {current} from 'immer';
+import {createSelector} from 'reselect';
 
 interface WorkspaceState {
   workspaces: Workspace[];
@@ -18,12 +26,10 @@ interface WorkspaceState {
   selectedSpecificationId: string | null;
   selectedModuleId: string | null;
   selectedModuleNodeId: string | null;
-  selectedPageId: string | null;
   loading: boolean;
   specificationsLoading: boolean;
   modulesLoading: boolean;
   moduleDataLoading: boolean;
-  pagesLoading: boolean;
   chatHistoryLoading: boolean,
   chatLoading: boolean;
   selectedModuleData: any;
@@ -36,12 +42,10 @@ const initialState: WorkspaceState = {
   selectedSpecificationId: null,
   selectedModuleId: null,
   selectedModuleNodeId: null,
-  selectedPageId: null,
   loading: false,
   specificationsLoading: false,
   modulesLoading: false,
   moduleDataLoading: false,
-  pagesLoading: false,
   chatHistoryLoading: false,
   chatLoading: false,
   selectedModuleData: null,
@@ -58,7 +62,7 @@ export const fetchWorkspaces = createAsyncThunk(
 
     if (response && response.ok) {
       const data = await response.json();
-      const fetchedWorkspaces = data.map((workspace: any) => ({
+      return data.map((workspace: any) => ({
         id: workspace.WorkspaceID,
         name: workspace.WorkspaceName,
         createdAt: workspace.CreatedAt,
@@ -66,7 +70,6 @@ export const fetchWorkspaces = createAsyncThunk(
         locked: false,
         // workspaceType: workspace.WorkspaceType,
       }));
-      return fetchedWorkspaces;
     }
     return [];
   }
@@ -167,6 +170,19 @@ const parseContent = (content: string) => {
   return parsedContent;
 };
 
+const findNode = (nodes: ModuleNode[], nodeId: string): ModuleNode | undefined => {
+  for (const node of nodes) {
+    if (node.id === nodeId) {
+      return node; // Node found
+    }
+    const foundInChildren = findNode(node.children, nodeId);
+    if (foundInChildren) {
+      return foundInChildren; // Node found in children
+    }
+  }
+  return undefined; // Node not found
+};
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
@@ -183,9 +199,6 @@ const workspaceSlice = createSlice({
     },
     setSelectedModuleNodeId: (state, action: PayloadAction<string | null>) => {
       state.selectedModuleNodeId = action.payload;
-    },
-    setSelectedPageId: (state, action: PayloadAction<string | null>) => {
-      state.selectedPageId = action.payload;
     },
     updateWorkspaceName: (state, action: PayloadAction<{ workspaceId: string, newName: string }>) => {
       const { workspaceId, newName } = action.payload;
@@ -277,48 +290,6 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.specifications = state.selectedWorkspace.specifications.filter(spec => spec.id !== specificationId);
       }
     },
-    addLessonPage: (state, action: PayloadAction<{ lessonId: string, page: Page }>) => {
-      const { lessonId, page } = action.payload;
-      const workspace = state.workspaces.find(ws => ws.id === lessonId);
-      if (workspace) {
-        workspace.pages.push(page);
-      }
-      if (state.selectedWorkspace && state.selectedWorkspace.id === lessonId) {
-        state.selectedWorkspace.pages.push(page);
-      }
-    },
-    updateLessonPage: (state, action: PayloadAction<{ lessonId: string, updatedPage: Page }>) => {
-      const { lessonId, updatedPage } = action.payload;
-      const workspace = state.workspaces.find(ws => ws.id === lessonId);
-      if (workspace) {
-        const pageIndex = workspace.pages.findIndex(page => page.id === updatedPage.id);
-        if (pageIndex > -1) {
-          workspace.pages[pageIndex] = updatedPage;
-        }
-      }
-      if (state.selectedWorkspace && state.selectedWorkspace.id === lessonId) {
-        const pageIndex = state.selectedWorkspace.pages.findIndex(page => page.id === updatedPage.id);
-        if (pageIndex > -1) {
-          state.selectedWorkspace.pages[pageIndex] = updatedPage;
-        }
-      }
-    },
-    updateLessonPageTitle: (state, action: PayloadAction<{ lessonId: string, pageId: string, title: string }>) => {
-      const { lessonId, pageId, title } = action.payload;
-      const workspace = state.workspaces.find(ws => ws.id === lessonId);
-      if (workspace) {
-        const page = workspace.pages.find(page => page.id === pageId);
-        if (page) {
-          page.title = title;
-        }
-      }
-      if (state.selectedWorkspace && state.selectedWorkspace.id === lessonId) {
-        const page = state.selectedWorkspace.pages.find(page => page.id === pageId);
-        if (page) {
-          page.title = title;
-        }
-      }
-    },
     updateChatLoadingStatus: (state, action: PayloadAction<boolean>) => {
       state.chatLoading = action.payload;
     },
@@ -366,6 +337,150 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.modules.push(module);
       }
     },
+    updateModuleName: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; newName: string }>) => {
+      const { workspaceId, moduleId, newName } = action.payload;
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+
+      if (workspace) {
+        const md = workspace.modules.find(mod => mod.id === moduleId);
+
+        if (md) {
+          md.name = newName;
+        }
+      }
+
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const selectedModule = state.selectedWorkspace.modules.find(mod => mod.id === moduleId);
+
+        if (selectedModule) {
+          selectedModule.name = newName;
+        }
+      }
+    },
+    deleteModule: (state, action: PayloadAction<{ workspaceId: string; moduleId: string }>) => {
+      const { workspaceId, moduleId } = action.payload;
+
+      // Find the workspace
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+
+      if (workspace) {
+        // Find the index of the module to delete
+        const moduleIndex = workspace.modules.findIndex(mod => mod.id === moduleId);
+
+        // If the module exists, remove it
+        if (moduleIndex !== -1) {
+          workspace.modules.splice(moduleIndex, 1);
+        }
+      }
+
+      // Optionally, also remove from selectedWorkspace if it is the current workspace
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const selectedModuleIndex = state.selectedWorkspace.modules.findIndex(mod => mod.id === moduleId);
+
+        if (selectedModuleIndex !== -1) {
+          state.selectedWorkspace.modules.splice(selectedModuleIndex, 1);
+        }
+      }
+    },
+    insertNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; newNode: ModuleNode }>) => {
+      const { workspaceId, moduleId, newNode } = action.payload;
+
+      // Find the workspace
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+
+      if (workspace) {
+        // Find the module
+        const md = workspace.modules.find(md => md.id === moduleId);
+
+        if (md) {
+          if (newNode.parent) {
+            // If the new node has a parent, find the parent node and insert as a child
+            const parentNode = findNode(md.nodes, newNode.parent);
+            if (parentNode) {
+              parentNode.children.push(newNode);
+            } else {
+              console.error("Parent node not found");
+            }
+          } else {
+            // If no parent, push it as a top-level node
+            md.nodes.push(newNode);
+          }
+        } else {
+          console.error("Module not found");
+        }
+      } else {
+        console.error("Workspace not found");
+      }
+
+      // Optionally, also insert the node into the selected workspace if it matches
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const selectedModule = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+
+        if (selectedModule) {
+          if (newNode.parent) {
+            const selectedParentNode = findNode(selectedModule.nodes, newNode.parent);
+            if (selectedParentNode) {
+              selectedParentNode.children.push(newNode);
+            } else {
+              console.error("Parent node not found in selected workspace");
+            }
+          } else {
+            selectedModule.nodes.push(newNode);
+          }
+        }
+      }
+    },
+    deleteNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; nodeId: string }>) => {
+      const { workspaceId, moduleId, nodeId } = action.payload;
+
+      // Helper function to recursively search and delete a node
+      const deleteNodeRecursively = (nodes: ModuleNode[], nodeIdToDelete: string): boolean => {
+        const index = nodes.findIndex(node => node.id === nodeIdToDelete);
+        if (index !== -1) {
+          nodes.splice(index, 1); // Remove the node from the array
+          return true; // Node was found and deleted
+        }
+
+        // Check children of each node
+        for (const node of nodes) {
+          if (deleteNodeRecursively(node.children, nodeIdToDelete)) {
+            return true; // Node was found and deleted in children
+          }
+        }
+        return false; // Node not found
+      };
+
+      // Find the workspace
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+
+      if (workspace) {
+        // Find the module
+        const md = workspace.modules.find(md => md.id === moduleId);
+
+        if (md) {
+          const success = deleteNodeRecursively(md.nodes, nodeId); // Start recursive deletion
+          if (!success) {
+            console.error("Node not found");
+          }
+        } else {
+          console.error("Module not found");
+        }
+      } else {
+        console.error("Workspace not found");
+      }
+
+      // Optionally, also delete the node from the selected workspace if it matches
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const selectedModule = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+
+        if (selectedModule) {
+          const success = deleteNodeRecursively(selectedModule.nodes, nodeId); // Start recursive deletion
+          if (!success) {
+            console.error("Node not found in selected workspace");
+          }
+        }
+      }
+    },
     replaceModuleNodeContent: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, content: string }>) => {
       const { workspaceId, moduleId, moduleNodeId, content } = action.payload;
     
@@ -387,9 +502,9 @@ const workspaceSlice = createSlice({
     
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
       if (workspace) {
-        const module = workspace.modules.find(md => md.id === moduleId);
-        if (module) {
-          const success = findAndUpdateNode(module.nodes, moduleNodeId, content); // Traverse and update the content
+        const md = workspace.modules.find(md => md.id === moduleId);
+        if (md) {
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, content); // Traverse and update the content
           if (!success) {
             console.error("Replacing module node content failed. Module node not found");
           }
@@ -399,9 +514,9 @@ const workspaceSlice = createSlice({
       }
     
       if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
-        const module = state.selectedWorkspace.modules.find(md => md.id === moduleId);
-        if (module) {
-          const success = findAndUpdateNode(module.nodes, moduleNodeId, content); // Traverse and update the content
+        const md = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+        if (md) {
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, content); // Traverse and update the content
           if (!success) {
             console.error("Replacing module node content failed. Module node not found");
           }
@@ -409,14 +524,52 @@ const workspaceSlice = createSlice({
           console.error("Replacing module node content failed. Module not found");
         }
       }
-    },    
-    // TODO: Implement update of quiz data
-    // TODO: Figure out how to store quiz data
-    updateQuizItems: () => {
-
     },
-    updateQuizResults: () => {
+    replaceModuleNodeTitle: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, title: string }>) => {
+      const { workspaceId, moduleId, moduleNodeId, title } = action.payload;
 
+      console.log("Redux node title:", workspaceId, moduleId, moduleNodeId, title);
+
+      // Recursive function to find and update the node content
+      const findAndUpdateNode = (nodes: ModuleNode[], nodeId: string, newTitle: string): boolean => {
+        for (const node of nodes) {
+          if (node.id === nodeId) {
+            node.title = newTitle;
+            return true;
+          }
+          if (node.children && node.children.length > 0) {
+            if (findAndUpdateNode(node.children, nodeId, newTitle)) {
+              return true; // Return true if the node is found in the children
+            }
+          }
+        }
+        return false;
+      };
+
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+      if (workspace) {
+        const md = workspace.modules.find(md => md.id === moduleId);
+        if (md) {
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, title); // Traverse and update the content
+          if (!success) {
+            console.error("Replacing module node title failed. Module node not found");
+          }
+        } else {
+          console.error("Replacing module node title failed. Module not found");
+        }
+      }
+
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const md = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+        if (md) {
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, title); // Traverse and update the title
+          if (!success) {
+            console.error("Replacing module node title failed. Module node not found");
+          }
+        } else {
+          console.error("Replacing module node title failed. Module not found");
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -485,40 +638,40 @@ const workspaceSlice = createSlice({
 
         const workspace = state.workspaces.find(ws => ws.id === moduleData.WorkspaceID);
         if (workspace) {
-          const module = workspace.modules.find((md => md.id === moduleId));
+          const md = workspace.modules.find((md => md.id === moduleId));
           
-          if (module) { 
+          if (md) {
             if (moduleData.retrievalSource === 'database') {
-              const data = transformModuleDataToTreeFormat(module, moduleData.tree);
-              module.nodes = data[0].nodes;
+              const data = transformModuleDataToTreeFormat(md, moduleData.tree);
+              md.nodes = data[0].nodes;
             } else { // 'buffer'
 
-              module.id = moduleData.tree.id;
-              module.name = moduleData.tree.name;  
-              module.description = moduleData.tree.description;
+              md.id = moduleData.tree.id;
+              md.name = moduleData.tree.name;
+              md.description = moduleData.tree.description;
       
-              module.nodes = moduleData.tree.nodes.map(parseNodeRecursively);
+              md.nodes = moduleData.tree.nodes.map(parseNodeRecursively);
             }
           }
 
-          console.log("Module loaded:", JSON.stringify(current(module), null, 2));
+          console.log("Module loaded:", JSON.stringify(current(md), null, 2));
         }
         if (state.selectedWorkspace && state.selectedWorkspace.id === moduleData.WorkspaceID) {
-          const module = state.selectedWorkspace.modules.find(md => md.id === moduleId);
-          if (module) {
+          const md = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+          if (md) {
             if (moduleData.retrievalSource === 'database') {
-              const data = transformModuleDataToTreeFormat(module, moduleData.tree);
-              module.nodes = data[0].nodes;
+              const data = transformModuleDataToTreeFormat(md, moduleData.tree);
+              md.nodes = data[0].nodes;
             } else { // 'buffer'
-              module.id = moduleData.tree.id;
-              module.name = moduleData.tree.name;
-              module.description = moduleData.tree.description;
+              md.id = moduleData.tree.id;
+              md.name = moduleData.tree.name;
+              md.description = moduleData.tree.description;
 
-              module.nodes = moduleData.tree.nodes.map(parseNodeRecursively);
+              md.nodes = moduleData.tree.nodes.map(parseNodeRecursively);
             }
           }
           
-          console.log("Module loaded:", JSON.stringify(current(module), null, 2));
+          console.log("Module loaded:", JSON.stringify(current(md), null, 2));
         }
       })
       .addCase(fetchWorkspaceModuleData.rejected, (state) => {
@@ -548,7 +701,6 @@ const workspaceSlice = createSlice({
 export const {
   setSelectedWorkspace,
   setSelectedSpecificationId,
-  setSelectedPageId,
   setSelectedModuleId,
   setSelectedModuleNodeId,
   updateWorkspaceName,
@@ -559,17 +711,17 @@ export const {
   updateSpecificationName,
   // updateSpecificationCount,
   deleteSpecification,
-  addLessonPage,
-  updateLessonPage,
-  updateLessonPageTitle,
   updateChatLoadingStatus,
   addChatHistory,
   updateChatMessage,
   replaceChatMessage,
   addModule,
+  updateModuleName,
+  deleteModule,
+  insertNode,
+  deleteNode,
   replaceModuleNodeContent,
-  updateQuizItems,
-  updateQuizResults,
+  replaceModuleNodeTitle,
 } = workspaceSlice.actions;
 
 // Directly return the input when no transformation is needed
@@ -577,10 +729,8 @@ export const selectWorkspaces = (state: RootState) => state.workspace.workspaces
 export const selectWorkspacesInitialized = (state: RootState) => state.workspace.workspacesInitialized;
 export const selectSelectedWorkspace = (state: RootState) => state.workspace.selectedWorkspace;
 export const selectSelectedSpecificationId = (state: RootState) => state.workspace.selectedSpecificationId;
-export const selectSelectedPageId = (state: RootState) => state.workspace.selectedPageId;
 export const selectLoading = (state: RootState) => state.workspace.loading;
 export const selectSpecificationsLoading = (state: RootState) => state.workspace.specificationsLoading;
-export const selectPagesLoading = (state: RootState) => state.workspace.pagesLoading;
 export const selectChatHistoryLoading = (state: RootState) => state.workspace.chatHistoryLoading;
 
 // Only memoize if transformations or derived data is necessary
@@ -597,26 +747,12 @@ export const selectModulesForSelectedWorkspace = createSelector(
   (modules) => modules || []
 );
 
-// Memoized selector for pages in the selected workspace
-export const selectPagesForSelectedWorkspace = createSelector(
-  (state: RootState) => state.workspace.selectedWorkspace?.pages,
-  (pages) => pages || []
-);
-
 // Memoized selector for the current specification based on the selected specification ID
 export const selectCurrentSpecification = createSelector(
   (state: RootState) => state.workspace.selectedWorkspace?.specifications || [],
   (state: RootState) => state.workspace.selectedSpecificationId,
   (specifications, selectedSpecificationId) =>
     specifications.find((spec) => spec.id === selectedSpecificationId) || null
-);
-
-// Memoized selector for the current page based on the selected page ID
-export const selectCurrentPage = createSelector(
-  (state: RootState) => state.workspace.selectedWorkspace?.pages || [],
-  (state: RootState) => state.workspace.selectedPageId,
-  (pages, selectedPageId) =>
-    pages.find((page) => page.id === selectedPageId) || null
 );
 
 // Memoized selector for selected module data
@@ -639,13 +775,13 @@ export const selectSelectedWorkspaceModuleContent = createSelector(
   ],
   (selectedWorkspace, selectedModuleId, selectedModuleNodeId): [string, string] | null => {
     if (!selectedWorkspace || !selectedModuleId || !selectedModuleNodeId) {
-      console.error("All id fields are required.");
+      console.error("All id fields are required to select module content.");
       return null;
     }
 
-    const module = selectedWorkspace.modules.find(module => module.id === selectedModuleId);
+    const md = selectedWorkspace.modules.find(module => module.id === selectedModuleId);
     
-    if (!module) {
+    if (!md) {
       console.error("Module not found.");
       return null;
     }
@@ -667,7 +803,7 @@ export const selectSelectedWorkspaceModuleContent = createSelector(
     };
 
     // Start recursive search from the root nodes of the module
-    const nodeContent = findNodeContent(module.nodes, selectedModuleNodeId);
+    const nodeContent = findNodeContent(md.nodes, selectedModuleNodeId);
     
     return nodeContent || null; 
   }

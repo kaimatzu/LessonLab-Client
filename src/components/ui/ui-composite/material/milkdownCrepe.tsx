@@ -1,26 +1,24 @@
 import React, { FC, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Crepe } from '../milkdown-crepe/core'; // Your custom version of Crepe
-import { Editor } from '@milkdown/core'; // Import the Editor type
 
 import '../milkdown-crepe/theme/nord/style.css';
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/nord.css';
 import "../../css/custom-scrollbar.css";
 import "./css/milkdown-override.css";
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import CodeIcon from '@mui/icons-material/Code';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { replaceModuleNodeContent, selectSelectedWorkspaceModuleContent } from '@/redux/slices/workspaceSlice';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
-import { debounce } from 'lodash';
 import { TbMarkdown, TbMarkdownOff } from 'react-icons/tb';
+import { PATCH as _updateModuleNodeContent } from '@/app/api/workspace/module/route'
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 interface CrepeEditorProps {
   markdownRef: React.MutableRefObject<string>;
   onUpdate: (newValue: string) => void;
 }
 
+// eslint-disable-next-line react/display-name
 const CrepeEditor = forwardRef((props: CrepeEditorProps, ref) => {
   const { markdownRef, onUpdate } = props;
   const editorRef = useRef<HTMLDivElement>(null);
@@ -89,7 +87,9 @@ const CrepeEditorWrapper: FC = () => {
   const { selectedWorkspace, selectedModuleId, selectedModuleNodeId } = useWorkspaceContext();
   const dispatch = useAppDispatch();
 
-  const [nodeId, moduleContent] = useAppSelector(selectSelectedWorkspaceModuleContent) || ["", ""];;
+  const [nodeId, moduleContent] = useAppSelector(selectSelectedWorkspaceModuleContent) || ["", ""];
+  const [countdown, setCountdown] = useState<number>(5); // Countdown timer state
+  const timerRef = useRef<NodeJS.Timeout | null>(null); // Ref to store the timer
 
   const handleMarkdownUpdate = useCallback(
     // debounce(
@@ -130,44 +130,47 @@ const CrepeEditorWrapper: FC = () => {
     }
   }, [nodeId, moduleContent]);
 
+  // Effect to handle markdown changes and countdown
+  useEffect(() => {
+    // Reset countdown to 5 seconds when markdownRef changes
+    if (timerRef.current) {
+      clearTimeout(timerRef.current); // Clear the existing timer
+    }
+
+    setCountdown(5); // Reset countdown
+    timerRef.current = setTimeout(() => {
+      console.log('Countdown finished, updating module content.');
+
+      if (markdownRef && selectedModuleNodeId) {
+        const requestBuilder = new RequestBuilder().
+            setBody(JSON.stringify({
+              content: markdownRef.current,
+              moduleNodeId: selectedModuleNodeId!,
+            }))
+            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/modules/update/node/content`);
+
+        _updateModuleNodeContent(requestBuilder);
+      }
+    }, 5000); // 5 seconds
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current); // Cleanup on unmount or dependency change
+      }
+    };
+  }, [markdownRef.current]); // Dependency on markdownRef.current
+
   const handleMarkdownChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     handleMarkdownUpdateRef.current(event.target.value);
   };
 
-  // const handleToggleView = (_event: React.MouseEvent<HTMLElement>, nextView: 'editor' | 'raw') => {
-  //   if (nextView !== null) {
-  //     setView(nextView);
-  //   }
-  // };
   const handleToggleView = () => {
     setView((prevView) => (prevView === 'editor' ? 'raw' : 'editor'));
 };
 
   return (
     <div className="relative h-full w-full bg-[#F1F3F8]">
-      {/* {moduleContent === null || selectedModuleNodeId === null ? (
-        <p className="text-center mt-4">No content available. Please select a module node.</p>
-      ) : ( */}
         <>
-          {/* <div className="absolute z-10">
-            <div className="flex justify-end mt-2">
-              <ToggleButtonGroup
-                value={view}
-                exclusive
-                onChange={handleToggleView}
-                aria-label="text editor view"
-                className='w-5 h-5'
-              >
-                <ToggleButton value="editor" aria-label="crepe view">
-                  <FormatListBulletedIcon />
-                </ToggleButton>
-                <ToggleButton value="raw" aria-label="raw markdown">
-                  <CodeIcon />
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-          </div> */}
-
           <div className="m-2 p-2 z-10">
             <div className="flex justify-end mt-2">
               {view === 'editor' ? (
@@ -195,7 +198,6 @@ const CrepeEditorWrapper: FC = () => {
             )}
           </div>
         </>
-      {/* )} */}
     </div>
   );
 };

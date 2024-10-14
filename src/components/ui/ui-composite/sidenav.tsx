@@ -21,6 +21,7 @@ import { TextField } from '@mui/material';
 import { PATCH as _updateWorkspaceName, DELETE as _deleteWorkspace } from '../../../app/api/workspace/route';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
+import {setSelectedWorkspace} from "@/redux/slices/workspaceSlice";
 
 // #region Sidenav
 const Sidenav: React.FC = () => {
@@ -222,6 +223,7 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
 
   const handleDelete = (e: React.UIEvent) => {
     e.preventDefault();
+    setSelectedWorkspace(null);
     push('/workspace/new');
     onDelete!(workspaceId!);
   }
@@ -315,21 +317,21 @@ const SidenavItem: React.FC<SidenavItemProps> = ({ title, href, isActive, isColl
             </Link>
           ) : (
             <form onSubmit={handleRenameSubmit}>
-              {/* <div className="flex-1 truncate"> */}
-                <div className="flex items-center px-1 py-4">
-                  <TextField
-                    defaultValue={title}
-                    value={newWorkspaceName}
-                    onChange={(e) => setNewWorkspaceName!(e.target.value)}
-                    className="flex-grow border rounded resize-none"
-                    placeholder="New name..."
-                    size='small'
-                    rows={1}
-                  />
-                  <CheckIcon className="ml-2 cursor-pointer" onClick={handleRenameSubmit} />
-                  <CloseIcon className="ml-1 cursor-pointer" onClick={handleMenuClose} />
-                </div>
-              {/* </div> */}
+               <div className="flex-1 truncate">
+                  <div className="flex items-center px-1 py-4">
+                    <TextField
+                      defaultValue={title}
+                      value={newWorkspaceName}
+                      onChange={(e) => setNewWorkspaceName!(e.target.value)}
+                      className="flex-grow border rounded resize-none"
+                      placeholder="New name..."
+                      size='small'
+                      rows={1}
+                    />
+                    <CheckIcon className="ml-2 cursor-pointer" onClick={handleRenameSubmit} />
+                    <CloseIcon className="ml-1 cursor-pointer" onClick={handleMenuClose} />
+                  </div>
+               </div>
             </form>
           )}
 

@@ -31,7 +31,7 @@ export function transformModuleDataToTreeFormat(moduleData: any, moduleTree: any
       title: node.Title,
       content: node.Content,
       description: "",
-      children: node.Children.map((childNode: any) => transformNode(childNode, node.Ancestor)),
+      children: node.Children.map((childNode: any) => transformNode(childNode, node.Descendant)),
     };
   };
 

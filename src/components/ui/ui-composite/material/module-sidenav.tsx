@@ -22,6 +22,7 @@ import useTreeOpenHandler from "../module-tree/useTreeOpenHandler";
 import { processModuleNodes } from "../module-tree/data-processing";
 import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
 
+
 interface ModuleTreeProps {
   treeFormat: Module;
 }
@@ -45,6 +46,11 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
   const [isCtrlPressing, setIsCtrlPressing] = useState(false);
 
   const { selectModuleNode } = useWorkspaceContext();
+
+  useEffect(() => {
+    console.log("Tree format changed");
+    setTreeData(processModuleNodes(treeFormat));
+  }, [treeFormat]);
 
   useEffect(() => {
     if (selectedNodes.length > 0) selectModuleNode(selectedNodes[0].id as string);
@@ -157,6 +163,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
 
     // Reindex within the subtree
     if (start?.parent === dropTargetId && start && typeof destinationIndex === "number") {
+      console.log("Reindex within subtree, dest index", destinationIndex);
       setTreeData((treeData) => {
         const output = reorderArray(
           treeData,
@@ -183,7 +190,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
         (end && !end?.droppable)
       )
         return;
-
+      console.log("Move node to new parent");
       setTreeData((treeData) => {
         const output = reorderArray(
           treeData,
@@ -227,7 +234,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
   };
 
   const handleRename = (id: NodeModel["id"], newText: string) => {
-        console.log("Rewrite tree");
+        console.log("Rewrite tree ", newText);
         setTreeData((currentTreeData) => {
         return currentTreeData.map((node) => {
             if (node.id === id) {
@@ -253,7 +260,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
         <Tree
           ref={ref}
           classes={{
-            root: "list-none py-2 relative rounded-lg border-full border-gray-300",
+            root: "list-none pl-1 py-2 relative rounded-lg border-full border-gray-300",
             placeholder: "relative",
             dropTarget: "outline outline-1 outline-[#1967d2] inset",
             listItem: "list-none truncate",

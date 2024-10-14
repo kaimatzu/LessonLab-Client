@@ -1,6 +1,6 @@
 // client/src/lib/hooks/workspace-context.tsx
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
+import React, { createContext, useEffect, useContext } from 'react';
+// import { GET as _getSpecifications } from "@/app/api/workspace/specification/route";
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import {
@@ -8,7 +8,6 @@ import {
   fetchSpecifications,
   setSelectedWorkspace,
   setSelectedSpecificationId,
-  setSelectedPageId,
   updateWorkspaceName,
   addWorkspace,
   removeWorkspace,
@@ -17,14 +16,8 @@ import {
   updateSpecificationName,
   // updateSpecificationCount,
   deleteSpecification,
-  addLessonPage,
-  updateLessonPage,
-  updateLessonPageTitle,
   selectSpecificationsForSelectedWorkspace,
-  selectPagesForSelectedWorkspace,
   updateChatLoadingStatus,
-  updateQuizItems,
-  updateQuizResults,
   selectChatHistoryForSelectedWorkspace,
   fetchWorkspaceChatHistory,
   fetchWorkspaceModules,
@@ -32,10 +25,10 @@ import {
   setSelectedModuleId,
   fetchWorkspaceModuleData,
   selectSelectedModuleData,
-  setSelectedModuleNodeId,
+  setSelectedModuleNodeId, updateModuleName, deleteModule, addModule, replaceModuleNodeTitle, insertNode, deleteNode,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
-import { Message, Module, Page, Specification, Workspace } from '@/lib/types/workspace-types';
+import {Message, Module, ModuleNode, Page, Specification, Workspace} from '@/lib/types/workspace-types';
 import { useSocket } from '../useServerEvents';
 import { any } from 'zod';
 
@@ -47,13 +40,10 @@ export interface WorkspaceContextValue {
   selectedSpecificationId: string | null;
   selectedModuleId: string | null;
   selectedModuleNodeId: string | null;
-  selectedPageId: string | null;
   specifications: Specification[];
   modules: Module[];
-  pages: Page[];
   loading: boolean;
   specificationsLoading: boolean;
-  pagesLoading: boolean;
   modulesLoading: boolean;
   moduleDataLoading: boolean;
   chatLoading: boolean;
@@ -71,15 +61,15 @@ export interface WorkspaceContextValue {
   // updateSpecificationCount: (workspaceId: string, specificationId: string, count: number) => void;
   addSpecification: (workspaceId: string, specification: Specification) => void;
   deleteSpecification: (workspaceId: string, specificationId: string) => void;
-  addLessonPage: (lessonId: string, page: Page) => void;
-  updateLessonPage: (lessonId: string, updatedPage: Page) => void;
-  updateLessonPageTitle: (lessonId: string, pageId: string, title: string) => void;
   updateChatStatus: (value: boolean) => void;
-  selectModule: (moduleId: string) => void;
+  addModule: (workspaceId: string, module: Module) => void;
+  selectModule: (moduleId: string | null) => void;
+  updateModuleName: (moduleId: string, workspaceId: string, newName: string) => void;
+  deleteModule: (moduleId: string, workspaceId: string) => void;
+  insertModuleNode: (workspaceId: string, moduleId: string, newNode: ModuleNode) => void;
+  removeModuleNode: (workspaceId: string, moduleId: string, nodeId: string) => void;
   selectModuleNode: (moduleNodeId: string) => void;
-  selectPage: (pageId: string) => void;
-  updateQuizItems: () => void;
-  updateQuizResults: () => void;
+  updateModuleNodeTitle: (moduleId: string, moduleNodeId: string, workspaceId: string, title: string) => void;
 }
 
 const defaultValue: WorkspaceContextValue = {
@@ -89,13 +79,10 @@ const defaultValue: WorkspaceContextValue = {
   selectedSpecificationId: null,
   selectedModuleId: null,
   selectedModuleNodeId: null,
-  selectedPageId: null,
   specifications: [],
   modules: [],
-  pages: [],
   loading: false,
   specificationsLoading: false,
-  pagesLoading: false,
   modulesLoading: false,
   moduleDataLoading: false,
   chatLoading: false,
@@ -113,15 +100,15 @@ const defaultValue: WorkspaceContextValue = {
   // updateSpecificationCount: () => { },
   addSpecification: () => { },
   deleteSpecification: () => { },
-  addLessonPage: () => Promise.resolve(),
-  updateLessonPage: () => { },
-  updateLessonPageTitle: () => { },
+  addModule: () => { },
   selectModule: () => { },
+  updateModuleName: () => { },
+  deleteModule: () => { },
+  insertModuleNode: () => { },
+  removeModuleNode: () => { },
   selectModuleNode: () => { },
-  selectPage: () => { },
+  updateModuleNodeTitle: () => { },
   updateChatStatus: () => { },
-  updateQuizItems: () => { },
-  updateQuizResults: () => { },
 };
 
 export const WorkspaceContext = createContext(defaultValue);
@@ -137,20 +124,15 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const selectedSpecificationId = useAppSelector((state: RootState) => state.workspace.selectedSpecificationId);
   const selectedModuleId = useAppSelector((state: RootState) => state.workspace.selectedModuleId);
   const selectedModuleNodeId = useAppSelector((state: RootState) => state.workspace.selectedModuleNodeId);
-  const selectedPageId = useAppSelector((state: RootState) => state.workspace.selectedPageId);
   const loading = useAppSelector((state: RootState) => state.workspace.loading);
   const specifications = useAppSelector(selectSpecificationsForSelectedWorkspace);
   const specificationsLoading = useAppSelector((state: RootState) => state.workspace.specificationsLoading);
   const modules = useAppSelector(selectModulesForSelectedWorkspace);
-  const pages = useAppSelector(selectPagesForSelectedWorkspace);
   const modulesLoading = useAppSelector((state: RootState) => state.workspace.modulesLoading);
   const moduleDataLoading = useAppSelector((state: RootState) => state.workspace.moduleDataLoading);
-  const pagesLoading = useAppSelector((state: RootState) => state.workspace.pagesLoading);
   const chatLoading = useAppSelector((state: RootState) => state.workspace.chatLoading);
   const chatHistory = useAppSelector(selectChatHistoryForSelectedWorkspace);
   const selectedModuleData = useAppSelector(selectSelectedModuleData);
-
-  const { socket, socketConnected, joinWorkspaceRoom } = useSocket();
 
   useEffect(() => {
     dispatch(fetchWorkspaces());
@@ -186,7 +168,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const loadModuleData = (moduleId: string) => {
     if (selectedModuleId) {
-      // Unload node data from previous selected module to save memory
+      // TODO: Unload node data from previous selected module to save memory
     }
     console.log("Loading module data in", moduleId);
 
@@ -194,7 +176,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       console.log("Setting selected module id", moduleId);
       dispatch(setSelectedModuleId(moduleId));
     }
-    dispatch(fetchWorkspaceModuleData(moduleId));
+
+    if(moduleId) {
+      dispatch(fetchWorkspaceModuleData(moduleId));
+    }
   }
 
   const selectWorkspace = (workspaceId: string | null) => {
@@ -230,51 +215,47 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dispatch(updateSpecificationName({ workspaceId, specificationId, name }))
   };
 
-  // const updateSpecificationCountHandler = (workspaceId: string, specificationId: string, count: number) => {
-  //   dispatch(updateSpecificationCount({ workspaceId, specificationId, count }))
-  // };
-
   const deleteSpecificationHandler = (workspaceId: string, specificationId: string) => {
     dispatch(deleteSpecification({ workspaceId, specificationId }));
   };
 
-  const addLessonPageHandler = (lessonId: string, page: Page) => {
-    dispatch(addLessonPage({ lessonId, page }));
-  };
-
-  const updateLessonPageHandler = (lessonId: string, updatedPage: Page) => {
-    dispatch(updateLessonPage({ lessonId, updatedPage }));
-  };
-
-  const updateLessonPageTitleHandler = (lessonId: string, pageId: string, title: string) => {
-    dispatch(updateLessonPageTitle({ lessonId, pageId, title }))
+  const createModule = (workspaceId: string, module: Module) => {
+    dispatch(addModule({ workspaceId, module }));
   };
 
   const selectModule = (moduleId: string | null) => {
-    dispatch(setSelectedModuleId(null));
+    dispatch(setSelectedModuleId(moduleId));
+    // dispatch(setSelectedModuleNodeId(moduleId));
     loadModuleData(moduleId!);
   };
 
+  const changeModuleName = (moduleId: string, workspaceId: string, newName: string) => {
+    dispatch(updateModuleName({ moduleId, workspaceId, newName }));
+  };
+
+  const removeModule = (moduleId: string, workspaceId: string) => {
+    dispatch(deleteModule({ moduleId, workspaceId }));
+  };
+
+  const insertModuleNode = (workspaceId: string, moduleId: string, newNode: ModuleNode) => {
+    dispatch(insertNode({ workspaceId, moduleId, newNode }));
+  };
+
+  const removeModuleNode = (workspaceId: string, moduleId: string, nodeId: string) => {
+    dispatch(deleteNode({ workspaceId, moduleId, nodeId }));
+  };
+
   const selectModuleNode = (moduleNodeId: string | null) => {
-    console.log("Selecting module node:", moduleNodeId);
     dispatch(setSelectedModuleNodeId(moduleNodeId));
   };
 
-  const selectPage = (pageId: string) => {
-    dispatch(setSelectedPageId(pageId));
-  };
+  const updateModuleNodeTitle = (moduleId: string, moduleNodeId: string, workspaceId: string, title: string) => {
+    dispatch(replaceModuleNodeTitle({ workspaceId, moduleId, moduleNodeId, title }));
+  }
 
   const updateChatLoadingStatusHandler = (value: boolean) => {
     dispatch(updateChatLoadingStatus(value));
-  }
-  
-  const updateQuizItemsHandler = () => {
-    dispatch(updateQuizItems())
-  }
-
-  const updateQuizReusltsHandler = () => {
-    dispatch(updateQuizResults())
-  }
+  };
 
   return (
     <WorkspaceContext.Provider
@@ -285,13 +266,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         selectedSpecificationId,
         selectedModuleId,
         selectedModuleNodeId,
-        selectedPageId,
         specifications,
         modules,
-        pages,
         loading,
         specificationsLoading,
-        pagesLoading,
         modulesLoading,
         moduleDataLoading,
         chatLoading,
@@ -309,14 +287,14 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         updateSpecificationName: updateSpecificationNameHandler,
         // updateSpecificationCount: updateSpecificationCountHandler,
         deleteSpecification: deleteSpecificationHandler,
-        addLessonPage: addLessonPageHandler,
-        updateLessonPage: updateLessonPageHandler,
-        updateLessonPageTitle: updateLessonPageTitleHandler,
+        insertModuleNode,
+        removeModuleNode,
+        addModule: createModule,
         selectModule,
+        updateModuleName: changeModuleName,
+        deleteModule: removeModule,
         selectModuleNode,
-        selectPage,
-        updateQuizItems: updateQuizItemsHandler,
-        updateQuizResults: updateQuizReusltsHandler,
+        updateModuleNodeTitle,
         updateChatStatus: updateChatLoadingStatusHandler,
       }}
     >
