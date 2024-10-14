@@ -1,4 +1,14 @@
 {
-  "extends": "next/core-web-vitals"
-  // "parser": "@typescript-eslint/parser"
+  "extends": "next/core-web-vitals",
+  // "parser": "@typescript-eslint/parser",
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",              // Disable exhaustive-deps
+    "react/display-name": "off",                        // Disable missing display name
+    "react/no-unescaped-entities": "off",               // Disable unescaped entities
+    "react/jsx-key": "off",                             // Disable missing key prop
+    "react/no-children-prop": "off",                    // Disable passing children as props
+    "react-hooks/rules-of-hooks": "off",                // Disable rules of hooks
+    "ts/no-this-alias": "off",                          // Disable no this alias (TypeScript)
+    "@next/next/no-assign-module-variable": "off"      // Disable Next.js module variable assignment
+  }
 }

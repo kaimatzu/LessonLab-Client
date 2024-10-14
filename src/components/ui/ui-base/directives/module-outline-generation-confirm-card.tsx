@@ -12,6 +12,7 @@ interface ModuleOutlineGenerationConfirmCardProps {
 }
 
 // #region Module Outline Generation Confirm Card
+// eslint-disable-next-line react/display-name
 const ModuleOutlineGenerationConfirmCard: FC<ModuleOutlineGenerationConfirmCardProps> = memo(({ assistantMessageId, subject, context_instructions }) => {
   const { socket } = useSocket();
   const { selectedWorkspace, chatLoading } = useWorkspaceContext();
