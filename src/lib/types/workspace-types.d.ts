@@ -44,7 +44,6 @@ export interface Workspace {
   createdAt: number;
   locked?: boolean;
   specifications: Specification[];
-  pages: Page[];
   chatHistory: Message[];
   modules: Module[];
 }
@@ -68,7 +67,7 @@ export interface Module {
   name: string;
   description: string;
   nodes: ModuleNode[];
-};
+}
 
 export interface ModuleOutlineNode {
   id: string;

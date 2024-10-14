@@ -1,9 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Sansation:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Sansation:wght@400;700&display=swap');
-
 
 @layer base {
   :root {
@@ -66,26 +65,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-family);
   }
-  h1 {
-    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
-  }
-  h2 {
-    @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;
-  }
-  h3 {
-    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
-  }
-  h4 {
-    @apply scroll-m-20 text-xl font-semibold tracking-tight;
-  }
-  p {
-    @apply leading-7 [&:not(:first-child)]:mt-6;
-  }
-  ul {
-    @apply my-6 ml-6 list-disc [&>li]:mt-2;
-  }
+  /*h1 {*/
+  /*  @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;*/
+  /*}*/
+  /*h2 {*/
+  /*  @apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0;*/
+  /*}*/
+  /*h3 {*/
+  /*  @apply scroll-m-20 text-2xl font-semibold tracking-tight;*/
+  /*}*/
+  /*h4 {*/
+  /*  @apply scroll-m-20 text-xl font-semibold tracking-tight;*/
+  /*}*/
+  /*p {*/
+  /*  @apply leading-7 [&:not(:first-child)]:mt-6;*/
+  /*}*/
+  /*ul {*/
+  /*  @apply my-6 ml-6 list-disc [&>li]:mt-2;*/
+  /*}*/
 }
 
 @layer utilities {
@@ -121,7 +119,7 @@ body {
     text-wrap: balance;
   }
 }
-/* 
+/*
 .gradient-background {
   background: linear-gradient(to right, #5E77D3 0%, #2C4C7A 50%, #051A41 100%);
   min-height: 100vh;
