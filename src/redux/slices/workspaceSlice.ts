@@ -170,6 +170,7 @@ const parseContent = (content: string) => {
   return parsedContent;
 };
 
+// Helper function to recursively find a node by ID
 const findNode = (nodes: ModuleNode[], nodeId: string): ModuleNode | undefined => {
   for (const node of nodes) {
     if (node.id === nodeId) {
@@ -181,6 +182,27 @@ const findNode = (nodes: ModuleNode[], nodeId: string): ModuleNode | undefined =
     }
   }
   return undefined; // Node not found
+};
+
+// Helper function to remove a node from the nodes array
+const removeNode = (nodes: ModuleNode[], nodeId: string): boolean => {
+  // Find the index of the node to delete
+  const index = nodes.findIndex(node => node.id === nodeId);
+  if (index !== -1) {
+    // Remove the node from the array
+    nodes.splice(index, 1);
+    return true; // Node was found and deleted
+  }
+
+  // If the node is not found, check children of each node
+  for (const node of nodes) {
+    // If node has children, recursively search in the children
+    const childIndex = removeNode(node.children, nodeId);
+    if (childIndex) {
+      return true; // Node was found and deleted in children
+    }
+  }
+  return false; // Node not found in this level and its children
 };
 
 const workspaceSlice = createSlice({
@@ -481,6 +503,80 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    transferNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; nodeId: string; targetParentId: string | null; relativeIndex:
+          number }>) => {
+      const { workspaceId, moduleId, nodeId, targetParentId, relativeIndex } = action.payload;
+
+      const workspace = state.workspaces.find(ws => ws.id === workspaceId);
+
+      if (workspace) {
+        const module = workspace.modules.find(md => md.id === moduleId);
+
+        if (module) {
+          // Step 1: Find the node to be moved
+          const nodeToMove = findNode(module.nodes, nodeId);
+
+          if (nodeToMove) {
+            // Step 2: Remove the node from its current parent
+            removeNode(module.nodes, nodeId);
+
+            // Step 3: Set the new parent
+            nodeToMove.parent = targetParentId;
+
+            // Step 4: Insert the node into the new parent's children
+            if (targetParentId) {
+              const targetParentNode = findNode(module.nodes, targetParentId);
+              if (targetParentNode) {
+                // Add the node as a child of the target parent
+                if (!targetParentNode.children) {
+                  targetParentNode.children = [];
+                }
+                // Insert at the specified relative index
+                targetParentNode.children.splice(relativeIndex, 0, nodeToMove);
+              } else {
+                console.error("Target parent node not found");
+              }
+            } else {
+              // If targetParentId is null, push to the top level
+              module.nodes.splice(relativeIndex, 0, nodeToMove);
+            }
+          } else {
+            console.error("Node to move not found");
+          }
+        } else {
+          console.error("Module not found");
+        }
+      } else {
+        console.error("Workspace not found");
+      }
+
+      console.log("Updated Workspace Data via transfer");
+
+      // Optionally, also update the selected workspace if it matches
+      if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
+        const selectedModule = state.selectedWorkspace.modules.find(md => md.id === moduleId);
+        if (selectedModule) {
+          const selectedNodeToMove = findNode(selectedModule.nodes, nodeId);
+          if (selectedNodeToMove) {
+            removeNode(selectedModule.nodes, nodeId);
+            selectedNodeToMove.parent = targetParentId;
+            if (targetParentId) {
+              const selectedTargetParentNode = findNode(selectedModule.nodes, targetParentId);
+              if (selectedTargetParentNode) {
+                if (!selectedTargetParentNode.children) {
+                  selectedTargetParentNode.children = [];
+                }
+                selectedTargetParentNode.children.splice(relativeIndex, 0, selectedNodeToMove);
+              }
+            } else {
+              selectedModule.nodes.splice(relativeIndex, 0, selectedNodeToMove);
+            }
+          }
+        }
+      }
+
+      console.log("Updated Selected Workspace Data via transfer");
+    },
     replaceModuleNodeContent: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, content: string }>) => {
       const { workspaceId, moduleId, moduleNodeId, content } = action.payload;
     
@@ -720,6 +816,7 @@ export const {
   deleteModule,
   insertNode,
   deleteNode,
+  transferNode,
   replaceModuleNodeContent,
   replaceModuleNodeTitle,
 } = workspaceSlice.actions;

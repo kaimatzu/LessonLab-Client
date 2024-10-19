@@ -230,3 +230,36 @@ export async function deleteModuleNode(requestBuilder: RequestBuilder) {
     });
   }
 }
+
+/**
+ * @param requestBuilder - The RequestBuilder instance used to construct the create workspace request.
+ * @returns A Promise that resolves to a Response object.
+ */
+export async function transferModuleNode(requestBuilder: RequestBuilder) {
+  requestBuilder
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/workspaces/modules/transfer/node`)
+      .setMethod("PATCH")
+      .setCredentials("include")
+      .setHeaders({ 'Content-Type': 'application/json' });
+
+  try {
+    const response = await fetch(requestBuilder.build());
+
+    if (response.ok) {
+      console.log("Module node transfer successful:");
+      return new Response(
+          JSON.stringify({
+            message: "Module node transfer successful",
+          }),
+          { status: 200 }
+      );
+    } else {
+      throw new Error("Failed to transfer module node, " + response.statusText);
+    }
+  } catch (error) {
+    console.error("Error transferring node:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}
