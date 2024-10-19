@@ -25,7 +25,7 @@ import {
   setSelectedModuleId,
   fetchWorkspaceModuleData,
   selectSelectedModuleData,
-  setSelectedModuleNodeId, updateModuleName, deleteModule, addModule, replaceModuleNodeTitle, insertNode, deleteNode,
+  setSelectedModuleNodeId, updateModuleName, deleteModule, addModule, replaceModuleNodeTitle, insertNode, deleteNode, transferNode,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
 import {Message, Module, ModuleNode, Page, Specification, Workspace} from '@/lib/types/workspace-types';
@@ -68,6 +68,7 @@ export interface WorkspaceContextValue {
   deleteModule: (moduleId: string, workspaceId: string) => void;
   insertModuleNode: (workspaceId: string, moduleId: string, newNode: ModuleNode) => void;
   removeModuleNode: (workspaceId: string, moduleId: string, nodeId: string) => void;
+  transferModuleNode: (workspaceId: string, moduleId: string, nodeId: string, targetParentId: string | null, relativeIndex: number) => void;
   selectModuleNode: (moduleNodeId: string) => void;
   updateModuleNodeTitle: (moduleId: string, moduleNodeId: string, workspaceId: string, title: string) => void;
 }
@@ -106,6 +107,7 @@ const defaultValue: WorkspaceContextValue = {
   deleteModule: () => { },
   insertModuleNode: () => { },
   removeModuleNode: () => { },
+  transferModuleNode: () => { },
   selectModuleNode: () => { },
   updateModuleNodeTitle: () => { },
   updateChatStatus: () => { },
@@ -245,6 +247,10 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dispatch(deleteNode({ workspaceId, moduleId, nodeId }));
   };
 
+  const transferModuleNode = (workspaceId: string, moduleId: string, nodeId: string, targetParentId: string | null, relativeIndex: number) => {
+    dispatch(transferNode({ workspaceId, moduleId, nodeId, targetParentId, relativeIndex }));
+  };
+
   const selectModuleNode = (moduleNodeId: string | null) => {
     dispatch(setSelectedModuleNodeId(moduleNodeId));
   };
@@ -289,6 +295,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         deleteSpecification: deleteSpecificationHandler,
         insertModuleNode,
         removeModuleNode,
+        transferModuleNode,
         addModule: createModule,
         selectModule,
         updateModuleName: changeModuleName,

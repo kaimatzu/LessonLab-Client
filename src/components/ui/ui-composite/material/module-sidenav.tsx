@@ -21,7 +21,8 @@ import Placeholder from "../module-tree/Placeholder";
 import useTreeOpenHandler from "../module-tree/useTreeOpenHandler";
 import { processModuleNodes } from "../module-tree/data-processing";
 import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
-
+import { transferModuleNode as _transferModuleNode } from "@/app/api/workspace/module/route";
+import RequestBuilder from "@/lib/hooks/builders/request-builder";
 
 interface ModuleTreeProps {
   treeFormat: Module;
@@ -45,7 +46,7 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isCtrlPressing, setIsCtrlPressing] = useState(false);
 
-  const { selectModuleNode } = useWorkspaceContext();
+  const { selectedWorkspace, selectedModuleId, selectModuleNode, transferModuleNode } = useWorkspaceContext();
 
   useEffect(() => {
     console.log("Tree format changed");
@@ -149,11 +150,12 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
     setSelectedNodes([]);
   };
 
-  const handleDrop = (
+  const handleDrop = async (
     newTree: NodeModel<ExtendedModuleNode>[],
     options: DropOptions<ExtendedModuleNode>
   ) => {
-    const { dragSourceId, dropTargetId, destinationIndex } = options;
+    console.log("Options: ", options);
+    const { dragSourceId, dropTargetId, destinationIndex, relativeIndex } = options;
 
     const start = treeData.find((v) => v.id === dragSourceId);
     const end = treeData.find((v) => v.id === dropTargetId);
@@ -161,52 +163,65 @@ const ModuleSidenav: FC<ModuleTreeProps> = ({ treeFormat }) => {
     if (typeof dragSourceId === "undefined" || typeof dropTargetId === "undefined")
       return;
 
-    // Reindex within the subtree
-    if (start?.parent === dropTargetId && start && typeof destinationIndex === "number") {
-      console.log("Reindex within subtree, dest index", destinationIndex);
-      setTreeData((treeData) => {
-        const output = reorderArray(
-          treeData,
-          treeData.indexOf(start),
-          destinationIndex
-        );
-        return updateIsLeafStatus(output);
-      });
-      setSelectedNodes([]);
-      return;
-    }
+    transferModuleNode(selectedWorkspace!.id, selectedModuleId!, dragSourceId as string, dropTargetId === 0 ? null : dropTargetId as string, relativeIndex!);
 
-    // Move selected nodes to a new parent
-    if (
-      start?.parent !== dropTargetId &&
-      start &&
-      typeof destinationIndex === "number"
-    ) {
-      if (
-        getDescendants(treeData, dragSourceId).find(
-          (el) => el.id === dropTargetId
-        ) ||
-        dropTargetId === dragSourceId ||
-        (end && !end?.droppable)
-      )
-        return;
-      console.log("Move node to new parent");
-      setTreeData((treeData) => {
-        const output = reorderArray(
-          treeData,
-          treeData.indexOf(start),
-          destinationIndex
-        );
-        selectedNodes.forEach((node) => {
-          const movedElement = output.find((el) => el.id === node.id);
-          if (movedElement) {
-            movedElement.parent = dropTargetId;
-          }
-        });
-        return updateIsLeafStatus(output); // Recalculate isLeaf status after the drop
-      });
-      setSelectedNodes([]);
-    }
+    const requestBuilder = new RequestBuilder()
+        .setBody(JSON.stringify({
+          nodeId: dragSourceId,
+          newParentId: dropTargetId === 0 ? selectedModuleId : dropTargetId,
+          moduleId: selectedModuleId,
+          relativeIndex: relativeIndex,
+        }))
+
+    await _transferModuleNode(requestBuilder);
+
+    // // Reindex within the subtree
+    // if (start?.parent === dropTargetId && start && typeof destinationIndex === "number") {
+    //   console.log(dragSourceId, dropTargetId);
+    //   console.log("Reindex within subtree [start, dest index]:", start, destinationIndex);
+    //   setTreeData((treeData) => {
+    //     const output = reorderArray(
+    //       treeData,
+    //       treeData.indexOf(start),
+    //       destinationIndex
+    //     );
+    //     return updateIsLeafStatus(output);
+    //   });
+    //   setSelectedNodes([]);
+    //   return;
+    // }
+    //
+    // // Move selected nodes to a new parent
+    // if (
+    //   start?.parent !== dropTargetId &&
+    //   start &&
+    //   typeof destinationIndex === "number"
+    // ) {
+    //   if (
+    //     getDescendants(treeData, dragSourceId).find(
+    //       (el) => el.id === dropTargetId
+    //     ) ||
+    //     dropTargetId === dragSourceId ||
+    //     (end && !end?.droppable)
+    //   )
+    //     return;
+    //   console.log("Move node to new parent");
+    //   setTreeData((treeData) => {
+    //     const output = reorderArray(
+    //       treeData,
+    //       treeData.indexOf(start),
+    //       destinationIndex
+    //     );
+    //     selectedNodes.forEach((node) => {
+    //       const movedElement = output.find((el) => el.id === node.id);
+    //       if (movedElement) {
+    //         movedElement.parent = dropTargetId;
+    //       }
+    //     });
+    //     return updateIsLeafStatus(output); // Recalculate isLeaf status after the drop
+    //   });
+    //   setSelectedNodes([]);
+    // }
   };
 
   // Helper function to update isLeaf status
