@@ -134,6 +134,7 @@ function IconVercel({ className, ...props }: React.ComponentProps<'svg'>) {
     </svg>
   )
 }
+
 function IconCross({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg

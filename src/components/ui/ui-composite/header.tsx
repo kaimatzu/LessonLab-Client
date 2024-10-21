@@ -3,13 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as logout } from '@/app/api/auth/logout/route';
-import Overlay from '../ui-base/overlay';
+import Overlay from '../ui-base/shared/overlay';
 import { Item } from './transaction/item';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
-import ThemeSwitcher from '../ui-base/theme-switcher';
+import ThemeSwitcher from '../ui-base/shared/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
-import { Button } from '../ui-base/button';
+import { Button } from '../ui-base/shared/button';
 import HypertextLogo from '@/assets/hypertext-logo';
 import { MdGeneratingTokens } from "react-icons/md";
 

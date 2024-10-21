@@ -6,8 +6,8 @@ import { FaRegFolderClosed } from "react-icons/fa6";
 import { GoSidebarExpand, GoSidebarCollapse } from "react-icons/go";
 import { usePathname } from 'next/navigation';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
-import { SkeletonLoader } from '../ui-base/skeleton-loader';
-import { Tooltip } from './chat/tooltip';
+import { SkeletonLoader } from '../ui-base/shared/skeleton-loader';
+import { Tooltip } from '@/components/ui/ui-base/chat/tooltip';
 import '../css/custom-scrollbar.css'
 import { Workspace } from '@/lib/types/workspace-types';
 import Menu from '@mui/material/Menu';

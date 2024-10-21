@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Overlay from "@/components/ui/ui-base/overlay";
+import Overlay from "@/components/ui/ui-base/shared/overlay";
 import RegisterForm from "@/components/ui/ui-composite/auth/register-form";
 import { registerUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useSocket } from '@/lib/hooks/useServerEvents';
-import { toast } from '@/components/ui/ui-base/use-toast';
+import { toast } from '@/components/ui/ui-base/shared/use-toast';
 import HypertextLoading from '@/assets/animated/hypertext-loading';
 
 interface RegisterPageProps {

@@ -25,10 +25,10 @@ import {
   setSelectedModuleId,
   fetchWorkspaceModuleData,
   selectSelectedModuleData,
-  setSelectedModuleNodeId, updateModuleName, deleteModule, addModule, replaceModuleNodeTitle, insertNode, deleteNode,
+  setSelectedModuleNodeId, updateModuleName, deleteModule, addModule, replaceModuleNodeTitle, insertNode, deleteNode, transferNode,
 } from '@/redux/slices/workspaceSlice';
 import { RootState } from '@/redux/store';
-import {Message, Module, ModuleNode, Page, Specification, Workspace} from '@/lib/types/workspace-types';
+import {Message, Module, ModuleNode, Specification, Workspace} from '@/lib/types/workspace-types';
 import { useSocket } from '../useServerEvents';
 import { any } from 'zod';
 
@@ -68,8 +68,9 @@ export interface WorkspaceContextValue {
   deleteModule: (moduleId: string, workspaceId: string) => void;
   insertModuleNode: (workspaceId: string, moduleId: string, newNode: ModuleNode) => void;
   removeModuleNode: (workspaceId: string, moduleId: string, nodeId: string) => void;
-  selectModuleNode: (moduleNodeId: string) => void;
-  updateModuleNodeTitle: (moduleId: string, moduleNodeId: string, workspaceId: string, title: string) => void;
+  transferModuleNode: (workspaceId: string, moduleId: string, nodeId: string, targetParentId: string | null, relativeIndex: number) => void;
+  selectModuleNode: (moduleNodeId: string | null) => void;
+  updateModuleNodeName: (moduleId: string, moduleNodeId: string, workspaceId: string, name: string) => void;
 }
 
 const defaultValue: WorkspaceContextValue = {
@@ -106,8 +107,9 @@ const defaultValue: WorkspaceContextValue = {
   deleteModule: () => { },
   insertModuleNode: () => { },
   removeModuleNode: () => { },
+  transferModuleNode: () => { },
   selectModuleNode: () => { },
-  updateModuleNodeTitle: () => { },
+  updateModuleNodeName: () => { },
   updateChatStatus: () => { },
 };
 
@@ -245,12 +247,16 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     dispatch(deleteNode({ workspaceId, moduleId, nodeId }));
   };
 
+  const transferModuleNode = (workspaceId: string, moduleId: string, nodeId: string, targetParentId: string | null, relativeIndex: number) => {
+    dispatch(transferNode({ workspaceId, moduleId, nodeId, targetParentId, relativeIndex }));
+  };
+
   const selectModuleNode = (moduleNodeId: string | null) => {
     dispatch(setSelectedModuleNodeId(moduleNodeId));
   };
 
-  const updateModuleNodeTitle = (moduleId: string, moduleNodeId: string, workspaceId: string, title: string) => {
-    dispatch(replaceModuleNodeTitle({ workspaceId, moduleId, moduleNodeId, title }));
+  const updateModuleNodeTitle = (moduleId: string, moduleNodeId: string, workspaceId: string, name: string) => {
+    dispatch(replaceModuleNodeTitle({ workspaceId, moduleId, moduleNodeId, name }));
   }
 
   const updateChatLoadingStatusHandler = (value: boolean) => {
@@ -289,12 +295,13 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         deleteSpecification: deleteSpecificationHandler,
         insertModuleNode,
         removeModuleNode,
+        transferModuleNode,
         addModule: createModule,
         selectModule,
         updateModuleName: changeModuleName,
         deleteModule: removeModule,
         selectModuleNode,
-        updateModuleNodeTitle,
+        updateModuleNodeName: updateModuleNodeTitle,
         updateChatStatus: updateChatLoadingStatusHandler,
       }}
     >

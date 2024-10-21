@@ -1,4 +1,4 @@
-import { toast } from '@/components/ui/ui-base/use-toast'
+import { toast } from '@/components/ui/ui-base/shared/use-toast'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ANSWER_FIELD } from './globals'
@@ -20,6 +20,13 @@ import { FetchedFile } from '@/app/api/files/route'
 // }
 
 // export type ItemType = Identification | MultipleChoice
+
+export function stopAllPropagation (event: any) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.nativeEvent.stopPropagation();
+  event.nativeEvent.stopImmediatePropagation();
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
