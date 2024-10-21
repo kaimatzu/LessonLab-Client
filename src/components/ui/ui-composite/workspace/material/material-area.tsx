@@ -4,7 +4,7 @@ import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-con
 import { RiAddFill } from 'react-icons/ri';
 import { insertNode as _insertModuleNode } from '@/app/api/workspace/module/route';
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
-import ModuleTree from "@/components/ui/ui-composite/workspace/module-tree/ModuleTree";
+import ModuleTree from "@/components/ui/ui-composite/workspace/material/module-tree/ModuleTree";
 import {Module, ModuleNode} from "@/lib/types/workspace-types";
 
 const transformTree = (nodes: ModuleNode[]): any => {
