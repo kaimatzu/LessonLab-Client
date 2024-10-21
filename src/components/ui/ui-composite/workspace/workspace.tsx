@@ -8,11 +8,11 @@ import React, {
   useState,
 } from "react";
 import { FetchedFile } from "@/app/api/files/route";
-import SidenavWorkspace from "../ui/ui-composite/sidenav-workspace";
+import SidenavWorkspace from "../sidenav-workspace";
 import { Chat } from "./chat/chat"
-import Overlay from "../ui/ui-base/overlay";
+import Overlay from "../../ui-base/overlay";
 import { Workspace } from "@/lib/types/workspace-types";
-import MaterialArea from "../ui/ui-composite/material/material-area";
+import MaterialArea from "../material/material-area";
 import { useSocket } from "@/lib/hooks/useServerEvents";
 import { BsThreeDots } from "react-icons/bs";
 import { FaRegFolderClosed } from "react-icons/fa6";

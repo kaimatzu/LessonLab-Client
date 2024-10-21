@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import WorkspaceComponent from '@/components/workspace/workspace';
+import WorkspaceComponent from '@/components/ui/ui-composite/workspace/workspace';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { usePathname, useRouter } from 'next/navigation';
 import { Workspace } from '@/lib/types/workspace-types';

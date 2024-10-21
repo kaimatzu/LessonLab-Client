@@ -16,7 +16,7 @@ import { IconPinecone, IconUser } from '@/components/ui/ui-base/icons'
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { ChatMessageActions } from '@/components/workspace/chat/chat-message-actions'
+import { ChatMessageActions } from '@/components/ui/ui-composite/workspace/chat/chat-message-actions'
 import { Components } from '@/lib/types/artifact-types'
 
 import React from 'react'

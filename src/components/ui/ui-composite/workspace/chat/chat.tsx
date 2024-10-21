@@ -3,16 +3,16 @@
 "use client";
 
 import { ChatMessage } from "./chat-message";
-import UploadButton from "../../ui/ui-composite/chat/upload-button";
+import UploadButton from "../../chat/upload-button";
 import { useWorkspaceContext } from "@/lib/hooks/context-providers/workspace-context";
-import { PromptGrid } from "../../ui/ui-composite/chat/prompt-grid";
+import { PromptGrid } from "../../chat/prompt-grid";
 import React, {
   ChangeEvent,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { Tooltip } from "../../ui/ui-composite/chat/tooltip";
+import { Tooltip } from "../../chat/tooltip";
 import { FetchedFile } from "@/app/api/files/route";
 import { Specification, Workspace } from "@/lib/types/workspace-types";
 import { useSocket } from "@/lib/hooks/useServerEvents";

@@ -2,7 +2,7 @@ import React, { useEffect, ReactNode } from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils'; // Adjust the import path to your actual utils file
 import '../css/custom-scrollbar.css'
-import ChatSidenav from '@/components/workspace/chat/chat-sidenav';
+import ChatSidenav from '@/components/ui/ui-composite/workspace/chat/chat-sidenav';
 
 interface OverlayProps {
   isOpen: boolean;
