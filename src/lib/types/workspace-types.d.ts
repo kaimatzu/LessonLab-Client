@@ -14,12 +14,6 @@ export interface Specification {
   additionalSpecs: AdditionalSpecification[];
 }
 
-export interface Page {
-  id: string;
-  title: string;
-  content: string;
-}
-
 export enum MessageRole {
   User = "user",
   Assistant = "assistant"
@@ -51,7 +45,7 @@ export interface Workspace {
 export interface ModuleNode {
   id: string;
   parent: string | null;
-  title: string;
+  name: string;
   content: string;
   description: string;
   children: ModuleNode[];
@@ -72,7 +66,7 @@ export interface Module {
 export interface ModuleOutlineNode {
   id: string;
   parent: string | null;
-  title: string;
+  name: string;
   description: string;
   children: ModuleOutlineNode[];
 }
