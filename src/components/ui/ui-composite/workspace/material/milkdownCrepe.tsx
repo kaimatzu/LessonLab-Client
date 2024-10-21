@@ -1,7 +1,7 @@
 import React, { FC, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Crepe } from '@/components/ui/ui-composite/workspace/milkdown-crepe/core'; // Your custom version of Crepe
+import { Crepe } from '@/components/ui/ui-composite/workspace/material/milkdown-crepe/core'; // Your custom version of Crepe
 
-import '@/components/ui/ui-composite/workspace/milkdown-crepe/theme/nord/style.css';
+import '@/components/ui/ui-composite/workspace/material/milkdown-crepe/theme/nord/style.css';
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/nord.css';
 import "../../../css/custom-scrollbar.css";
