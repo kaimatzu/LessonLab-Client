@@ -5,7 +5,7 @@ import "./globals.css";
 import { CombinedProvider } from '@/lib/hooks/context-providers/user-context';
 import { Provider } from 'react-redux';
 import store from "@/redux/store";
-import { Toaster } from "@/components/ui/ui-base/toaster";
+import { Toaster } from "@/components/ui/ui-base/shared/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 

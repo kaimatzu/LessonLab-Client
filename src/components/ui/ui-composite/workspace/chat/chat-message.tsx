@@ -6,11 +6,10 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import remarkDirective from 'remark-directive'
 import remarkDirectiveRehype from 'remark-directive-rehype'
-import Artifact from '@/components/ui/ui-base/artifact'
 
 import { cn } from '@/lib/utils'
-import { CodeBlock } from '@/components/ui/ui-composite/chat/codeblock'
-import { MemoizedReactMarkdown } from '@/components/ui/ui-base/markdown'
+import { CodeBlock } from '@/components/ui/ui-base/chat/codeblock'
+import { MemoizedReactMarkdown } from '@/components/ui/ui-base/chat/markdown'
 import { IconPinecone, IconUser } from '@/components/ui/ui-base/icons'
 
 import AnnouncementIcon from '@mui/icons-material/Announcement';
@@ -130,19 +129,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
               )
             },
 
-            // Directives for Rendering Components           
-            'artifact': (props: any) => {
-              const { name, children } = props;
-
-              // Render Artifact component only if the message is from the assistant or is an action message
-              if (message.role === 'assistant' || message.type === 'action') {
-                return <Artifact name={name} children={children} message={message.content} />;
-              }
-
-              // Otherwise, render the message content as a paragraph
-              return <p className="mb-0 last:mb-0">{message.content}</p>;
-            },
-
+            // Directives for Rendering Components
             'action_notification': (props: any) => {
               const { actionMessage } = props;
 
