@@ -1,10 +1,10 @@
 import React, { FC, forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Crepe } from '../milkdown-crepe/core'; // Your custom version of Crepe
+import { Crepe } from '@/components/ui/ui-composite/workspace/milkdown-crepe/core'; // Your custom version of Crepe
 
-import '../milkdown-crepe/theme/nord/style.css';
+import '@/components/ui/ui-composite/workspace/milkdown-crepe/theme/nord/style.css';
 import '@milkdown/crepe/theme/common/style.css';
 import '@milkdown/crepe/theme/nord.css';
-import "../../css/custom-scrollbar.css";
+import "../../../css/custom-scrollbar.css";
 import "./css/milkdown-override.css";
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { replaceModuleNodeContent, selectSelectedWorkspaceModuleContent } from '@/redux/slices/workspaceSlice';

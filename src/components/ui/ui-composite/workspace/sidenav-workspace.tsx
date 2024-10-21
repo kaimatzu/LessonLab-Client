@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import {
   useWorkspaceContext,
 } from "@/lib/hooks/context-providers/workspace-context";
-import "../css/custom-scrollbar.css";
+import "../../css/custom-scrollbar.css";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
 import { POST as uploadFile } from "@/app/api/files/route";
 import { FetchedFile } from "@/app/api/files/route";
@@ -19,7 +19,7 @@ import {
   updateAdditionalSpecification as _updateAdditionalSpecification,
   removeAdditionalSpecification as _removeAdditionalSpecification,
 } from "@/app/api/workspace/specification/route"
-import { SkeletonLoader } from "../ui-base/skeleton-loader";
+import { SkeletonLoader } from "../../ui-base/shared/skeleton-loader";
 import { Workspace, AdditionalSpecification, Specification } from "@/lib/types/workspace-types";
 import { FaRegFilePdf } from "react-icons/fa";
 import { IoBookOutline } from "react-icons/io5";

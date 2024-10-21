@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import Overlay from "@/components/ui/ui-base/overlay";
+import Overlay from "@/components/ui/ui-base/shared/overlay";
 import LoginForm from '@/components/ui/ui-composite/auth/login-form';
 import { loginUser } from '@/redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { useToast } from '@/components/ui/ui-base/use-toast';
+import { useToast } from '@/components/ui/ui-base/shared/use-toast';
 import { useSocket } from '@/lib/hooks/useServerEvents';
 import HypertextLoading from '@/assets/animated/hypertext-loading';
 

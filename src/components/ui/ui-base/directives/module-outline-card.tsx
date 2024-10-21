@@ -3,7 +3,7 @@ import { CircularProgress, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import './module-outline-card.css';
-import { transformModuleOutlineToTreeFormat } from '../../ui-composite/module-tree/data-processing';
+import { transformModuleOutlineToTreeFormat } from '@/components/ui/ui-composite/workspace/module-tree/data-processing';
 import { useSocket } from '@/lib/hooks/useServerEvents';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import store from '@/redux/store';
@@ -13,7 +13,7 @@ import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import CheckIcon from '@mui/icons-material/Check';
 import { SlRefresh } from "react-icons/sl";
 import { RiDeleteBinLine } from "react-icons/ri";
-import ModuleTree from "@/components/ui/ui-composite/module-tree/OutlineModuleTree";
+import ModuleTree from "@/components/ui/ui-composite/workspace/module-tree/OutlineModuleTree";
 import {Module} from "@/lib/types/workspace-types";
 
 interface ModuleOutlineCardProps {
