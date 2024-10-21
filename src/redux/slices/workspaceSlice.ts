@@ -15,7 +15,7 @@ import {
   Specification,
   Workspace
 } from '@/lib/types/workspace-types';
-import {transformModuleDataToTreeFormat} from '@/components/ui/ui-composite/workspace/module-tree/data-processing';
+import {transformModuleDataToTreeFormat} from '@/components/ui/ui-composite/workspace/material/module-tree/data-processing';
 import {current} from 'immer';
 import {createSelector} from 'reselect';
 

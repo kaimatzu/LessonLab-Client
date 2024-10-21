@@ -1,14 +1,14 @@
 import type { MenuItem, MenuItemGroup } from './utils'
 
 export class GroupBuilder {
-  #groups: MenuItemGroup<false>[] = []
+  private groups: MenuItemGroup<false>[] = []
 
   clear = () => {
-    this.#groups = []
+    this.groups = []
     return this
   }
 
-  #getGroupInstance = (group: MenuItemGroup<false>) => {
+  private getGroupInstance = (group: MenuItemGroup<false>) => {
     const groupInstance = {
       group,
       addItem: (key: string, item: Omit<MenuItem, 'key' | 'index'>) => {
@@ -31,20 +31,20 @@ export class GroupBuilder {
       label,
       items,
     }
-    this.#groups.push(group)
+    this.groups.push(group)
 
-    return this.#getGroupInstance(group)
+    return this.getGroupInstance(group)
   }
 
   getGroup = (key: string) => {
-    const group = this.#groups.find(group => group.key === key)
+    const group = this.groups.find(group => group.key === key)
     if (!group)
       throw new Error(`Group with key ${key} not found`)
 
-    return this.#getGroupInstance(group)
+    return this.getGroupInstance(group)
   }
 
   build = () => {
-    return this.#groups
+    return this.groups
   }
 }
