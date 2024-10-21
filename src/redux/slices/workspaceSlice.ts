@@ -621,16 +621,16 @@ const workspaceSlice = createSlice({
         }
       }
     },
-    replaceModuleNodeTitle: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, title: string }>) => {
-      const { workspaceId, moduleId, moduleNodeId, title } = action.payload;
+    replaceModuleNodeTitle: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, name: string }>) => {
+      const { workspaceId, moduleId, moduleNodeId, name } = action.payload;
 
-      console.log("Redux node title:", workspaceId, moduleId, moduleNodeId, title);
+      console.log("Redux node name:", workspaceId, moduleId, moduleNodeId, name);
 
       // Recursive function to find and update the node content
       const findAndUpdateNode = (nodes: ModuleNode[], nodeId: string, newTitle: string): boolean => {
         for (const node of nodes) {
           if (node.id === nodeId) {
-            node.title = newTitle;
+            node.name = newTitle;
             return true;
           }
           if (node.children && node.children.length > 0) {
@@ -646,24 +646,24 @@ const workspaceSlice = createSlice({
       if (workspace) {
         const md = workspace.modules.find(md => md.id === moduleId);
         if (md) {
-          const success = findAndUpdateNode(md.nodes, moduleNodeId, title); // Traverse and update the content
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, name); // Traverse and update the content
           if (!success) {
-            console.error("Replacing module node title failed. Module node not found");
+            console.error("Replacing module node name failed. Module node not found");
           }
         } else {
-          console.error("Replacing module node title failed. Module not found");
+          console.error("Replacing module node name failed. Module not found");
         }
       }
 
       if (state.selectedWorkspace && state.selectedWorkspace.id === workspaceId) {
         const md = state.selectedWorkspace.modules.find(md => md.id === moduleId);
         if (md) {
-          const success = findAndUpdateNode(md.nodes, moduleNodeId, title); // Traverse and update the title
+          const success = findAndUpdateNode(md.nodes, moduleNodeId, name); // Traverse and update the name
           if (!success) {
-            console.error("Replacing module node title failed. Module node not found");
+            console.error("Replacing module node name failed. Module node not found");
           }
         } else {
-          console.error("Replacing module node title failed. Module not found");
+          console.error("Replacing module node name failed. Module not found");
         }
       }
     },

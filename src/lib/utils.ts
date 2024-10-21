@@ -21,6 +21,13 @@ import { FetchedFile } from '@/app/api/files/route'
 
 // export type ItemType = Identification | MultipleChoice
 
+export function stopAllPropagation (event: any) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.nativeEvent.stopPropagation();
+  event.nativeEvent.stopImmediatePropagation();
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
