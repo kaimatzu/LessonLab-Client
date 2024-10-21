@@ -4,18 +4,18 @@ import React, { useState } from 'react'
 import { experimental_useObject as useObject } from 'ai/react'
 import { z } from 'zod';
 import { FetchedFile } from '@/app/api/files/route';
-import { Card } from '../ui/ui-base/card';
-import { Input } from '../ui/ui-base/input';
-import { RadioGroup, RadioGroupItem } from '../ui/ui-base/radio-group';
-import { Label } from '../ui/ui-base/label';
-import { Button } from '../ui/ui-base/button';
+import { Card } from '../../ui-base/card';
+import { Input } from '../../ui-base/input';
+import { RadioGroup, RadioGroupItem } from '../../ui-base/radio-group';
+import { Label } from '../../ui-base/label';
+import { Button } from '../../ui-base/button';
 import { useWorkspaceContext } from '@/lib/hooks/context-providers/workspace-context';
 import { FaCheck, FaXmark } from 'react-icons/fa6';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
-import Overlay from '../ui/ui-base/overlay';
+import Overlay from '../../ui-base/overlay';
 import { ANSWER_FIELD } from '@/lib/globals';
 import { objectArrayToGiftFormat } from '@/lib/utils';
-import { toast } from '../ui/ui-base/use-toast';
+import { toast } from '../../ui-base/use-toast';
 import { Workspace } from '@/lib/types/workspace-types';
 
 const fetchFileUrls = async (workspaceId: string) => {
