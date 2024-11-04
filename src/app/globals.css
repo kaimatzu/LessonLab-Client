@@ -27,7 +27,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 47.9 95.8% 53.1%;
+    --ring: 226, 68%, 76%, 1;
     --radius: 0.75rem;
     --font-family: 'Sansation', sans-serif;
   }
