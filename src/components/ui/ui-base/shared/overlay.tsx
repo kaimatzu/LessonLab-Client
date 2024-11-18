@@ -24,7 +24,7 @@ const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 c
   },
 });
 
-const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-background rounded-lg z-[260] transition-opacity', {
+const overlayContainerStyles = cva('fixed top-0 right-0 left-0 m-auto bg-[#f1f3f8] rounded-lg z-[260] transition-opacity', {
   variants: {
     hidden: {
       true: 'opacity-0',
@@ -93,11 +93,11 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
           )}>
             <div className={cn(
               headerStyles({ overlayType }),
-              overlayType === 'chat' ? 'sticky top-0 z-10 bg-background' : 'bg-background'
+              overlayType === 'chat' ? 'sticky top-0 z-10 bg-background' : 'bg-[#f1f3f8]'
             )}>
               <h1 className={cn(
                 "text-lg font-semibold ml-3",
-                overlayType === 'chat' ? 'text-foreground bg-background' : 'text-foreground bg-background'
+                overlayType === 'chat' ? 'text-foreground bg-background' : 'text-foreground bg-[#f1f3f8]'
               )}>
                 {/* {overlayName} */}
                 {overlayType === 'chat' && 'AI Assistant'}
@@ -105,7 +105,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
               {isClosable && (
                 <button
                   className={cn(
-                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-gray-200 rounded-md w-8 h-8 flex items-center justify-center",
+                    "border-none bg-transparent text-lg cursor-pointer hover:text-[#5e77d3] rounded-md w-8 h-8 flex items-center justify-center",
                     overlayType === 'chat' ? 'text-foreground' : 'text-foreground'
                   )}
                   type="button"

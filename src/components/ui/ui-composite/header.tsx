@@ -107,7 +107,7 @@ const Header: React.FC = () => {
 
         <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} overlayType="transaction">
           {transactionOngoing && (
-            <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="absolute top-0 left-0 right-0 bottom-0 bg-[#f1f3f8] bg-opacity-50 flex justify-center items-center">
               <div className="loader text-white">Transaction Ongoing...</div>
             </div>
           )}

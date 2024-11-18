@@ -29,7 +29,7 @@ const TransactionResult = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', bgcolor: 'white' }}>
       {transactionStatus !== 'payment.paid' ? (
         <>
-          <CircularProgress style={{ color: 'yellow' }} />
+          <CircularProgress style={{ color: 'blue' }} />
           <Typography>Processing Transaction...</Typography>
         </>
       ) : (

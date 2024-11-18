@@ -42,17 +42,20 @@ export const Item: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWin
   };
 
   return (
-    <div className={cn("flex flex-col m-1 items-center p-4 rounded-md shadow-lg bg-[#5a5a5a]", "item")}>
+    <div 
+      className={cn("flex flex-col m-1 text-xs min-w-[190px] w-[182px] min-h-[200px] h-[200px] items-center p-4 rounded-sm bg-[#f1f3f8] hover:bg-[#5e77d3] cursor-pointer border border-[#5e77d3]", "item")}
+      onClick={handleBuyTokens}
+      >
       <Image src={icon} alt="Item Image" width={50} height={50} className="mb-4" />
       <div className="flex flex-col items-center">
-        <h2 className="text-lg font-semibold mb-2">{item.name}</h2>
-        <button
-          className="px-4 py-2 bg-yellow-400 text-white rounded hover:bg-yellow-500"
-          onClick={handleBuyTokens}
+        <h2 className="text-sm text-zinc-800 mb-2">{item.name}</h2>
+        <h2
+          className="px-4 py-2 text-zinc-800"
+          // onClick={handleBuyTokens}
           // onClick={testConnectSocket}
         >
           BUY {formattedAmount} {item.currency}
-        </button>
+        </h2>
       </div>
     </div>
   );
