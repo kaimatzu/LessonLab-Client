@@ -11,13 +11,16 @@ import ThemeSwitcher from '../ui-base/shared/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/shared/button';
 import HypertextLogo from '@/assets/hypertext-logo';
-import { MdGeneratingTokens } from "react-icons/md";
+import { MdPerson, MdGeneratingTokens, MdLogout, MdAccountCircle, MdToken  } from "react-icons/md";
+import ProfileOverlay from './profile/profile-page';
+
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [transactionOngoing, setTransactionOngoing] = useState(false);
   const [checkoutWindow, setCheckoutWindow] = useState<Window>();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown toggle
+  const [isProfileOverlayOpen, setIsProfileOverlayOpen] = useState(false);
 
   const { user, clearUser } = useUserContext();
   const { getWindowPath } = useRouteContext();
@@ -35,6 +38,15 @@ const Header: React.FC = () => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const openProfileOverlay = () => {
+    setIsProfileOverlayOpen(true);
+    setIsDropdownOpen(false); // Close dropdown when opening profile
+  };
+
+  const closeProfileOverlay = () => {
+    setIsProfileOverlayOpen(false);
   };
 
   // TENTATIVE ITEMS, SHOULD BE REAL ITEMS DATA
@@ -84,19 +96,40 @@ const Header: React.FC = () => {
               <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
                 {user && (
                   <>
+                 <div className="flex justify-start items-center text-left mb-0">
+                  <MdAccountCircle className="text-gray-500 dark:text-gray-400 mr-3 text-2xl" />
+                  <div className="text-gray-800 dark:text-white text-sm">
+                    <p className="font-medium">User Name</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">usersmail@mail.com</p>
+                  </div>
+                </div>
+                            
+                    {/* Divider Line */}
+                    <hr className="border-t border-gray-200 dark:border-gray-700 my-2" />
+                    
                     <Button
                       variant={'ghost'}
-                      onClick={closeShop}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                      onClick={openProfileOverlay}
+                      className="flex justify-start items-center text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#E2E4EA] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
-                      Shop
+                      <MdPerson className="mr-2" /> Profile
                     </Button>
                     <Button
                       variant={'ghost'}
-                      onClick={handleLogout}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                      onClick={closeShop}
+                      className="flex justify-start items-center text-left text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#E2E4EA] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
-                      Logout
+                      <MdToken className="mr-2" /> Tokens
+                    </Button>
+
+                    <hr className="border-t border-gray-200 dark:border-gray-700 my-2" />
+
+                    <Button
+                      variant={'ghost'}
+                      onClick={handleLogout}
+                      className="flex justify-start items-center text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#E2E4EA] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                    >
+                      <MdLogout className="mr-2" /> Log out
                     </Button>
                   </>
                 )}
@@ -117,6 +150,13 @@ const Header: React.FC = () => {
             ))}
           </div>
         </Overlay>
+
+        <ProfileOverlay
+          isOpen={isProfileOverlayOpen}
+          onClose={closeProfileOverlay}
+          user={{ name: 'User Name', email: 'usersmail@mail.com' }}
+        />
+
       </div>
     </div>
   );
