@@ -14,7 +14,6 @@ export type AssessmentItemType = 'MultipleChoice' | 'Identification'
  */
 export interface AssessmentItem {
   difficulty: number, // Difficulty for the weight of each item
-  no: number,
   question: string,
   content: Identification | MultipleChoice
 }

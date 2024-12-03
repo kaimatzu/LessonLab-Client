@@ -35,6 +35,7 @@ interface WorkspaceState {
   selectedModuleData: any;
 }
 
+// #region initialState
 const initialState: WorkspaceState = {
   workspaces: [],
   workspacesInitialized: false,
@@ -51,6 +52,7 @@ const initialState: WorkspaceState = {
   selectedModuleData: null,
 };
 
+// #region fetchWorkspaces
 export const fetchWorkspaces = createAsyncThunk(
   'workspace/fetchWorkspaces',
   async () => {
@@ -75,6 +77,7 @@ export const fetchWorkspaces = createAsyncThunk(
   }
 );
 
+// #region fetchSpecifications
 export const fetchSpecifications = createAsyncThunk(
   'workspace/fetchSpecifications',
   async (workspaceId: string) => {
@@ -101,6 +104,7 @@ export const fetchSpecifications = createAsyncThunk(
   }
 );
 
+// #region fetchWorkspaceModules
 export const fetchWorkspaceModules = createAsyncThunk(
   'workspace/fetchWorkspaceModules',
   async (workspaceId: string) => {
@@ -124,6 +128,7 @@ export const fetchWorkspaceModules = createAsyncThunk(
   }
 );
 
+// #region fetchWorkspaceModuleData
 export const fetchWorkspaceModuleData = createAsyncThunk(
   'workspace/fetchWorkspaceModuleData',
   async (moduleRootNodeId: string) => {
@@ -141,6 +146,7 @@ export const fetchWorkspaceModuleData = createAsyncThunk(
   }
 );
 
+// #region fetchWorkspaceChatHistory
 export const fetchWorkspaceChatHistory = createAsyncThunk(
   'workspace/fetchWorkspaceChatHistory',
   async (workspaceId: string) => {
@@ -164,12 +170,14 @@ export const fetchWorkspaceChatHistory = createAsyncThunk(
   }
 );
 
+// #region parseContent
 const parseContent = (content: string) => {
   let parsedContent = content.trim();
   parsedContent = parsedContent.replace(/\\n/g, '\n');
   return parsedContent;
 };
 
+// #region findNode
 // Helper function to recursively find a node by ID
 const findNode = (nodes: ModuleNode[], nodeId: string): ModuleNode | undefined => {
   for (const node of nodes) {
@@ -184,6 +192,7 @@ const findNode = (nodes: ModuleNode[], nodeId: string): ModuleNode | undefined =
   return undefined; // Node not found
 };
 
+// #region removeNode
 // Helper function to remove a node from the nodes array
 const removeNode = (nodes: ModuleNode[], nodeId: string): boolean => {
   // Find the index of the node to delete
@@ -205,23 +214,29 @@ const removeNode = (nodes: ModuleNode[], nodeId: string): boolean => {
   return false; // Node not found in this level and its children
 };
 
+// #region workspaceSlice
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    // #region setSelectedWorkspace
     setSelectedWorkspace: (state, action: PayloadAction<string | null>) => {
       const workspaceId = action.payload;
       state.selectedWorkspace = workspaceId ? state.workspaces.find(workspace => workspace.id === workspaceId) || null : null;
     },
+    // #region setSelectedSpecificationId
     setSelectedSpecificationId: (state, action: PayloadAction<string | null>) => {
       state.selectedSpecificationId = action.payload;
     },
+    // #region setSelectedModuleId
     setSelectedModuleId: (state, action: PayloadAction<string | null>) => {
       state.selectedModuleId = action.payload;
     },
+    // #region setSelectedModuleNodeId
     setSelectedModuleNodeId: (state, action: PayloadAction<string | null>) => {
       state.selectedModuleNodeId = action.payload;
     },
+    // #region updateWorkspaceName
     updateWorkspaceName: (state, action: PayloadAction<{ workspaceId: string, newName: string }>) => {
       const { workspaceId, newName } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -232,12 +247,15 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.name = newName;
       }
     },
+    // #region addWorkspace
     addWorkspace: (state, action: PayloadAction<Workspace>) => {
       state.workspaces.push(action.payload);
     },
+    // #region removeWorkspace
     removeWorkspace: (state, action: PayloadAction<string>) => {
       state.workspaces = state.workspaces.filter(workspace => workspace.id !== action.payload);
     },
+    // #region addSpecification
     addSpecification: (state, action: PayloadAction<{ workspaceId: string, specification: Specification }>) => {
       const { workspaceId, specification } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -248,6 +266,7 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.specifications.push(specification);
       }
     },
+    // #region updateSpecification
     updateSpecification: (state, action: PayloadAction<{ workspaceId: string, specification: Specification }>) => {
       const { workspaceId, specification } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -264,6 +283,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region updateSpecificationName
     updateSpecificationName: (state, action: PayloadAction<{ workspaceId: string, specificationId: string, name: string }>) => {
       const { workspaceId, specificationId, name } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -302,6 +322,7 @@ const workspaceSlice = createSlice({
     //     }
     //   }
     // },
+    // #region deleteSpecification
     deleteSpecification: (state, action: PayloadAction<{ workspaceId: string, specificationId: string }>) => {
       const { workspaceId, specificationId } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -312,9 +333,11 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.specifications = state.selectedWorkspace.specifications.filter(spec => spec.id !== specificationId);
       }
     },
+    // #region updateChatLoadingStatus
     updateChatLoadingStatus: (state, action: PayloadAction<boolean>) => {
       state.chatLoading = action.payload;
     },
+    // #region addChatHistory
     addChatHistory: (state, action: PayloadAction<{ workspaceId: string, id: string, role: MessageRole, type: MessageType, content: string }>) => {
       const { workspaceId, id, role, type, content } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -325,6 +348,7 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.chatHistory.push({ id, role, type, content });
       }
     },
+    // #region updateChatMessage
     updateChatMessage: (state, action: PayloadAction<{ workspaceId: string, id: string, contentDelta: string }>) => {
       const { workspaceId, id, contentDelta: content } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -337,6 +361,7 @@ const workspaceSlice = createSlice({
         if (message) message.content += content;
       }
     },
+    // #region replaceChatMessage
     replaceChatMessage: (state, action: PayloadAction<{ workspaceId: string, id: string, content: string }>) => {
       const { workspaceId, id, content } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -349,6 +374,7 @@ const workspaceSlice = createSlice({
         if (message) message.content = content;
       }
     },
+    // #region addModule
     addModule: (state, action: PayloadAction<{ workspaceId: string, module: Module }>) => {
       const { workspaceId, module } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -359,6 +385,7 @@ const workspaceSlice = createSlice({
         state.selectedWorkspace.modules.push(module);
       }
     },
+    // #region updateModuleName
     updateModuleName: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; newName: string }>) => {
       const { workspaceId, moduleId, newName } = action.payload;
       const workspace = state.workspaces.find(ws => ws.id === workspaceId);
@@ -379,6 +406,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region deleteModule
     deleteModule: (state, action: PayloadAction<{ workspaceId: string; moduleId: string }>) => {
       const { workspaceId, moduleId } = action.payload;
 
@@ -404,6 +432,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region insertNode
     insertNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; newNode: ModuleNode }>) => {
       const { workspaceId, moduleId, newNode } = action.payload;
 
@@ -452,6 +481,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region deleteNode
     deleteNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; nodeId: string }>) => {
       const { workspaceId, moduleId, nodeId } = action.payload;
 
@@ -503,6 +533,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region transferNode
     transferNode: (state, action: PayloadAction<{ workspaceId: string; moduleId: string; nodeId: string; targetParentId: string | null; relativeIndex:
           number }>) => {
       const { workspaceId, moduleId, nodeId, targetParentId, relativeIndex } = action.payload;
@@ -577,6 +608,7 @@ const workspaceSlice = createSlice({
 
       console.log("Updated Selected Workspace Data via transfer");
     },
+    // #region replaceModuleNodeContent
     replaceModuleNodeContent: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, content: string }>) => {
       const { workspaceId, moduleId, moduleNodeId, content } = action.payload;
     
@@ -621,6 +653,7 @@ const workspaceSlice = createSlice({
         }
       }
     },
+    // #region replaceModuleNodeTitle
     replaceModuleNodeTitle: (state, action: PayloadAction<{ workspaceId: string, moduleId: string, moduleNodeId: string, name: string }>) => {
       const { workspaceId, moduleId, moduleNodeId, name } = action.payload;
 
@@ -668,6 +701,7 @@ const workspaceSlice = createSlice({
       }
     },
   },
+  // #region extraReducers
   extraReducers: (builder) => {
     builder
       .addCase(fetchWorkspaces.pending, (state) => {

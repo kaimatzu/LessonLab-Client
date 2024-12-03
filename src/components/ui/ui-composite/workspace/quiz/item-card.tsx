@@ -8,25 +8,30 @@ import { useState } from "react"
 import { LuMoreHorizontal } from "react-icons/lu"
 
 interface ItemCardProps {
-  item: AssessmentItem
+  item: AssessmentItem,
+  no: number
 }
 
 /**
  * Card component for each item in an assessment.
  * @item The assessment item object.
  */
-const ItemCard = ({ item }: ItemCardProps) => {
+const ItemCard = ({ item, no }: ItemCardProps) => {
 
   const [selectedChoice, setSelectedChoice] = useState<string>('')
   const [identificationAnswer, setIdentificationAnswer] = useState<string>('')
 
   // TODO: Make on click funcion on clicking the LuMoreHoirzontal icon
+  const handleMore = (e: any) => {
+    e.preventDefault()
+  }
+
   return (
-    <Card className="border-[#BFBFBF]">
+    <Card className="border-[#BFBFBF] bg-[#F1F3F8]">
       <CardHeader>
         <CardTitle className="flex justify-between">
-          Item {item.no}
-          <LuMoreHorizontal onClick={() => {}} />
+          Item {no}
+          <LuMoreHorizontal onClick={() => {}} className="cursor-pointer" />
         </CardTitle>
         <div className="p-4">
           {item.question}

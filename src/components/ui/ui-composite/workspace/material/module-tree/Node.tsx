@@ -34,6 +34,7 @@ interface ExtendedNodeProps extends NodeRendererProps<ModuleNode> {
     setLastFocusedNode: (node: NodeApi<ModuleNode>) => void;
 }
 
+// #region Node
 export const Node = ({ node, style, dragHandle, lastFocusedNode, setLastFocusedNode }: ExtendedNodeProps) => {
     const Icon = FaPen;
     const indentSize = Number.parseFloat(`${style.paddingLeft || 0}`);
@@ -93,6 +94,7 @@ export const Node = ({ node, style, dragHandle, lastFocusedNode, setLastFocusedN
 
 
 
+    // #region JSX
     return (
         <div
             ref={dragHandle}
@@ -157,6 +159,7 @@ export const Node = ({ node, style, dragHandle, lastFocusedNode, setLastFocusedN
                                 <FolderArrow node={node}/>
                             </div>
                         }
+                        {/* BOOKMARK: This is it */}
                         {selectedModuleNodeId && selectedModuleNodeId === node.id && node.isSelected &&
                             <Icon className={styles.icon}/>
                         }

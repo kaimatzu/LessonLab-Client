@@ -77,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const pathname = getCurrentPath();
 
       if (!authToken) {
-        if (!pathname.startsWith('/auth') && !pathname.startsWith('/')) {
+        if (!pathname.startsWith('/auth') && !pathname.startsWith('/') && !pathname.startsWith('/testingpage')) {
           push('/auth'); // Redirect to /auth if no authToken
         }
         return;
@@ -90,7 +90,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (checkAuth.fulfilled.match(resultAction)) {
           connectSocket(resultAction.payload.userId);
           console.log("Path name", pathname);
-          if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction')) {
+          if (!pathname.startsWith('/workspace') && !pathname.startsWith('/transaction') && !pathname.startsWith('/testingpage')) {
             push('/workspace'); // Redirect to /workspace if authenticated
           }
         } else {

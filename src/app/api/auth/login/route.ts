@@ -43,7 +43,9 @@ import { AuthResponse } from "@/lib/hooks/context-providers/user-context";
  * @returns A Response object with the authentication result.
  */
 export async function POST(requestBuilder: RequestBuilder) {
-    requestBuilder.setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`)
+
+    requestBuilder
+        .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/login`)
         .setMethod("POST")
         .setCredentials("include");
 

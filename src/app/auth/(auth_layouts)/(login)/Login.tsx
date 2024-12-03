@@ -37,15 +37,14 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
 
     const resultAction = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(resultAction)) {
-      console.log("Login:", resultAction.payload.userId)
       connectSocket(resultAction.payload.userId);
       router.push('/workspace');
     } else {
       // Handle login error (e.g., display error message to the user)
-      console.error("Login failed");
+      // NOTE: If login is error resultAction.payload is not a string
       toast({
         title: 'Error',
-        description: resultAction ? resultAction.payload : 'Something went wrong.',
+        description: resultAction && resultAction.payload ? resultAction.payload.error : 'Something went wrong.',
         variant: 'destructive'
       })
     }
