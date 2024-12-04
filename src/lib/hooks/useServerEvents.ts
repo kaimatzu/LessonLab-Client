@@ -77,6 +77,19 @@ class SocketClient {
 
       throttledReplaceChatMessage(workspaceId, assistantMessageId, contentSnapshot);
     });
+
+    this.socket.on('finalContent', (contentSnapshot, assistantMessageId, workspaceId) => {
+      console.log("Final content", contentSnapshot);
+      store.dispatch(
+        replaceChatMessage({
+          workspaceId: workspaceId,
+          id: assistantMessageId,
+          content: contentSnapshot
+        })
+      )
+
+      this.socket.emit('confirm-assistant-message-complete', assistantMessageId);
+    })
     
     this.socket.on('initialize-assistant-message', async (assistantMessageId, type, workspaceId, callbackAssistant) => {
       console.log("Assistant message ID:", assistantMessageId);
@@ -115,6 +128,11 @@ class SocketClient {
     });
     
     this.socket.on('end', () => {
+      // store.dispatch(updateChatLoadingStatus(false));
+      // console.log("Assistant response finished.")
+    });
+
+    this.socket.on('end-sequence', () => {
       store.dispatch(updateChatLoadingStatus(false));
       console.log("Assistant response finished.")
     });

@@ -102,7 +102,7 @@ export default function WorkspaceComponent({ workspace }: { workspace: Workspace
 
   useEffect(() => {
     console.log("Socket connected:", socketConnected);
-    console.log(loading, selectedWorkspace, socketConnected, connectionInitialized);
+    console.log(loading, selectedWorkspace, socketConnected, socket.connected, connectionInitialized);
     if (!loading && selectedWorkspace?.id && socketConnected && socket.connected && !connectionInitialized) { // Jesus fucking christ
       joinWorkspaceRoom(selectedWorkspace?.id);
       setConnectionInitialized(true);
