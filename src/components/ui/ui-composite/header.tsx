@@ -82,7 +82,8 @@ const Header: React.FC = () => {
             />
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
-                {user && (
+                {/*
+                  {user && (
                   <>
                     <Button
                       variant={'ghost'}
@@ -99,7 +100,23 @@ const Header: React.FC = () => {
                       Logout
                     </Button>
                   </>
-                )}
+                )} */}
+                <>
+                  <Button
+                    variant={'ghost'}
+                    onClick={closeShop}
+                    className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                  >
+                    Shop
+                  </Button>
+                  <Button
+                    variant={'ghost'}
+                    onClick={handleLogout}
+                    className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
+                  >
+                    Logout
+                  </Button>
+                </>
               </div>
             )}
           </div>

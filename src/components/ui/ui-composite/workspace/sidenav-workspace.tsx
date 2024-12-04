@@ -34,6 +34,8 @@ import {TextField} from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import {POST as _createModule, updateModuleName as _updateModuleName, deleteModule as _deleteModule} from "@/app/api/workspace/module/route";
+import { MdOutlineAssessment } from "react-icons/md";
+import router from "next/router";
 
 interface SidenavWorkspaceProps {
   workspace: Workspace;
@@ -376,6 +378,22 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
 
     handleMenuClose();
   }
+
+  function handleGenerateAssessment(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
+    e.preventDefault()
+
+    // ON CLICK
+    // 1. Call api to create new quiz. Pass in the module id and data
+
+    // 2. Go to new page `/workspace/{moduleId}/assessment
+    router.push(`/assessment/${editingModuleId}`);
+
+    // 3. Display quiz response from the create new quiz api endpoint in step 1
+
+
+    // The Assessment's route will be `/workspace/{moduleId}/assessment`
+  }
+
   // #region JSX
   return (
     <div className="flex flex-col !w-fit !min-w-fit h-full !overflow-x-visible bg-[#F1F3F8] border-r border-gray-300 dark:bg-zinc-900 no-scrollbar overflow-y-auto">
@@ -721,6 +739,15 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                             <LuPencil className="mr-2"/>
                             Rename
                           </MenuItem>
+                          {/* Check if module has assessment. If no assessment then display 'Generate Assessment' else 'Open Assessment */}
+                          <MenuItem onClick={(event)=>{
+                            stopAllPropagation(event);
+                            handleGenerateAssessment(event)
+                            // handleDelete(event);
+                          }} sx={{ fontSize: '0.875rem', borderRadius: '8px' }}>
+                            <MdOutlineAssessment className="mr-2"/>
+                            Generate Assessment
+                          </MenuItem>
                           <MenuItem onClick={(event)=>{
                             stopAllPropagation(event);
                             handleDelete(event);
@@ -730,7 +757,7 @@ const SidenavWorkspace: React.FC<SidenavWorkspaceProps> = ({
                           </MenuItem>
                         </Menu>
                       </Link>
-                     ) : (
+                    ) : (
                         <form onSubmit={handleRenameSubmit}>
                           <div className="flex-1 truncate">
                             <div className="flex items-center px-1 py-4">

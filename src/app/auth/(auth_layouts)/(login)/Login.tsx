@@ -42,9 +42,10 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
     } else {
       // Handle login error (e.g., display error message to the user)
       // NOTE: If login is error resultAction.payload is not a string
+      // So the variable that will be rendered is resultAction.payload.error
       toast({
         title: 'Error',
-        description: resultAction && resultAction.payload ? resultAction.payload.error : 'Something went wrong.',
+        description: resultAction ? resultAction.payload : 'Something went wrong.',
         variant: 'destructive'
       })
     }
