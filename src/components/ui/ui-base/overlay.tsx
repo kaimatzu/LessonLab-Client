@@ -10,6 +10,7 @@ interface OverlayProps {
   children: ReactNode;
   overlayName: string;
   overlayType: 'transaction' | 'auth' | 'chat' | 'quizExport';
+  className?: string;
 }
 
 const overlayBackgroundStyles = cva('fixed h-full w-full bg-black top-0 left-0 cursor-pointer transition-opacity z-[250]', {
@@ -57,7 +58,7 @@ const headerStyles = cva('flex justify-between items-center p-2', {
   },
 });
 
-export default function Overlay({ isOpen, onClose, children, overlayName, overlayType }: OverlayProps) {
+export default function Overlay({ isOpen, onClose, children, overlayName, overlayType, className}: OverlayProps) {
   const isClosable = overlayType !== 'auth';
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
   return (
     <>
       {isOpen && (
-        <div className={isClosable ? 'fixed top-0 left-0 z-[999] overlay' : 'relative w-full overlay'}>
+        <div className={isClosable ? `fixed top-0 left-0 z-[999] overlay ${className}` : `relative w-full overlay ${className}`}>
           {isClosable && (
             <div
               className={cn(overlayBackgroundStyles({ hidden: !isOpen }), 'overlay-background')}
@@ -89,11 +90,12 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
           <div className={cn(
             overlayContainerStyles({ hidden: !isOpen, overlayType }),
             'overlay-container',
-            'flex flex-col overflow-y-auto'
+            'flex flex-col overflow-y-auto',
+            className
           )}>
             <div className={cn(
               headerStyles({ overlayType }),
-              overlayType === 'chat' ? 'sticky top-0 z-10 bg-background' : 'bg-background'
+              overlayType === 'chat' ? 'sticky top-0 z-10 bg-background' : overlayType === 'transaction' ? 'bg-transparent' : 'bg-background'
             )}>
               <h1 className={cn(
                 "text-lg font-semibold ml-3",
@@ -105,7 +107,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
               {isClosable && (
                 <button
                   className={cn(
-                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-gray-200 rounded-md w-8 h-8 flex items-center justify-center",
+                    "border-none bg-transparent text-2xl cursor-pointer hover:bg-blue-200 rounded-md w-8 h-8 flex items-center justify-center",
                     overlayType === 'chat' ? 'text-foreground' : 'text-foreground'
                   )}
                   type="button"

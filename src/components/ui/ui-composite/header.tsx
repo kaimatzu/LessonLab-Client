@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as logout } from '@/app/api/auth/logout/route';
 import Overlay from '../ui-base/overlay';
-import { Item } from './transaction/item';
+import { StoreItem } from './transaction/item';
 import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
 import ThemeSwitcher from '../ui-base/theme-switcher';
@@ -37,14 +37,12 @@ const Header: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // TENTATIVE ITEMS, SHOULD BE REAL ITEMS DATA
   const items = [
-    { name: '5 Tokens', amount: 5000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '50 Tokens', amount: 50000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '100 Tokens', amount: 100000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '500 Tokens', amount: 500000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '1000 Tokens', amount: 1000000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    // Add more items as needed
+    { name: '100,000,000', amount: 50000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
+    { name: '200,000,000', amount: 100000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
+    { name: '300,000,000', amount: 150000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
+    { name: '400,000,000', amount: 200000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
+    { name: '500,000,000', amount: 250000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
   ];
 
   const tokens = user?.tokens ? user.tokens.toFixed(2) : '0.00';
@@ -81,7 +79,7 @@ const Header: React.FC = () => {
               onClick={toggleDropdown} // Toggle dropdown on click
             />
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
+              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg border border-border rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
                 {user && (
                   <>
                     <Button
@@ -89,7 +87,7 @@ const Header: React.FC = () => {
                       onClick={closeShop}
                       className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
                     >
-                      Shop
+                      Token Store
                     </Button>
                     <Button
                       variant={'ghost'}
@@ -105,7 +103,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} overlayType="transaction">
+        <Overlay isOpen={isShopOpen} onClose={closeShop} overlayName={"Token Shop"} overlayType="transaction" className='bg-zinc-50'>
           {transactionOngoing && (
             <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
               <div className="loader text-white">Transaction Ongoing...</div>
@@ -113,7 +111,7 @@ const Header: React.FC = () => {
           )}
           <div className={`flex p-4 ${transactionOngoing ? "pointer-events-none" : ""}`}>
             {items.map((item, index) => (
-              <Item key={index} item={item} checkoutWindow={checkoutWindow} setCheckoutWindow={setCheckoutWindow} />
+              <StoreItem key={index} item={item} checkoutWindow={checkoutWindow} setCheckoutWindow={setCheckoutWindow} />
             ))}
           </div>
         </Overlay>
