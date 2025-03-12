@@ -4,7 +4,6 @@ import { MdGeneratingTokens } from "react-icons/md";
 import { createCheckoutSession, Item as PaymongoItem } from '@/app/api/transaction/paymongo';
 import { cn } from '@/lib/utils'; // Adjust the import path as necessary
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import { MdGeneratingTokens, MdToken } from 'react-icons/md';
 import { Button } from '../../ui-base/button';
 
 interface ItemProps {
