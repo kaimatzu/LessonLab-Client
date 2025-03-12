@@ -31,7 +31,7 @@ const ChatSidenav: React.FC = () => {
         <div className="flex flex-col w-64 h-[100%] border-l border-gray-300">
             {/* Materials Section */}
             <div className="flex items-center h-[49px] border-b border-gray-300 mb-1">
-                <h1 className="text-sm font-normal ml-4">Materials</h1>
+                <h1 className="text-sm font-normal ml-4">Modules</h1>
             </div>
             <div className="flex-grow h-[60%] overflow-y-auto">
                 {/* Render modules */}

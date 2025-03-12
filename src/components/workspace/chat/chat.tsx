@@ -35,7 +35,8 @@ export const Chat: React.FC<ChatProps> = ({
   handleDeleteFile,
 }) => {
   const [input, setInput] = useState<string>("");
-  
+  const { modules } = useWorkspaceContext();
+
   const {
     specifications,
     selectedSpecificationId,
@@ -198,11 +199,17 @@ export const Chat: React.FC<ChatProps> = ({
           <textarea
             className={
               "p-4 px-5 bg-[#E6EEF3] text-foreground focus:outline-none rounded-md flex-grow mr-4 overflow-y-auto resize-none box-border" +
-              (chatLoading ? "cursor-not-allowed" : "cursor-text")
+              (chatLoading || (files.length === 0 && workspace.name !== "Empty Workspace") ? "cursor-not-allowed" : "cursor-text")
             }
             value={input}
-            placeholder={chatLoading ? "Responding..." : "Message Assistant"}
-            disabled={chatLoading}
+            placeholder={    
+              chatLoading 
+              ? "Responding..." 
+              : files.length === 0 && workspace.name !== "Empty Workspace" && modules.length === 0
+                ? "No modules and files in your workspace"
+                : "Message Assistant"
+            }
+            disabled={chatLoading || (files.length === 0 && workspace.name !== "Empty Workspace" && modules.length === 0)}
             onChange={handleInputChange}
             onKeyDown={(e: any) => {
               if (e.key === "Enter" && !e.shiftKey) {
