@@ -53,10 +53,10 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
       amount: item.amount,
       currency: item.currency,
       description: item.description,
-      name: item.name,
+      name: item.name + ' Tokens',
       quantity: 1
     }));
-  
+
   try {
     const response = await fetch(requestBuilder.build());
 

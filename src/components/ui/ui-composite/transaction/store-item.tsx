@@ -1,11 +1,10 @@
 import React from 'react';
-import Image from 'next/image';
-import icon from '@/assets/icon.png';
 import { createCheckoutSession, Item as PaymongoItem } from '@/app/api/transaction/paymongo';
 import { cn } from '@/lib/utils'; // Adjust the import path as necessary
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import { MdGeneratingTokens, MdToken } from 'react-icons/md';
+import { MdGeneratingTokens } from 'react-icons/md';
 import { Button } from '../../ui-base/button';
+import { FaDollarSign, FaPesoSign } from 'react-icons/fa6';
 
 interface ItemProps {
   item: PaymongoItem;
@@ -48,14 +47,14 @@ export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setChecko
       {/* <Image src={icon} alt="Item Image" width={50} height={50} className="mb-4" /> */}
       <div className="flex flex-col items-center">
         <div className='flex flex-row items-center'>
-          <h2 className="text-lg font-semibold mb-2">{item.name}</h2> &nbsp; <MdGeneratingTokens className='translate-y-[-5px] w-5 h-5 fill-blue-600'/>
+          <MdGeneratingTokens className='translate-y-[-5px] w-5 h-5 fill-blue-600'/> &nbsp; <h2 className="text-lg font-semibold mb-2">{item.name}</h2>
         </div>
         <Button
           className="px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-100"
           onClick={handleBuyTokens}
           // onClick={testConnectSocket}
         >
-          BUY {formattedAmount} {item.currency}
+          {item.currency === 'PHP' ? <FaPesoSign /> : <FaDollarSign />} {formattedAmount}
         </Button>
       </div>
     </div>

@@ -30,6 +30,8 @@ export interface UserContextValue {
 
 const defaultValue: UserContextValue = {
   user: null,
+  // setUser: (newUser) => { defaultValue.user = newUser },
+  // clearUser: () => { defaultValue.user = null },
   setUser: () => { },
   clearUser: () => { },
   isTransactionFinished: false,

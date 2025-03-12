@@ -4,10 +4,8 @@ import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as logout } from '@/app/api/auth/logout/route';
 import Overlay from '../ui-base/overlay';
-import { StoreItem } from './transaction/item';
-import icon from '@/assets/icon.png';
+import { StoreItem } from './transaction/store-item';
 import profileIcon from '@/assets/profileIcon.png';
-import ThemeSwitcher from '../ui-base/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/button';
 import HypertextLogo from '@/assets/hypertext-logo';
@@ -46,9 +44,11 @@ const Header: React.FC = () => {
   ];
 
   const tokens = user?.tokens ? user.tokens.toFixed(2) : '0.00';
+
+  console.log('>>> %cheader user: ', 'color: #bada55', user);
   
   return (
-    <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
+    <header className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
@@ -116,7 +116,7 @@ const Header: React.FC = () => {
           </div>
         </Overlay>
       </div>
-    </div>
+    </header>
   );
 };
 
