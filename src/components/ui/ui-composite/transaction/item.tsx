@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import icon from '@/assets/icon.png';
+import { MdGeneratingTokens } from "react-icons/md";
 import { createCheckoutSession, Item as PaymongoItem } from '@/app/api/transaction/paymongo';
 import { cn } from '@/lib/utils'; // Adjust the import path as necessary
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
@@ -44,19 +44,19 @@ export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setChecko
   };
 
   return (
-    <div className={cn("flex flex-col m-1 items-center p-4 rounded-md shadow-sm bg-blue-50 text-zinc-950 border border-border", "item")}>
-      {/* <Image src={icon} alt="Item Image" width={50} height={50} className="mb-4" /> */}
+    <div className={cn("flex flex-col m-1 items-center p-4 rounded-md shadow-lg bg-[#E6EEF3]", "item")}>
+      <div className="flex flex-col items-center my-10">
+        <MdGeneratingTokens size={30} className="text-[#5e77d3]"/>
+        <h2 className="text-lg font-semibold">{item.name}</h2>
+      </div>
       <div className="flex flex-col items-center">
-        <div className='flex flex-row items-center'>
-          <h2 className="text-lg font-semibold mb-2">{item.name}</h2> &nbsp; <MdGeneratingTokens className='translate-y-[-5px] w-5 h-5 fill-blue-600'/>
-        </div>
-        <Button
-          className="px-4 py-2 bg-blue-300 text-white rounded hover:bg-blue-100"
+        <button
+          className="px-4 py-2 bg-primary text-white rounded hover:opacity-65"
           onClick={handleBuyTokens}
           // onClick={testConnectSocket}
         >
           BUY {formattedAmount} {item.currency}
-        </Button>
+        </button>
       </div>
     </div>
   );

@@ -79,26 +79,25 @@ const Header: React.FC = () => {
               onClick={toggleDropdown} // Toggle dropdown on click
             />
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg border border-border rounded-md py-4 z-[300] flex gap-2 flex-col"> {/* z-index added here */}
-                {user && (
-                  <>
-                    <Button
-                      variant={'ghost'}
-                      onClick={closeShop}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
-                    >
-                      Token Store
-                    </Button>
-                    <Button
-                      variant={'ghost'}
-                      onClick={handleLogout}
-                      className="block text-left px-2 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-[#5e77d3] dark:hover:bg-primary hover:text-black dark:hover:text-black mx-auto w-[80%] rounded"
-                    >
-                      Logout
-                    </Button>
-                  </>
-                )}
-              </div>
+              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-zinc-800 shadow-lg rounded-md py-2 px-2 z-[300] flex flex-col">
+              {user && (
+                <>
+                  <a
+                    onClick={closeShop}
+                    className="w-full px-4 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-left rounded-md transition-colors text-sm"
+                  >
+                    Shop
+                  </a>
+                  <a
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-zinc-800 dark:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-left rounded-md transition-colors text-sm"
+                  >
+                    Logout
+                  </a>
+                </>
+              )}
+            </div>
+            
             )}
           </div>
         </div>
