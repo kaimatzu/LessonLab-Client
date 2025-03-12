@@ -47,7 +47,7 @@ export default function RegisterPage({ switchForm }: RegisterPageProps) {
       console.error("Registration failed");
       toast({
         title: 'Registration Failed',
-        description: resultAction ? resultAction.payload : 'Something went wrong.',
+        description: resultAction && resultAction.payload ? resultAction.payload.error : 'Something went wrong.',
         variant: 'destructive',
       })
     }
