@@ -45,7 +45,7 @@ export default function LoginPage({ switchForm }: LoginPageProps) {
       console.error("Login failed");
       toast({
         title: 'Error',
-        description: resultAction ? resultAction.payload : 'Something went wrong.',
+        description: resultAction && resultAction.payload ? resultAction.payload.error : 'Something went wrong.',
         variant: 'destructive'
       })
     }
