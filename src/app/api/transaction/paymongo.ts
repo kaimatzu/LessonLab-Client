@@ -48,7 +48,9 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
     .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transactions/purchase_tokens`)
     .setMethod("POST")
     .setCredentials("include")
-    .setHeaders({ 'Content-Type': 'application/json' })
+    .setHeaders({ 
+      'Content-Type': 'application/json'
+     })
     .setBody(JSON.stringify({
       amount: item.amount,
       currency: item.currency,
@@ -58,11 +60,15 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
     }));
   
   try {
-    const response = await fetch(requestBuilder.build());
-
+    const response = await fetch(requestBuilder.build())
+    
     if (response.ok) {
-      const responseData: any = await response.json();
+      const responseData: any = await response.json()
       // connectSocket(responseData.data.attributes.payment_intent.id)
+      if (responseData?.data?.id) {
+        localStorage.setItem("checkout_session_id", responseData?.data?.id);
+      }
+
       return responseData;
     } else {
       console.error('Failed to create checkout session: ' + response.statusText);

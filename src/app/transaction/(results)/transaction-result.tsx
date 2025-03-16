@@ -1,45 +1,59 @@
-"use client"
-
-import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import React, { useEffect } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+"use client";
+import { useEffect, useState } from "react";
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 const TransactionResult = () => {
-  const { isTransactionFinished, broadcastChannel, transactionStatus } = useUserContext();
-  
-  useEffect(() => {
-    // Placeholder for API call to validate transaction...
-    console.log("Transaction status changed:", isTransactionFinished);
+    const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
 
-    broadcastChannel?.postMessage({ transaction_window_ready: true });
+    useEffect(() => {
+        const sessionId = localStorage.getItem("checkout_session_id");
 
-    if (isTransactionFinished) {
-      console.log("Transaction finished");
-      
-      setTimeout(() => {
-        window.close(); // Close the tab or navigate away
-      }, 5000); // Auto-close after 5 seconds
-    }
-  }, [isTransactionFinished]);
+        if (!sessionId) {
+            console.error("No session ID found.");
+            return;
+        }
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', bgcolor: 'white' }}>
-      {transactionStatus !== 'payment.paid' ? (
-        <>
-          <CircularProgress style={{ color: 'yellow' }} />
-          <Typography>Processing Transaction...</Typography>
-        </>
-      ) : (
-        <>
-          <CheckCircleIcon style={{ color: 'green', fontSize: 40 }} />
-          <Typography>Transaction Finished. Closing Window.</Typography>
-        </>
-      )}
-    </Box>
-  );
+        console.log("Retrieved session ID:", sessionId);
+
+        const requestBuilder = new RequestBuilder()
+            .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transactions/checkout_status/${sessionId}`)
+            .setMethod("GET")
+            .setCredentials("include")
+            .setHeaders({
+                "Content-Type": "application/json",
+            });
+
+        fetch(requestBuilder.build())
+            .then(res => {
+                if (!res.ok) {
+                  throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                const status = data?.data?.attributes?.payments?.[0]?.attributes?.status;
+                setPaymentStatus(status);
+                console.log("🔄 Payment status:", status);
+
+                // Clear session ID if payment is successful // New checkout overwrites the session ID
+                if (status === "succeeded") {
+                    console.log("🎉 Payment successful! Tokens added.");
+                    localStorage.removeItem("checkout_session_id");
+                }
+            })
+            .catch(err => console.error("Error fetching payment status:", err));
+    }, []);
+
+    return (
+        <div>
+            <h1>Transaction Result</h1>
+            {paymentStatus ? (
+                <p>Payment Status: {paymentStatus}</p>
+            ) : (
+                <p>Checking payment status...</p>
+            )}
+        </div>
+    );
 };
 
 export default TransactionResult;
