@@ -18,6 +18,7 @@ import { Specification, Workspace } from "@/lib/types/workspace-types";
 import { useSocket } from "@/lib/hooks/useServerEvents";
 import { Message } from '@/lib/types/workspace-types';
 import { useUserContext } from "@/lib/hooks/context-providers/user-context";
+import { toast } from "@/components/ui/ui-base/use-toast";
 
 interface ChatProps {
   workspace: Workspace;
@@ -64,6 +65,15 @@ export const Chat: React.FC<ChatProps> = ({
   const handleChatSubmit = (event?: {
     preventDefault?: () => void;
   }) => {
+    if (!user || user.tokens <= 0) {
+      toast({
+        title: "No tokens remaining",
+        description: "Please purchase more tokens to continue using the AI assistant",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     console.log("Submit prompt to server: ", input);
     updateChatStatus(true);
     if (selectedWorkspace) {
@@ -196,6 +206,7 @@ export const Chat: React.FC<ChatProps> = ({
         {/* Prompt area */}
         <div className="flex flex-row items-center h-fit">
           <textarea
+            id='chat-text-area'
             className={
               "p-4 px-5 bg-[#E6EEF3] text-foreground focus:outline-none rounded-md flex-grow mr-4 overflow-y-auto resize-none box-border" +
               (chatLoading ? "cursor-not-allowed" : "cursor-text")
@@ -227,7 +238,7 @@ export const Chat: React.FC<ChatProps> = ({
                 }
               }
             }}
-          />
+          /> {/* End textarea */}
           <div className="flex-shrink-0 relative">
             <Tooltip
               text={workspace.locked ? "Read-Only Workspace" : "Add PDF documents (do not upload private files)"}

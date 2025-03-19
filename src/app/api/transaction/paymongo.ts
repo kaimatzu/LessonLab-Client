@@ -55,10 +55,10 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
       amount: item.amount,
       currency: item.currency,
       description: item.description,
-      name: item.name,
+      name: item.name + ' Tokens',
       quantity: 1
     }));
-  
+
   try {
     const response = await fetch(requestBuilder.build())
     
@@ -108,7 +108,7 @@ export const getSession = async (checkoutSessionId: string): Promise<any> => {
     });
 
     if (response.ok) {
-      const responseData: any= await response.json();
+      const responseData: any = await response.json();
       return responseData;
     } else {
       throw new Error('Failed to get session: ' + response.statusText);

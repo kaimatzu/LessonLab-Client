@@ -80,7 +80,7 @@ export default function Overlay({ isOpen, onClose, children, overlayName, overla
   return (
     <>
       {isOpen && (
-        <div className={isClosable ? `fixed top-0 left-0 z-[999] overlay ${className}` : `relative w-full overlay ${className}`}>
+        <div className={isClosable ? `fixed top-0 left-0 z-[900] overlay ${className}` : `relative w-full overlay ${className}`}>
           {isClosable && (
             <div
               className={cn(overlayBackgroundStyles({ hidden: !isOpen }), 'overlay-background')}

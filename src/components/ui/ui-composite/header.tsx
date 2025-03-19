@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as logout } from '@/app/api/auth/logout/route';
 import Overlay from '../ui-base/overlay';
 import { StoreItem } from './transaction/item';
-import icon from '@/assets/icon.png';
 import profileIcon from '@/assets/profileIcon.png';
-import ThemeSwitcher from '../ui-base/theme-switcher';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/button';
 import HypertextLogo from '@/assets/hypertext-logo';
 import { MdGeneratingTokens } from "react-icons/md";
+import { selectUser } from '@/redux/slices/userSlice';
+import store from '@/redux/store';
+import { useAppSelector } from '@/redux/hooks';
 
 const Header: React.FC = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -20,7 +21,9 @@ const Header: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown toggle
 
   const { user, clearUser } = useUserContext();
-  const { getWindowPath } = useRouteContext();
+  // const { getWindowPath } = useRouteContext();
+
+  const tokens = user?.tokens ?? 0;
 
   const closeShop = () => {
     setIsShopOpen(!isShopOpen);
@@ -38,17 +41,19 @@ const Header: React.FC = () => {
   };
 
   const items = [
-    { name: '100,000,000', amount: 50000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '200,000,000', amount: 100000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '300,000,000', amount: 150000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '400,000,000', amount: 200000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
-    { name: '500,000,000', amount: 250000, currency: 'PHP', description: 'Tokens used to generate lesson and quiz.' },
+    { name: '100,000,000', amount: 50000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '200,000,000', amount: 100000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '300,000,000', amount: 150000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '400,000,000', amount: 200000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '500,000,000', amount: 250000, currency: 'PHP', description: 'Tokens used to generate.' },
   ];
 
-  const tokens = user?.tokens ? user.tokens.toFixed(2) : '0.00';
-  
+  useEffect(() => {
+    console.log('>>> %ctokens: ', 'color: #bada55', tokens);
+  }, [user])
+
   return (
-    <div className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
+    <header className="z-[200] mx-0 w-full p-2 border-b border-gray-300 select-none !bg-white">
       <div className="relative flex justify-between items-center font-bold">
         <div className="flex left-40 top-10 items-center cursor-pointer">
           <Link className="flex items-center" href="/" passHref>
@@ -59,16 +64,19 @@ const Header: React.FC = () => {
 
         
         <div className="ml-auto flex space-x-4 justify-center align-center">
-        <div className="ml-auto flex space-x-4 justify-center items-center">
-          <div className="flex items-center space-x-1 mr-4">
-            <MdGeneratingTokens size={18} className="text-[#5e77d3]" />
-            <span className="text-sm font-bold">
-              {tokens} {/* Display tokens with 2 decimal places */}
-            </span>
+          <div className="ml-auto flex space-x-4 justify-center items-center">
+            <div className="flex items-center space-x-1 mr-4">
+              <MdGeneratingTokens size={18} className="text-[#5e77d3]" />
+              <span className="text-sm font-bold">
+                {tokens}
+              </span>
+            </div>
           </div>
-        </div>
 
-          {/* <ThemeSwitcher className={'hover:bg-zinc-100 dark:hover:bg-zinc-500 p-1 cursor-pointer flex justify-center items-center rounded-[4px]'} /> */}
+          <div>
+            {user && user.name}
+          </div>
+
           <div className="relative">
             <Image
               src={profileIcon}
@@ -115,7 +123,7 @@ const Header: React.FC = () => {
           </div>
         </Overlay>
       </div>
-    </div>
+    </header>
   );
 };
 

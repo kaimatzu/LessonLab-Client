@@ -1,5 +1,6 @@
 import { AuthResponse } from "@/lib/hooks/context-providers/user-context";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
+import { GET as getTokens } from "../../users/route";
 
 /**
  * Attempts to auto-login the user using the authToken stored in cookies.
@@ -12,26 +13,27 @@ import RequestBuilder from "@/lib/hooks/builders/request-builder";
  * during the auto-login process, it logs the error and returns an error message.
  */
 export async function POST() {
-    const requestBuilder = new RequestBuilder()
-    .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/auto-login`)
-        .setMethod("POST")
-        .setHeaders({ "Content-Type": "application/json" })
-        .setCredentials("include");
+  const requestBuilder = new RequestBuilder()
+  .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/auto-login`)
+    .setMethod("POST")
+    .setHeaders({ "Content-Type": "application/json" })
+    .setCredentials("include");
+  try {
+    const response = await fetch(requestBuilder.build());
 
-    try {
-        const response = await fetch(requestBuilder.build());
+    if (response.ok) {
+      const responseData: AuthResponse = await response.json();
 
-        if (response.ok) {
-            const responseData: AuthResponse = await response.json();
-            console.log("Auto-login successful:", responseData);
-            return { responseData, success: true };
-        } else {
-            const errorData = await response.json();
-            console.error("Auto-login failed:", errorData);
-            return { responseData: errorData, success: false };
-        }
-    } catch (error) {
-        console.error("Error during auto-login:", error);
-        return { responseData: { error: "Internal Server Error" }, success: false };
+      const tokens = await getTokens(responseData.user.userId);
+      console.log("Auto-login successful:", responseData);
+      return { responseData, tokens, success: true };
+    } else {
+      const errorData = await response.json();
+      console.error("Auto-login failed:", errorData);
+      return { responseData: errorData, success: false };
     }
+  } catch (error) {
+    console.error("Error during auto-login:", error);
+    return { responseData: { error: "Internal Server Error" }, success: false };
+  }
 }

@@ -6,6 +6,7 @@ import { POST as register } from '@/app/api/auth/register/route';
 import Cookies from 'js-cookie';
 import RequestBuilder from '@/lib/hooks/builders/request-builder';
 import { UserState, User } from '@/lib/types/user-types';
+import { get } from 'lodash';
 
 // #region User State
 const initialState: UserState = {
@@ -21,8 +22,9 @@ export const checkAuth = createAsyncThunk<User, void, { rejectValue: string }>(
   'user/checkAuth',
   async (_, { rejectWithValue }) => {
     try {
-      const { responseData, success } = await autoLogin(); // May return an AuthResponse or an error string
+      const { responseData, tokens, success } = await autoLogin(); // May return an AuthResponse or an error string
       if (success && responseData && responseData.user) {
+        responseData.user.tokens = tokens;
         return responseData.user;
       } else {
         return rejectWithValue('Authentication failed');
@@ -84,6 +86,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
+      console.log('>>> %csetUser from slice: ', 'color:orange', action.payload);
       state.user = action.payload;
       localStorage.setItem('user', JSON.stringify(action.payload));
     },
