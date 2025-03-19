@@ -12,7 +12,7 @@ interface ItemProps {
   setCheckoutWindow: React.Dispatch<React.SetStateAction<Window | undefined>>;
 }
 
-export const Item: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWindow }) => {
+export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWindow }) => {
   const { createTransaction } = useUserContext();
   
   const formattedAmount = (item.amount / 100).toLocaleString(undefined, {

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import { POST as logout } from '@/app/api/auth/logout/route';
 import Overlay from '../ui-base/overlay';
-import { Item } from './transaction/item';
+import { StoreItem } from './transaction/item';
 import profileIcon from '@/assets/profileIcon.png';
 import { useRouteContext } from '@/lib/hooks/context-providers/route-context';
 import { Button } from '../ui-base/button';
@@ -119,7 +119,7 @@ const Header: React.FC = () => {
           )}
           <div className={`flex p-4 ${transactionOngoing ? "pointer-events-none" : ""}`}>
             {items.map((item, index) => (
-              <Item key={index} item={item} checkoutWindow={checkoutWindow} setCheckoutWindow={setCheckoutWindow} />
+              <StoreItem key={index} item={item} checkoutWindow={checkoutWindow} setCheckoutWindow={setCheckoutWindow} />
             ))}
           </div>
         </Overlay>
