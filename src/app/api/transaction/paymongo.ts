@@ -102,7 +102,7 @@ export const getSession = async (checkoutSessionId: string): Promise<any> => {
     });
 
     if (response.ok) {
-      const responseData: any= await response.json();
+      const responseData: any = await response.json();
       return responseData;
     } else {
       throw new Error('Failed to get session: ' + response.statusText);

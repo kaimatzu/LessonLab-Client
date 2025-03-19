@@ -24,10 +24,10 @@ export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setChecko
     try {
       const response = await createCheckoutSession(item);
       if (response && response.data) {
-        console.log(response.data)
+        console.log('>>> createCheckoutSession response: ', response.data)
         const newWindow = window.open(response.data.attributes.checkout_url, '_blank');
 
-        //TODO: Find a way to terminate the connection on shop close or on transaction cancel
+        // TODO: Find a way to terminate the connection on shop close or on transaction cancel
         // connectSocket(response.data.attributes.payment_intent.id);
         createTransaction(response.data.attributes.payment_intent.id);
         if (newWindow) {
@@ -44,7 +44,6 @@ export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setChecko
 
   return (
     <div className={cn("flex flex-col m-1 items-center p-4 rounded-md shadow-sm bg-blue-50 text-zinc-950 border border-border", "item")}>
-      {/* <Image src={icon} alt="Item Image" width={50} height={50} className="mb-4" /> */}
       <div className="flex flex-col items-center">
         <div className='flex flex-row items-center'>
           <MdGeneratingTokens className='translate-y-[-5px] w-5 h-5 fill-blue-600'/> &nbsp; <h2 className="text-lg font-semibold mb-2">{item.name}</h2>

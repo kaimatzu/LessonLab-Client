@@ -8,6 +8,7 @@ import { connectSocket as _connectSocket } from '@/redux/slices/webSocketSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Module } from '../types/workspace-types';
 import { throttle } from 'lodash';
+import { setUser } from '@/redux/slices/userSlice';
 
 // #region Enums
 export enum MessageRole {
@@ -24,11 +25,18 @@ export enum MessageType {
 class SocketClient {
   public socket: Socket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`, { autoConnect: false });
 
+  // #region constructor
   constructor() {
-    // this.socket.on('connect', () => {
-    //   console.log('Connected to server');
-    // });
-      
+    this.socket.on('token-update', (data) => {
+      console.log('>>> Incoming token update data:', data);
+      const currentUser = store.getState().user.user;
+      if (currentUser && data) {
+        console.log('>>> %cUpdating user tokens:', 'color:lime', data);
+        store.dispatch(setUser({ ...currentUser, tokens: data }));
+        // store.dispatch({ type: 'user/updateTokens', payload: data });
+      }
+    });
+
     this.socket.on('payment_message', (data) => {
       console.log('Incoming message:', data);
     });
@@ -113,7 +121,7 @@ class SocketClient {
       // Acknowledge data object creation on frontend
       callback({ ack: 'success' });
     });
-    
+
     this.socket.on('end', () => {
       store.dispatch(updateChatLoadingStatus(false));
       console.log("Assistant response finished.")
@@ -197,6 +205,7 @@ class SocketClient {
       throttledReplaceModuleNodeContent.cancel();
     });
   }
+  // #endregion constructor
 
   public setQueryParams(params: Record<string, string>): void {
     this.socket.io.opts.query = params;
@@ -225,7 +234,7 @@ export const useSocket = () => {
       // Emit an event to the server to request acknowledgment
       socketClient.socket.emit('request-ack', userId, (ack: string) => {
         if (ack === 'success') {
-          console.log('Acknowledgment received, dispatching action');
+          console.log('Acknowledgment received, dispatching action: ', userId);
           dispatch(_connectSocket(true));
         } else {
           console.error('Acknowledgment failed:', ack);
@@ -245,13 +254,13 @@ export const useSocket = () => {
 
   // #region Join Transaction Room
   const joinTransactionRoom = (payment_intent_id: string) => {
-    console.log(payment_intent_id);
+    console.log('>>> %cpayment intent: ', 'color:orange', payment_intent_id);
 
     if (socketClient.socket.connected && socketConnected) {
-      console.log("Connecting to room:", payment_intent_id);
+      console.log(">>> %cConnecting to room:", "color:lime", payment_intent_id);
       socketClient.socket.emit("join-room", payment_intent_id);
     } else {
-      console.warn("Socket not connected. Waiting for connection to server...");
+      console.warn(">>> Socket not connected. Waiting for connection to transaction server...");
     }
   };
 

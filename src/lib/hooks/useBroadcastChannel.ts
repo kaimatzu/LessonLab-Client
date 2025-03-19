@@ -10,11 +10,11 @@ export const useBroadcastChannel = (channelName: string) => {
     setBroadcastChannel(channel);
 
     channel.onmessage = (event) => {
-      console.log('Receiving message:', event.data);
+      console.log('>>> Receiving message:', event.data);
       
       // This is used by the transaction complete window
       if (event.data.status) {
-        console.log("Transaction status:", event.data.status);
+        console.log(">>> Transaction status:", event.data.status);
         setTransactionStatus(event.data.status);
         setIsTransactionFinished(true); // Set to true so the transaction result window can close if this value is changed. 
       }

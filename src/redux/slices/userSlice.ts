@@ -86,6 +86,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
+      console.log('>>> %csetUser from slice: ', 'color:orange', action.payload);
       state.user = action.payload;
       localStorage.setItem('user', JSON.stringify(action.payload));
     },

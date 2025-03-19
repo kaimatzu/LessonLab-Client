@@ -2,10 +2,8 @@
 
 import { useUserContext } from '@/lib/hooks/context-providers/user-context';
 import React, { useEffect } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Spinner from '@/components/ui/ui-base/spinner';
+import { LuCheckCircle2 } from 'react-icons/lu';
 
 const TransactionResult = () => {
   const { isTransactionFinished, broadcastChannel, transactionStatus } = useUserContext();
@@ -25,20 +23,21 @@ const TransactionResult = () => {
     }
   }, [isTransactionFinished]);
 
+  // console.log('>>> %ctransactionStatus: ', 'color: #bada55', transactionStatus);
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', bgcolor: 'white' }}>
+    <div className='flex flex-col items-center justify-center h-screen bg-blue-100'>
       {transactionStatus !== 'payment.paid' ? (
         <>
-          <CircularProgress style={{ color: 'yellow' }} />
-          <Typography>Processing Transaction...</Typography>
+          <Spinner />
+          <p className='mt-10'>Processing Transaction...</p>
         </>
       ) : (
         <>
-          <CheckCircleIcon style={{ color: 'green', fontSize: 40 }} />
-          <Typography>Transaction Finished. Closing Window.</Typography>
+          <LuCheckCircle2 className='text-green-800 h-10 w-10'/>
+          <p className='mt-10'>Transaction Finished. Closing Window.</p>
         </>
       )}
-    </Box>
+    </div>
   );
 };
 

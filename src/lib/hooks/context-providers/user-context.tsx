@@ -30,8 +30,6 @@ export interface UserContextValue {
 
 const defaultValue: UserContextValue = {
   user: null,
-  // setUser: (newUser) => { defaultValue.user = newUser },
-  // clearUser: () => { defaultValue.user = null },
   setUser: () => { },
   clearUser: () => { },
   isTransactionFinished: false,
@@ -122,15 +120,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     // Fires when transaction window is ready to receive data and data is processed.
+    console.log('>>> socketConnected: ', socketConnected)
+    console.log('>>> transaction id: ', transactionData.id)
+    console.log('>>> transaction status: ', transactionData.status)
     if (transactionData.id !== '' && transactionData.status !== '' && socketConnected) {
-      console.log('Broadcasting message:', transactionData);
+      console.log('>>> Broadcasting message:', transactionData);
       broadcastChannel!.postMessage(transactionData);
 
       // Reset transaction data
       setTransactionData({ status: '', id: '' });
       setIsTransactionFinished(false);
     }
-  }, [transactionData, broadcastChannel, setTransactionData, setIsTransactionFinished, socketConnected]);
+  }, [transactionData, broadcastChannel, isTransactionFinished, socketConnected]);
+
+  useEffect(() => {
+    console.log('>>> %cUserContext value changed:', 'color:orange', user);
+  }, [user])
 
   return (
     <UserContext.Provider
