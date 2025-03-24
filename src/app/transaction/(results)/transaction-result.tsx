@@ -37,12 +37,11 @@ const TransactionResult = () => {
       .then(data => {
         const status = data?.data?.attributes?.payments?.[0]?.status;
         setpaymentStatus(status)
-        console.log('🔄 Payment status:', status)
-
         // Clear session ID if payment is successful // New checkout overwrites the session ID
-        if (status === 'succeeded') {
-          console.log('🎉 Payment successful! Tokens added.')
+        if (data.message === "Tokens added successfully") {
+          console.log('Payment successful! Tokens added.')
           localStorage.removeItem('checkout_session_id');
+          window.close();
         }
       })
       .catch(err => console.error('Error fetching payment status:', err))
