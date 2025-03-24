@@ -13,7 +13,7 @@ interface ItemProps {
 }
 
 export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setCheckoutWindow }) => {
-  const { createTransaction } = useUserContext();
+  const { user, createTransaction } = useUserContext();
   
   const formattedAmount = (item.amount / 100).toLocaleString(undefined, {
     minimumFractionDigits: 2,
@@ -25,6 +25,9 @@ export const StoreItem: React.FC<ItemProps> = ({ item, checkoutWindow, setChecko
       const response = await createCheckoutSession(item);
       if (response && response.data) {
         console.log('>>> createCheckoutSession response: ', response.data)
+
+        localStorage.setItem('user-id', user?.userId ?? '');
+
         const newWindow = window.open(response.data.attributes.checkout_url, '_blank');
 
         // TODO: Find a way to terminate the connection on shop close or on transaction cancel

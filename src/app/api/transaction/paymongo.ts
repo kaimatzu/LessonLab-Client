@@ -50,7 +50,7 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
     .setCredentials("include")
     .setHeaders({ 
       'Content-Type': 'application/json'
-     })
+    })
     .setBody(JSON.stringify({
       amount: item.amount,
       currency: item.currency,
@@ -59,8 +59,14 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
       quantity: 1
     }));
 
+  const response = await fetch(requestBuilder.build());
+
+  console.log('>>> %cthe response: ', 'color:orange', response)
+
   try {
     const response = await fetch(requestBuilder.build())
+
+    console.log('>>> %ccreate checkout response: ', 'color:orange', response)
     
     if (response.ok) {
       const responseData: any = await response.json()
@@ -72,6 +78,7 @@ export const createCheckoutSession = async (item: Item): Promise<any> => {
       return responseData;
     } else {
       console.error('Failed to create checkout session: ' + response.statusText);
+      console.log('>>> Error: ', response.json())
     }
   } catch (error) {
     console.error('Error creating checkout session:', error);

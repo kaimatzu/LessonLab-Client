@@ -41,11 +41,11 @@ const Header: React.FC = () => {
   };
 
   const items = [
-    { name: '100,000,000', amount: 50000, currency: 'PHP', description: 'Tokens used to generate.' },
-    { name: '200,000,000', amount: 100000, currency: 'PHP', description: 'Tokens used to generate.' },
-    { name: '300,000,000', amount: 150000, currency: 'PHP', description: 'Tokens used to generate.' },
-    { name: '400,000,000', amount: 200000, currency: 'PHP', description: 'Tokens used to generate.' },
-    { name: '500,000,000', amount: 250000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '200,000,000', amount: 200000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '400,000,000', amount: 300000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '600,000,000', amount: 400000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '800,000,000', amount: 500000, currency: 'PHP', description: 'Tokens used to generate.' },
+    { name: '1,000,000,000', amount: 600000, currency: 'PHP', description: 'Tokens used to generate.' },
   ];
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-1 mr-4">
               <MdGeneratingTokens size={18} className="text-[#5e77d3]" />
               <span className="text-sm font-bold">
-                {tokens}
+                {tokens.toLocaleString()}
               </span>
             </div>
           </div>

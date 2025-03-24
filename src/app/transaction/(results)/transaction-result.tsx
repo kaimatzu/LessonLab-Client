@@ -1,44 +1,64 @@
 "use client"
 
-import { useUserContext } from '@/lib/hooks/context-providers/user-context';
-import React, { useEffect } from 'react';
-import Spinner from '@/components/ui/ui-base/spinner';
-import { LuCheckCircle2 } from 'react-icons/lu';
+import { useState, useEffect } from 'react';
+import RequestBuilder from '@/lib/hooks/builders/request-builder';
 
 const TransactionResult = () => {
-  const { isTransactionFinished, broadcastChannel, transactionStatus } = useUserContext();
+  const [paymentStatus, setpaymentStatus] = useState<string | null>('');
   
   useEffect(() => {
-    // Placeholder for API call to validate transaction...
-    console.log("Transaction status changed:", isTransactionFinished);
+    const sessionId = localStorage.getItem('checkout_session_id');
 
-    broadcastChannel?.postMessage({ transaction_window_ready: true });
-
-    if (isTransactionFinished) {
-      console.log("Transaction finished");
-      
-      setTimeout(() => {
-        window.close(); // Close the tab or navigate away
-      }, 5000); // Auto-close after 5 seconds
+    if (!sessionId) {
+      console.error('No session ID found.')
+      return
     }
-  }, [isTransactionFinished]);
 
-  // console.log('>>> %ctransactionStatus: ', 'color: #bada55', transactionStatus);
+    console.log('Retrieved session ID:', sessionId)
+    console.log('>>> %cAdding tokens to user:', 'color:orange', )
+
+    const userId = localStorage.getItem('user-id');
+
+    const requestBuilder = new RequestBuilder()
+      .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/transactions/checkout_status/${sessionId}?user_id=${userId}`)
+      .setMethod("GET")
+      .setCredentials("include")
+      .setHeaders({
+        "Content-Type": "application/json",
+      });
+
+    fetch(requestBuilder.build())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json()
+      })
+      .then(data => {
+        const status = data?.data?.attributes?.payments?.[0]?.status;
+        setpaymentStatus(status)
+        console.log('🔄 Payment status:', status)
+
+        // Clear session ID if payment is successful // New checkout overwrites the session ID
+        if (status === 'succeeded') {
+          console.log('🎉 Payment successful! Tokens added.')
+          localStorage.removeItem('checkout_session_id');
+        }
+      })
+      .catch(err => console.error('Error fetching payment status:', err))
+
+  }, []);
+
   return (
-    <div className='flex flex-col items-center justify-center h-screen bg-blue-100'>
-      {transactionStatus !== 'payment.paid' ? (
-        <>
-          <Spinner />
-          <p className='mt-10'>Processing Transaction...</p>
-        </>
+    <div>
+      <h1>Transaction Result</h1>
+      {paymentStatus ? (
+        <p>Payment Status: {paymentStatus}</p>
       ) : (
-        <>
-          <LuCheckCircle2 className='text-green-800 h-10 w-10'/>
-          <p className='mt-10'>Transaction Finished. Closing Window.</p>
-        </>
+        <p>Checking payment status...</p>
       )}
     </div>
-  );
-};
+  )
 
+};
 export default TransactionResult;

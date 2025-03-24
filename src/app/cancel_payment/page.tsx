@@ -1,8 +1,11 @@
 'use client'
 
-import React, { useEffect } from "react";
+import {useEffect, useState } from "react";
 
 const Page = () => {
+
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     const close = () => {
       window.close();
@@ -10,10 +13,10 @@ const Page = () => {
 
     setTimeout(() => {
       close();
-    }, 1000);
+    }, 5000);
   }, []);
 
-  return <div className="h-screen flex justify-center items-center bg-blue-100 font-20">Transaction Cancelled.</div>;
+  return <div className="h-screen flex justify-center items-center bg-blue-50 font-20">Transaction Cancelled.</div>;
 };
 
 export default Page;
