@@ -72,7 +72,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // console.log("Checking for auth");
     const checkAuthStatus = async () => {
-      const authToken = Cookies.get('autoLoginToken');
+      const authToken = Cookies.get('authToken');
       // console.log(authToken)
       const pathname = getCurrentPath();
 
