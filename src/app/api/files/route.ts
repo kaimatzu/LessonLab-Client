@@ -9,7 +9,7 @@ export interface FetchedFile {
   documentId: string;
 }
 
-export const maxDuration = 600
+export const maxDuration = 60
 
 /**
  * Fetches all file URLs for a given namespace from the backend server.
