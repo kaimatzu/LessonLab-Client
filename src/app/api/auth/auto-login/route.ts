@@ -1,6 +1,6 @@
 import { AuthResponse } from "@/lib/hooks/context-providers/user-context";
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
-import { GET as getTokens } from "../../users/route";
+// import { GET as getTokens } from "../../users/route";
 
 /**
  * Attempts to auto-login the user using the authToken stored in cookies.
@@ -24,7 +24,10 @@ export async function POST() {
     if (response.ok) {
       const responseData: AuthResponse = await response.json();
 
-      const tokens = await getTokens(responseData.user.userId);
+      const responseTokens = await fetch(`${process.env.NEXT_CLIENT_URL}/api/users/tokens?userId=${responseData.user.userId}`)
+
+      const { tokens } = await responseTokens.json()
+
       console.log("Auto-login successful:", responseData);
       return { responseData, tokens, success: true };
     } else {

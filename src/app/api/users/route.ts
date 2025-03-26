@@ -1,6 +1,10 @@
 import RequestBuilder from "@/lib/hooks/builders/request-builder";
+import { NextRequest } from "next/server";
 
-export async function GET(userId: string) {
+export async function GET(req: NextRequest) {
+
+  const userId = req.nextUrl.searchParams.get('userId');
+
   const requestBuilder = new RequestBuilder()
   .setURL(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/tokens?userId=${userId}`)
     .setMethod("GET")
@@ -16,10 +20,10 @@ export async function GET(userId: string) {
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Failed to get tokens:", errorData);
-      return { responseData: errorData, success: false };
+      return new Response(JSON.stringify({ responseData: errorData, success: false }));
     }
 
-    return tokens
+    return new Response(JSON.stringify({ tokens, success: true }));
   } catch (error) {
     console.error(error)
   }
